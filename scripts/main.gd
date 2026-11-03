@@ -152,7 +152,7 @@ func show_home() -> void:
 	var top := HBoxContainer.new()
 	body.add_child(top)
 	top.add_child(spacer())
-	top.add_child(quiet_action("Settings", show_settings))
+	top.add_child(action("Settings", show_settings))
 	body.add_child(spacer(false))
 	mark = Mark.new()
 	mark.motion = store.data.motion
@@ -202,7 +202,7 @@ func _selection_page(screen_name: String, back_label: String, on_back: Callable,
 	var body := _body()
 	var header := HBoxContainer.new()
 	body.add_child(header)
-	header.add_child(quiet_action(back_label, on_back))
+	header.add_child(action(back_label, on_back))
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -221,7 +221,7 @@ func show_chapters() -> void:
 	for chapter in chapters:
 		var item := MarginContainer.new()
 		index.add_child(item)
-		var entry := quiet_action("", show_rooms.bind(chapter))
+		var entry := action("", show_rooms.bind(chapter))
 		entry.accessibility_name = chapter
 		entry.accessibility_description = _chapter_label(chapter)
 		item.add_child(entry)
@@ -279,7 +279,7 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 	exit_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	exit_button.accessibility_name = "Exit Room"
 	exit_button.tooltip_text = "Return to Home"
-	exit_button.add_theme_stylebox_override("normal", box(Color("191f23"), MUTED))
+	exit_button.set_meta("base_px", 18)
 	top.add_child(exit_button)
 	var room_title := VBoxContainer.new()
 	room_title.add_theme_constant_override("separation", 0)
@@ -287,7 +287,7 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 	room_title.add_child(text_label("%s   /   %s" % [_chapter_label(session.level.chapter), session.level.chapter], 17, MUTED))
 	room_title.add_child(text_label("%s   %s" % [session.level.id, session.level.title], 26))
 	top.add_child(spacer())
-	var pause := quiet_action("", show_pause)
+	var pause := action("", show_pause)
 	pause.icon = preload("res://assets/pause.svg")
 	pause.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pause.custom_minimum_size = Vector2(46, 44) * ui_scale()
@@ -321,6 +321,7 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 	body.add_child(actions)
 	seal_button = action("Leave an Echo", seal_route, 134, true)
 	undo_button = action("Undo", undo_move, 90)
+	undo_button.set_meta("base_px", 18)
 	actions.add_child(seal_button)
 	actions.add_child(undo_button)
 	_save_session()
@@ -402,6 +403,8 @@ func _close_game() -> void:
 	if closing: return
 	closing = true
 	_commit_volume()
+	audio.stop()
+	footfalls.stop()
 	if music_fade != null: music_fade.kill()
 	var out := create_tween()
 	out.tween_property(music, "volume_db", -72.0, 0.16)
@@ -751,9 +754,12 @@ func show_settings(focus_id: String = "") -> void:
 		var tab := list_action(section, _select_settings.bind(section))
 		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		tab.alignment = HORIZONTAL_ALIGNMENT_CENTER
+		tab.toggle_mode = true
+		tab.set_pressed_no_signal(section == settings_section)
+		tab.add_theme_color_override("font_color", MUTED)
+		tab.add_theme_color_override("font_pressed_color", Color.WHITE)
 		if section == settings_section:
 			current_tab = tab
-			tab.add_theme_stylebox_override("normal", tab.get_theme_stylebox("hover"))
 			tab.accessibility_description = "Selected"
 		tabs.add_child(tab)
 	var rows := VBoxContainer.new()
@@ -778,7 +784,7 @@ func show_settings(focus_id: String = "") -> void:
 	content.add_child(foot)
 	foot.add_child(action("Back", _leave_settings))
 	foot.add_child(spacer())
-	foot.add_child(quiet_action("How to Play", show_help))
+	foot.add_child(action("How to Play", show_help))
 	content.add_child(Control.new())
 	var first: Control = setting_values[focus_id].get_parent() if setting_values.has(focus_id) else current_tab
 	_focus_dialog(first)

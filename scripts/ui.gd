@@ -20,13 +20,16 @@ func setup_skin() -> void:
 	skin.set_color("font_color", "Label", INK)
 	skin.set_color("font_color", "Button", INK)
 	skin.set_color("font_hover_color", "Button", Color.WHITE)
+	skin.set_color("font_focus_color", "Button", Color.WHITE)
 	skin.set_color("font_pressed_color", "Button", ACCENT)
-	skin.set_color("font_disabled_color", "Button", Color("7e8991"))
-	skin.set_stylebox("normal", "Button", box(Color("101214"), Color("56616a")))
-	skin.set_stylebox("hover", "Button", box(Color("252c31"), Color("acbac4")))
-	skin.set_stylebox("pressed", "Button", box(Color("293137"), ACCENT))
-	skin.set_stylebox("disabled", "Button", box(Color("0b0c0d"), Color("343b40")))
-	skin.set_stylebox("focus", "Button", box(Color.TRANSPARENT, Color("9aa8b1")))
+	skin.set_color("font_disabled_color", "Button", Color("8996a0"))
+	var bare := StyleBoxEmpty.new()
+	bare.content_margin_left = 13
+	bare.content_margin_right = 13
+	bare.content_margin_top = 7
+	bare.content_margin_bottom = 7
+	for state in ["normal", "hover", "pressed", "hover_pressed", "focus", "disabled"]:
+		skin.set_stylebox(state, "Button", bare)
 	skin.set_constant("separation", "VBoxContainer", 8)
 	skin.set_constant("separation", "HBoxContainer", 12)
 	theme = skin
@@ -60,12 +63,26 @@ func action(value: String, callback: Callable, width: float = 0, primary: bool =
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.pressed.connect(callback)
 	if primary:
-		button.add_theme_stylebox_override("normal", box(Color("d5dfe5"), Color("d5dfe5")))
-		button.add_theme_stylebox_override("hover", box(Color("eff4f6"), Color.WHITE))
-		button.add_theme_stylebox_override("pressed", box(ACCENT, ACCENT))
-		for key in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
-			button.add_theme_color_override(key, Color("141719"))
+		button.set_meta("base_px", 18)
+		button.add_theme_font_size_override("font_size", roundi(18 * ui_scale()))
+		button.add_theme_color_override("font_color", Color.WHITE)
+	button.draw.connect(_draw_action_line.bind(button))
 	return button
+
+func _draw_action_line(button: Button) -> void:
+	if button.disabled or not (button.is_hovered() or button.has_focus() or button.button_pressed):
+		return
+	var px := button.get_theme_font_size("font_size")
+	var width := button.get_theme_font("font").get_string_size(button.text, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
+	var y := button.size.y * 0.5 + px * 0.66
+	if button.text.is_empty():
+		# The pause icon and chapter titles use a short mark below their content.
+		width = 20 * ui_scale()
+		y = button.size.y - 2
+	var x := (button.size.x - width) * 0.5
+	if button.alignment == HORIZONTAL_ALIGNMENT_LEFT:
+		x = button.get_theme_stylebox("normal").get_content_margin(SIDE_LEFT)
+	button.draw_line(Vector2(x, y), Vector2(x + width, y), ACCENT, 1.0, true)
 
 func spacer(horizontal: bool = true) -> Control:
 	var space := Control.new()
@@ -76,39 +93,15 @@ func spacer(horizontal: bool = true) -> Control:
 		space.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	return space
 
-# Quiet navigation: the underline defines the row; the full surface still takes focus.
 func list_action(value: String, callback: Callable) -> Button:
 	var button := action(value, callback)
 	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	for state in ["normal", "hover", "pressed", "disabled"]:
-		var highlighted: bool = state in ["hover", "pressed"]
-		var style := box(Color("1b2024") if highlighted else Color.TRANSPARENT, MUTED if highlighted else Color("40494f"), 12)
-		style.set_border_width_all(0)
-		style.border_width_bottom = 1
-		style.set_corner_radius_all(0)
-		button.add_theme_stylebox_override(state, style)
-	return button
-
-func quiet_action(value: String, callback: Callable) -> Button:
-	var button := action(value, callback)
-	button.flat = true
 	return button
 
 func home_action(value: String, callback: Callable) -> Button:
 	var button := action(value, callback)
 	button.set_meta("base_px", 22)
-	var empty := StyleBoxEmpty.new()
-	for state in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
-		button.add_theme_stylebox_override(state, empty)
-	for state in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
-		button.add_theme_color_override(state, Color.WHITE)
-	button.draw.connect(func():
-		if not (button.is_hovered() or button.has_focus()): return
-		var font := button.get_theme_font("font")
-		var px := button.get_theme_font_size("font_size")
-		var half_width := font.get_string_size(button.text, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x * 0.5
-		var baseline := Vector2(button.size.x * 0.5, button.size.y * 0.5 + px * 0.66)
-		button.draw_line(baseline - Vector2(half_width, 0), baseline + Vector2(half_width, 0), Color.WHITE, 1.0, true))
+	button.add_theme_color_override("font_color", Color.WHITE)
 	return button
 
 func ui_scale() -> float:
