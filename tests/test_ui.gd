@@ -40,7 +40,7 @@ func click(point: Vector2) -> void:
 func click_named(value: String) -> void:
 	var scope: Control = ui.modal if ui.modal != null else ui.page
 	for button in scope.find_children("*", "Button", true, false):
-		if button.text == value and button.is_visible_in_tree():
+		if (button.text == value or button.accessibility_name == value) and button.is_visible_in_tree():
 			await click(button.get_global_rect().get_center())
 			return
 	verify(false, "Missing button: " + value)

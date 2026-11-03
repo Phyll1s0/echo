@@ -147,9 +147,18 @@ func show_home() -> void:
 	body.add_child(spacer(false))
 	_layout()
 
-func _chapter_tag(chapter: String) -> String:
+func _chapter_label(chapter: String) -> String:
 	var order := chapters.find(chapter)
-	return ROMAN[order] if order >= 0 and order < ROMAN.size() else str(order + 1)
+	var numeral: String = ROMAN[order] if order >= 0 and order < ROMAN.size() else str(order + 1)
+	return "Chapter " + numeral
+
+func _chapter_heading(chapter: String, alignment: HorizontalAlignment) -> VBoxContainer:
+	var heading := VBoxContainer.new()
+	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	heading.add_theme_constant_override("separation", 0)
+	heading.add_child(text_label(_chapter_label(chapter), 17, MUTED, alignment))
+	heading.add_child(text_label(chapter, 42, INK, alignment))
+	return heading
 
 func _chapter_progress(chapter: String) -> Vector2i:
 	var progress := Vector2i.ZERO
@@ -182,17 +191,20 @@ func _selection_page(screen_name: String, back_label: String, on_back: Callable)
 func show_chapters() -> void:
 	var index := _selection_page("chapters", "← Home", show_home)
 	for chapter in chapters:
-		var entry := quiet_action(chapter, show_rooms.bind(chapter))
-		entry.set_meta("base_px", 42)
-		entry.add_theme_color_override("font_hover_color", ACCENT)
-		index.add_child(entry)
+		var item := MarginContainer.new()
+		index.add_child(item)
+		var entry := quiet_action("", show_rooms.bind(chapter))
+		entry.accessibility_name = chapter
+		entry.accessibility_description = _chapter_label(chapter)
+		item.add_child(entry)
+		item.add_child(_chapter_heading(chapter, HORIZONTAL_ALIGNMENT_CENTER))
 	_layout()
 
 func show_rooms(chapter: String) -> void:
 	var index := _selection_page("rooms", "← Chapters", show_chapters)
 	var heading := HBoxContainer.new()
 	index.add_child(heading)
-	heading.add_child(text_label(chapter, 42))
+	heading.add_child(_chapter_heading(chapter, HORIZONTAL_ALIGNMENT_LEFT))
 	heading.add_child(spacer())
 	var count := _chapter_progress(chapter)
 	heading.add_child(text_label("%d / %d" % [count.x, count.y], 18, MUTED))
@@ -237,7 +249,7 @@ func open_level(index: int, resume: bool = false) -> void:
 	var room_title := VBoxContainer.new()
 	room_title.add_theme_constant_override("separation", 0)
 	top.add_child(room_title)
-	room_title.add_child(text_label("%s   /   %s" % [_chapter_tag(session.level.chapter), session.level.chapter], 17, MUTED))
+	room_title.add_child(text_label("%s   /   %s" % [_chapter_label(session.level.chapter), session.level.chapter], 17, MUTED))
 	room_title.add_child(text_label("%s   %s" % [session.level.id, session.level.title], 26))
 	top.add_child(spacer())
 	top.add_child(quiet_action("Menu", show_pause))
