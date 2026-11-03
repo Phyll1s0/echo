@@ -1,9 +1,9 @@
 extends Control
 
-const INK := Color("e7ebee")
-const MUTED := Color("9aa4ac")
-const DIM := Color("717c85")
-const ACCENT := Color("bbd1de")
+const INK := Color("f2f6f8")
+const MUTED := Color("b2bec7")
+const DIM := Color("8996a0")
+const ACCENT := Color("cbe1ed")
 var regular: Font
 var thin: Font
 
@@ -21,11 +21,11 @@ func setup_skin() -> void:
 	skin.set_color("font_color", "Button", INK)
 	skin.set_color("font_hover_color", "Button", Color.WHITE)
 	skin.set_color("font_pressed_color", "Button", ACCENT)
-	skin.set_color("font_disabled_color", "Button", Color("616970"))
-	skin.set_stylebox("normal", "Button", box(Color("101214"), Color("373d42")))
-	skin.set_stylebox("hover", "Button", box(Color("20252a"), Color("87929b")))
+	skin.set_color("font_disabled_color", "Button", Color("7e8991"))
+	skin.set_stylebox("normal", "Button", box(Color("101214"), Color("56616a")))
+	skin.set_stylebox("hover", "Button", box(Color("252c31"), Color("acbac4")))
 	skin.set_stylebox("pressed", "Button", box(Color("293137"), ACCENT))
-	skin.set_stylebox("disabled", "Button", box(Color("0b0c0d"), Color("26292b")))
+	skin.set_stylebox("disabled", "Button", box(Color("0b0c0d"), Color("343b40")))
 	skin.set_stylebox("focus", "Button", box(Color.TRANSPARENT, Color("9aa8b1")))
 	skin.set_constant("separation", "VBoxContainer", 8)
 	skin.set_constant("separation", "HBoxContainer", 12)

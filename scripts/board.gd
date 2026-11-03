@@ -3,11 +3,14 @@ extends Control
 signal move_requested(delta: Vector2i)
 signal motion_finished
 
-const INK := Color("eceef0")
-const MUTED := Color("909ba4")
-const ACTIVE := Color("bad3df")
-const FLOOR := Color("111315")
-const LINE := Color("353a3e")
+const INK := Color("f2f6f8")
+const MUTED := Color("abb9c3")
+const ACTIVE := Color("c7e0ec")
+const FLOOR := Color("161a1d")
+const LINE := Color("6a7780")
+const PIECE_EDGE := Color.WHITE
+const SECOND_ECHO_EDGE := Color("d5efff")
+const PIECE_SHADOW := Color("0c1115")
 const VOID_CELL := Vector2i(-999, -999)
 var puzzle
 var font: Font
@@ -109,7 +112,7 @@ func _draw() -> void:
 		var fill := FLOOR
 		var edge := LINE
 		if cell == hover and puzzle.can_move(cell - player):
-			fill = Color("20272b")
+			fill = Color("293239")
 			edge = MUTED
 		draw_rect(rect, fill)
 		draw_rect(rect, edge, false, maxf(1.0, unit * 0.012), true)
@@ -162,7 +165,7 @@ func _draw() -> void:
 		for i in puzzle.echoes.size():
 			var route: Array = puzzle.echoes[i]
 			for j in range(1, route.size()):
-				draw_dashed_line(center_of(route[j-1]), center_of(route[j]), Color(MUTED, 0.42), 1.3, 5.0, true, true)
+				draw_dashed_line(center_of(route[j-1]), center_of(route[j]), Color(MUTED, 0.50), 1.3, 5.0, true, true)
 	var now: Array = puzzle.actors()
 	var eased := smoothstep(0.0, 1.0, phase)
 	# Draw older actors first, then the solid player on top of overlapping rings.
@@ -175,11 +178,16 @@ func _draw() -> void:
 		if old != null and target != null:
 			center = center_of(old).lerp(center_of(target), eased)
 		if n == 0:
-			draw_circle(center, unit * 0.125, INK, true, -1, true)
+			var radius := unit * 0.125
+			draw_circle(center, radius, Color("e5f0f7"), true, -1, true)
+			draw_arc(center, radius, 0, TAU, 64, PIECE_EDGE, maxf(1.6, unit * 0.024), true)
 		else:
 			var alpha := 1.0 - eased if target == null else 1.0
-			var radius := unit * (0.19 if n == 1 else 0.26)
-			draw_arc(center, radius, 0, TAU, 64, Color(ACTIVE if n == 1 else MUTED, alpha), maxf(1.5, unit * 0.024), true)
+			var radius := unit * (0.18 if n == 1 else 0.245)
+			var width := maxf(2.0, unit * 0.036)
+			# Separate the bright ring from a plate or bridge underneath it.
+			draw_arc(center, radius, 0, TAU, 64, Color(PIECE_SHADOW, alpha), width + 2.0, true)
+			draw_arc(center, radius, 0, TAU, 64, Color(PIECE_EDGE if n == 1 else SECOND_ECHO_EDGE, alpha), width, true)
 
 func _draw_switch(center: Vector2, unit: float, state: int) -> void:
 	var r := unit * 0.32
@@ -199,8 +207,8 @@ func _draw_bridge(cell: Vector2i, rect: Rect2, state: int) -> void:
 	var deck := rect.grow(-unit*0.04)
 	deck.size.y *= 0.22 + 0.78*strength
 	deck.position.y = center.y - deck.size.y*0.5
-	draw_rect(deck, Color("293b43").lerp(Color("101619"), 1.0-strength))
-	draw_rect(deck, Color(MUTED, 0.45+0.5*strength), false, maxf(1.2,unit*0.022), true)
+	draw_rect(deck, Color("30454f").lerp(Color("141b20"), 1.0-strength))
+	draw_rect(deck, Color(MUTED, 0.56+0.42*strength), false, maxf(1.2,unit*0.022), true)
 	var slope := 1 if puzzle.bridges[cell] == 0 else -1
 	for n in [-1, 0, 1]:
 		var x: float = center.x + n*unit*0.20
