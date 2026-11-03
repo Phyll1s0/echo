@@ -62,10 +62,34 @@ func test_home_settings() -> void:
 	await click(bounds.position + bounds.size * Vector2(0.67,0.5))
 	var saved_volume: int = Store.new(path).data.volume
 	verify(saved_volume > 50 and saved_volume < 80 and is_equal_approx(ui.audio.volume_db, linear_to_db(saved_volume / 100.0)), "Volume slider persists and applies the selected gain")
+	var music_volume: HSlider = ui.modal.find_children("*", "HSlider", true, false)[1]
+	bounds = music_volume.get_global_rect()
+	await click(bounds.position + bounds.size * Vector2(0.43, 0.5))
+	var saved_music: int = Store.new(path).data.music_volume
+	verify(saved_music > 33 and saved_music < 53 and Store.new(path).data.volume==saved_volume, "Music and effects levels persist independently")
+	verify(ui.music.stream.loop and absf(ui.music.stream.get_length()-96.0) < 0.02, "The score is a complete looping 96-second recording")
+	if DisplayServer.get_name() != "headless":
+		await create_timer(.20).timeout
+		verify(ui.music.playing and is_equal_approx(ui.music.volume_db, linear_to_db(saved_music / 100.0)), "Music slider applies the selected gain")
+		ui.music.seek(95.85)
+		await create_timer(.50).timeout
+		verify(ui.music.playing and ui.music.get_playback_position() < 2.0, "The music crosses its loop point without stopping")
+		ui.music.seek(21.0)
+		await click(Vector2(bounds.position.x, bounds.get_center().y))
+		await create_timer(.20).timeout
+		verify(not ui.music.playing and Store.new(path).data.music_volume==0, "Zero music volume pauses the score independently")
+		await click(bounds.position + bounds.size * Vector2(.43,.5))
+		await create_timer(.20).timeout
+		verify(ui.music.playing and not ui.music.stream_paused and ui.music.get_playback_position() >= 21, "Raising music resumes the same phrase")
 	await click_named("Footsteps")
-	verify(not Store.new(path).data.step_sounds, "Footsteps can be muted independently")
+	verify(not Store.new(path).data.step_sounds and ui.footfalls.stream.streams_count==3, "All three step sounds use the independent footsteps control")
+	if DisplayServer.get_name() != "headless":
+		verify(ui.music.playing and not ui.music.stream_paused, "Disabling footsteps leaves the music running")
 	await capture("settings")
 	await click_named("Sound")
+	if DisplayServer.get_name() != "headless":
+		await create_timer(.45).timeout
+		verify(not ui.music.playing, "Master mute also silences music")
 	await click_named("Display")
 	await click_named("Motion")
 	verify(ui.ambient.animated and ui.mark.motion and Store.new(path).data.motion, "Motion changes live and persists")
@@ -112,7 +136,11 @@ func test_previous_save() -> void:
 	var puzzle = preload("res://scripts/puzzle.gd").new(ui.levels[6])
 	verify(puzzle.restore(old.data.session) and puzzle.echoes.size()==1 and puzzle.tick()==1, "The renamed room resumes an earlier version's tape and draft")
 	verify(old.data.completed.has("01") and not old.data.sound and not old.data.motion and not old.data.paths and not old.data.fullscreen, "Earlier progress and preferences survive the settings upgrade")
-	verify(old.data.room_titles==2 and old.data.volume==100 and old.data.move_speed==1, "Older saves receive the standard title, volume and motion speed")
+	verify(old.data.room_titles==2 and old.data.volume==100 and old.data.music_volume==36 and old.data.move_speed==1, "Older saves receive the standard title, volume and motion speed")
+	file = FileAccess.open(path+".legacy", FileAccess.WRITE)
+	file.store_string('{"version":1,"volume":0}')
+	file.close()
+	verify(Store.new(path+".legacy").data.music_volume==0, "An older zero-volume preference also keeps new music silent")
 	DirAccess.remove_absolute(path+".legacy")
 
 func test_room_restart() -> void:
@@ -362,6 +390,18 @@ func _run() -> void:
 	if DisplayServer.get_name() != "headless":
 		await create_timer(0.8).timeout
 		verify(root.mode==Window.MODE_WINDOWED, "F11 returns the native window to windowed mode")
+	if DisplayServer.get_name() != "headless":
+		await click_named("Audio")
+		await click_named("Sound")
+		ui.music.seek(41.0)
+		await click_named("Back")
+		await click_named("Choose Room")
+		await click(room_card(9).get_global_rect().get_center())
+		await key(KEY_ESCAPE)
+		verify(ui.modal_kind=="pause" and ui.music.playing and ui.music.get_playback_position() >= 41.0, "Opening a room and pausing keep the score on the same phrase")
 	DirAccess.remove_absolute(path)
 	print("ECHO UI: %d checks; %d failures." % [checks, failures])
-	quit(1 if failures else 0)
+	if DisplayServer.get_name() != "headless" and failures == 0:
+		root.close_requested.emit()
+	else:
+		quit(1 if failures else 0)

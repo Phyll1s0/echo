@@ -5,8 +5,9 @@ const Store = preload("res://scripts/save_store.gd")
 const Board = preload("res://scripts/board.gd")
 const Atmosphere = preload("res://scripts/atmosphere.gd")
 const Mark = preload("res://scripts/mark.gd")
+const MUSIC := preload("res://assets/audio/stillwater.ogg")
+const STEPS := [preload("res://assets/audio/step.wav"), preload("res://assets/audio/step_b.wav"), preload("res://assets/audio/step_c.wav")]
 const SOUNDS := {
-	"step": preload("res://assets/audio/step.wav"),
 	"gate": preload("res://assets/audio/gate.wav"),
 	"record": preload("res://assets/audio/record.wav"),
 	"complete": preload("res://assets/audio/complete.wav")
@@ -36,6 +37,11 @@ var board
 var chapter_index: VBoxContainer
 var mark
 var audio: AudioStreamPlayer
+var footfalls: AudioStreamPlayer
+var music: AudioStreamPlayer
+var music_fade: Tween
+var music_position := 0.0
+var closing := false
 var hint_index := -1
 var status_text := ""
 var beat_label: Label
@@ -69,9 +75,10 @@ func _ready() -> void:
 	ambient = Atmosphere.new()
 	add_child(ambient)
 	ambient.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	audio = AudioStreamPlayer.new()
-	add_child(audio)
-	_apply_volume()
+	_start_audio()
+	if DisplayServer.get_name() != "headless":
+		get_tree().auto_accept_quit = false
+		get_window().close_requested.connect(_close_game)
 	resized.connect(_layout)
 	show_home()
 	for arg in OS.get_cmdline_user_args():
@@ -357,15 +364,68 @@ func _apply_board_preferences() -> void:
 	board.move_seconds = MOVE_SECONDS[store.data.move_speed]
 	board.path_opacity = PATH_OPACITY[store.data.path_weight]
 
+func _start_audio() -> void:
+	audio = AudioStreamPlayer.new()
+	add_child(audio)
+	var bank := AudioStreamRandomizer.new()
+	bank.playback_mode = AudioStreamRandomizer.PLAYBACK_SEQUENTIAL
+	for clip in STEPS:
+		bank.add_stream(bank.streams_count, clip)
+	footfalls = AudioStreamPlayer.new()
+	footfalls.stream = bank
+	footfalls.max_polyphony = 2
+	add_child(footfalls)
+	_apply_volume()
+	music = AudioStreamPlayer.new()
+	music.stream = MUSIC
+	music.volume_db = -72.0
+	add_child(music)
+	_mix_music(1.4)
+
 func _apply_volume() -> void:
 	audio.volume_db = linear_to_db(maxf(0.0001, store.data.volume / 100.0))
+	footfalls.volume_db = audio.volume_db
 	if store.data.volume == 0:
 		audio.stop()
+		footfalls.stop()
+
+func _close_game() -> void:
+	if closing: return
+	closing = true
+	_commit_volume()
+	if music_fade != null: music_fade.kill()
+	var out := create_tween()
+	out.tween_property(music, "volume_db", -72.0, 0.16)
+	out.tween_callback(music.stop)
+	# Let the mixer release the Vorbis playback before the window exits.
+	out.tween_interval(0.16)
+	out.tween_callback(get_tree().quit)
+
+func _mix_music(seconds: float) -> void:
+	if DisplayServer.get_name() == "headless" or closing:
+		return
+	if music_fade != null:
+		music_fade.kill()
+	var audible: bool = store.data.sound and store.data.music_volume > 0
+	if audible:
+		if not music.playing:
+			music.play(music_position)
+	elif not music.playing:
+		return
+	var gain := linear_to_db(store.data.music_volume / 100.0) if audible else -72.0
+	music_fade = music.create_tween()
+	music_fade.tween_property(music, "volume_db", gain, seconds)
+	if not audible:
+		music_fade.tween_callback(func():
+			music_position = fposmod(music.get_playback_position(), MUSIC.get_length())
+			music.stop())
 
 func _play(id: String) -> void:
-	if id == "step" and not store.data.step_sounds:
+	if not store.data.sound or store.data.volume == 0 or DisplayServer.get_name() == "headless":
 		return
-	if store.data.sound and store.data.volume > 0 and DisplayServer.get_name() != "headless":
+	if id == "step":
+		if store.data.step_sounds: footfalls.play()
+	else:
 		audio.stream = SOUNDS[id]
 		audio.play()
 
@@ -557,8 +617,15 @@ func _toggle_setting(id: String) -> void:
 	store.data[id] = not _window_fullscreen() if id == "fullscreen" else not store.data[id]
 	match id:
 		"sound":
-			if store.data.sound: _play("record")
-			else: audio.stop()
+			_mix_music(0.35)
+			if store.data.sound:
+				_play("record")
+			else:
+				audio.stop()
+				footfalls.stop()
+		"step_sounds":
+			if store.data.step_sounds: _play("step")
+			else: footfalls.stop()
 		"motion":
 			ambient.animated = store.data.motion and screen == "home"
 			if is_instance_valid(mark): mark.motion = store.data.motion
@@ -610,7 +677,7 @@ func _commit_volume() -> void:
 		volume_dirty = false
 		_save_preferences()
 
-func _add_volume(rows: VBoxContainer) -> void:
+func _add_volume(rows: VBoxContainer, id: String, title: String) -> void:
 	var inset := MarginContainer.new()
 	inset.add_theme_constant_override("margin_left", 12)
 	inset.add_theme_constant_override("margin_right", 12)
@@ -618,13 +685,15 @@ func _add_volume(rows: VBoxContainer) -> void:
 	var row := HBoxContainer.new()
 	row.custom_minimum_size.y = 48 * ui_scale()
 	inset.add_child(row)
-	row.add_child(text_label("Volume", 16))
+	var caption := text_label(title, 16)
+	caption.custom_minimum_size.x = 66 * ui_scale()
+	row.add_child(caption)
 	var slider := HSlider.new()
-	slider.accessibility_name = "Volume"
+	slider.accessibility_name = title + " Volume"
 	slider.min_value = 0
 	slider.max_value = 100
 	slider.step = 1
-	slider.value = store.data.volume
+	slider.value = store.data[id]
 	slider.editable = store.data.sound
 	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -643,16 +712,17 @@ func _add_volume(rows: VBoxContainer) -> void:
 	percent.custom_minimum_size.x = 52 * ui_scale()
 	row.add_child(percent)
 	slider.value_changed.connect(func(value: float):
-		store.data.volume = roundi(value)
+		store.data[id] = roundi(value)
 		percent.text = "%d%%" % roundi(value)
-		_apply_volume()
+		if id == "music_volume": _mix_music(0.10)
+		else: _apply_volume()
 		volume_dirty = true
 		if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			_commit_volume()
-			_play("record"))
+			if id == "volume": _play("record"))
 	slider.drag_ended.connect(func(changed: bool):
 		_commit_volume()
-		if changed: _play("record"))
+		if changed and id == "volume": _play("record"))
 
 func _select_settings(section: String) -> void:
 	settings_section = section
@@ -684,7 +754,8 @@ func show_settings(focus_id: String = "") -> void:
 	match settings_section:
 		"Audio":
 			_add_option(rows, "sound", "Sound")
-			_add_volume(rows)
+			_add_volume(rows, "volume", "Effects")
+			_add_volume(rows, "music_volume", "Music")
 			_add_option(rows, "step_sounds", "Footsteps", store.data.sound)
 		"Display":
 			_add_option(rows, "fullscreen", "Fullscreen")

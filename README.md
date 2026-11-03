@@ -33,7 +33,7 @@ godot --headless --path . --export-release macOS builds/macos/ECHO.zip
 | 显示录制路线 / 查看提示 | T / H |
 | 暂停 / 全屏 | Esc / F11 |
 
-点右上角的暂停图标或按 Esc 打开侧栏。Settings 分为 Audio、Display 和 Puzzle，可调音效音量、脚步声、全屏、动效、棋子动画速度、入场标题时长、回声路线和路线深浅。设置自动保存。How to Play 在设置内。需要本关提示时按 H 或选择暂停侧栏里的 Hint。
+点右上角的暂停图标或按 Esc 打开侧栏。Settings 分为 Audio、Display 和 Puzzle，可分别调节背景音乐和音效音量，也可调整脚步声、全屏、动效、棋子动画速度、入场标题时长、回声路线和路线深浅。设置自动保存。How to Play 在设置内。需要本关提示时按 H 或选择暂停侧栏里的 Hint。
 
 进入房间时会显示章节编号与关卡名，默认在 1.5 秒内淡出到棋盘。直接移动会略过标题并走出第一步。
 
@@ -90,6 +90,10 @@ python3 tools/check.py --visual
 
 进阶房间的搜索状态包含箭头方向与桥面。对 07 至 09，验证器同时搜索录制世界和回放世界，检查固定其中一种新机关后是否存在替代解。对 10，验证器检查出口所需的三个位置，以及固定机关后不可达的位置或无法离开的开关区域。对 14，还会检查双回声离开透镜后，当前桥面能否把它们送回压板，从而验证录制路线穿过折叠桥是解题所需的一步。
 
+## 声音
+
+原创配乐 **Stillwater** 是一段 96 秒的立体声循环，以轻柔的琴音、缓缓变化的弦乐和远处的应答组成。从主页到关卡共用同一段音乐，思考和暂停时也会继续。Settings → Audio 中的 Music 和 Effects 可分别调节，Music 调至 0 即可静音，Footsteps 单独控制走格的轻触声。
+
 ## 素材
 
-几何标记和场景由 Godot 绘制。四个短音效用 `tools/make_assets.py` 合成；字体 Poppins 遵循 `assets/fonts/poppins-OFL.txt` 中的 SIL Open Font License。中文文字使用系统字体回退。
+几何标记和场景由 Godot 绘制。短音效由 `tools/make_assets.py` 合成，每步轮换三种轻触声。配乐已随游戏打包，可用 `uv run tools/make_music.py` 从乐谱重新合成。字体 Poppins 遵循 `assets/fonts/poppins-OFL.txt` 中的 SIL Open Font License。中文文字使用系统字体回退。
