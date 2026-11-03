@@ -15,7 +15,9 @@ const VOID_CELL := Vector2i(-999, -999)
 var puzzle
 var font: Font
 var show_routes := false
+var path_opacity := 0.5
 var motion := true
+var move_seconds := 0.13
 var selected_plate := ""
 var selected_switch := VOID_CELL
 var hover := VOID_CELL
@@ -54,7 +56,7 @@ func cancel_animation() -> void:
 	queue_redraw()
 
 func _process(delta: float) -> void:
-	phase = minf(1.0, phase + delta / 0.13)
+	phase = minf(1.0, phase + delta / move_seconds)
 	queue_redraw()
 	if phase >= 1.0:
 		set_process(false)
@@ -178,7 +180,7 @@ func _draw() -> void:
 		for i in puzzle.echoes.size():
 			var route: Array = puzzle.echoes[i]
 			for j in range(1, route.size()):
-				draw_dashed_line(center_of(route[j-1]), center_of(route[j]), Color(MUTED, 0.50), 1.3, 5.0, true, true)
+				draw_dashed_line(center_of(route[j-1]), center_of(route[j]), Color(MUTED, path_opacity), 1.3, 5.0, true, true)
 	var now: Array = puzzle.actors()
 	var eased := smoothstep(0.0, 1.0, phase)
 	# Draw older actors first, then the solid player on top of overlapping rings.

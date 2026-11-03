@@ -11,6 +11,14 @@ const SOUNDS := {
 	"record": preload("res://assets/audio/record.wav"),
 	"complete": preload("res://assets/audio/complete.wav")
 }
+const MOVE_SECONDS := [0.22, 0.13, 0.08]
+const TITLE_SECONDS := [0.0, 1.0, 1.5, 2.0]
+const PATH_OPACITY := [0.30, 0.50, 0.85]
+const CHOICES := {
+	"move_speed": ["Gentle", "Standard", "Quick"],
+	"room_titles": ["Off", "1 s", "1.5 s", "2 s"],
+	"path_weight": ["Faint", "Standard", "Bold"]
+}
 const ROMAN := ["I", "II", "III", "IV"]
 var chapters: Array[String] = []
 var levels: Array
@@ -36,6 +44,11 @@ var message_label: Label
 var seal_button: Button
 var undo_button: Button
 var setting_values: Dictionary = {}
+var settings_section := "Audio"
+var volume_dirty := false
+var title_card: CenterContainer
+var title_underlay: Control
+var title_tween: Tween
 
 func _ready() -> void:
 	TranslationServer.set_locale("en")
@@ -58,6 +71,7 @@ func _ready() -> void:
 	ambient.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	audio = AudioStreamPlayer.new()
 	add_child(audio)
+	_apply_volume()
 	resized.connect(_layout)
 	show_home()
 	for arg in OS.get_cmdline_user_args():
@@ -76,10 +90,15 @@ func _layout() -> void:
 		chapter_index.add_theme_constant_override("separation", roundi(gap * ui_scale()))
 		chapter_index.custom_minimum_size.x = minf(480 * ui_scale(), size.x - 110 * ui_scale())
 	if is_instance_valid(modal_panel):
-		modal_panel.custom_minimum_size.x = minf(size.x - 52, modal_width * ui_scale())
+		var panel_width := minf(size.x - 52, modal_width * ui_scale())
+		if modal_kind == "pause":
+			modal_panel.offset_left = -panel_width
+		else:
+			modal_panel.custom_minimum_size.x = panel_width
 		rescale_text(modal)
 
 func _fresh_page(name_: String, landscape: String = "") -> void:
+	_dismiss_room_title()
 	_close_modal()
 	if is_instance_valid(page):
 		remove_child(page)
@@ -233,7 +252,7 @@ func _row_value(button: Button, value: String) -> Label:
 	caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	return caption
 
-func open_level(index: int, resume: bool = false) -> void:
+func open_level(index: int, resume: bool = false, introduce: bool = true) -> void:
 	if index < 0 or index >= levels.size():
 		return
 	level_index = index
@@ -252,7 +271,13 @@ func open_level(index: int, resume: bool = false) -> void:
 	room_title.add_child(text_label("%s   /   %s" % [_chapter_label(session.level.chapter), session.level.chapter], 17, MUTED))
 	room_title.add_child(text_label("%s   %s" % [session.level.id, session.level.title], 26))
 	top.add_child(spacer())
-	top.add_child(quiet_action("Menu", show_pause))
+	var pause := quiet_action("", show_pause)
+	pause.icon = preload("res://assets/pause.svg")
+	pause.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pause.custom_minimum_size = Vector2(46, 44) * ui_scale()
+	pause.accessibility_name = "Pause"
+	pause.tooltip_text = "Pause (Esc)"
+	top.add_child(pause)
 	var hud := HBoxContainer.new()
 	body.add_child(hud)
 	hud.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -265,7 +290,7 @@ func open_level(index: int, resume: bool = false) -> void:
 	if Atmosphere.WORLDS.has(session.level.chapter):
 		board.set_colors(Atmosphere.WORLDS[session.level.chapter])
 	board.font = regular
-	board.motion = store.data.motion
+	_apply_board_preferences()
 	body.add_child(board)
 	board.move_requested.connect(try_move)
 	board.motion_finished.connect(_animation_done)
@@ -286,8 +311,61 @@ func open_level(index: int, resume: bool = false) -> void:
 	_refresh()
 	_layout()
 
+	if introduce:
+		_show_room_title(body.get_parent())
+
+func _show_room_title(underlay: Control) -> void:
+	var seconds: float = TITLE_SECONDS[store.data.room_titles]
+	if seconds == 0:
+		return
+	title_underlay = underlay
+	title_underlay.modulate.a = 0
+	title_card = CenterContainer.new()
+	title_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	page.add_child(title_card)
+	title_card.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var stack := VBoxContainer.new()
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_theme_constant_override("separation", roundi(10 * ui_scale()))
+	title_card.add_child(stack)
+	var color: Color = Atmosphere.WORLDS.get(session.level.chapter, {}).get("light", MUTED)
+	var reference := "%s   /   Room %s" % [_chapter_label(session.level.chapter), session.level.id]
+	stack.add_child(text_label(reference, 19, color, HORIZONTAL_ALIGNMENT_CENTER))
+	stack.add_child(text_label(session.level.title, 60, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	title_tween = page.create_tween()
+	var fade := minf(0.40, seconds * 0.25) if store.data.motion else 0.0
+	title_tween.tween_interval(seconds - fade)
+	if fade > 0:
+		title_tween.tween_property(title_card, "modulate:a", 0.0, fade)
+		title_tween.parallel().tween_property(title_underlay, "modulate:a", 1.0, fade)
+	title_tween.tween_callback(_dismiss_room_title)
+
+func _dismiss_room_title() -> void:
+	if title_tween != null:
+		title_tween.kill()
+		title_tween = null
+	if is_instance_valid(title_underlay):
+		title_underlay.modulate.a = 1
+	title_underlay = null
+	if is_instance_valid(title_card):
+		title_card.hide()
+		title_card.queue_free()
+	title_card = null
+
+func _apply_board_preferences() -> void:
+	board.motion = store.data.motion
+	board.move_seconds = MOVE_SECONDS[store.data.move_speed]
+	board.path_opacity = PATH_OPACITY[store.data.path_weight]
+
+func _apply_volume() -> void:
+	audio.volume_db = linear_to_db(maxf(0.0001, store.data.volume / 100.0))
+	if store.data.volume == 0:
+		audio.stop()
+
 func _play(id: String) -> void:
-	if store.data.sound and DisplayServer.get_name() != "headless":
+	if id == "step" and not store.data.step_sounds:
+		return
+	if store.data.sound and store.data.volume > 0 and DisplayServer.get_name() != "headless":
 		audio.stream = SOUNDS[id]
 		audio.play()
 
@@ -364,7 +442,7 @@ func undo_move() -> void:
 		_refresh()
 
 func restart_room() -> void:
-	open_level(level_index, false)
+	open_level(level_index, false, false)
 
 func edit_last() -> void:
 	if not session.edit_origin.is_empty():
@@ -390,6 +468,7 @@ func next_hint() -> void:
 	_refresh()
 
 func _close_modal() -> void:
+	_commit_volume()
 	if is_instance_valid(modal):
 		remove_child(modal)
 		modal.queue_free()
@@ -400,18 +479,22 @@ func _close_modal() -> void:
 	if is_instance_valid(page):
 		page.process_mode = Node.PROCESS_MODE_INHERIT
 
-func _panel(kind: String, title: String, width: float = 570) -> VBoxContainer:
+func _begin_modal(kind: String) -> void:
 	_close_modal()
+	_dismiss_room_title()
 	modal_kind = kind
 	page.process_mode = Node.PROCESS_MODE_DISABLED
 	modal = ColorRect.new()
-	modal.color = Color(0, 0, 0, 0.85)
+	modal.color = Color(0, 0, 0, 0.42 if kind == "pause" else 0.85)
 	modal.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(modal)
 	modal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	# Underlying controls cannot consume keyboard focus while a dialog is visible.
 	if get_viewport().gui_get_focus_owner() != null:
 		get_viewport().gui_release_focus()
+
+func _panel(kind: String, title: String, width: float = 570) -> VBoxContainer:
+	_begin_modal(kind)
 	var center := CenterContainer.new()
 	modal.add_child(center)
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -444,14 +527,19 @@ func _dialog(kind: String, title: String, description: String, choices: Array) -
 	content.add_child(Control.new())
 	_focus_dialog(buttons.get_child(0))
 
-func _focus_dialog(first: Button) -> void:
-	var buttons := modal.find_children("*", "Button", true, false)
+func _focus_dialog(first: Control) -> void:
+	var buttons: Array[Control] = []
+	for control in modal.find_children("*", "Control", true, false):
+		if control.focus_mode != Control.FOCUS_ALL or (control is BaseButton and control.disabled) or (control is Slider and not control.editable):
+			continue
+		buttons.append(control)
 	for i in buttons.size():
-		var button: Button = buttons[i]
+		var button: Control = buttons[i]
 		button.focus_next = button.get_path_to(buttons[(i+1) % buttons.size()])
 		button.focus_previous = button.get_path_to(buttons[posmod(i-1, buttons.size())])
-		button.focus_neighbor_right = button.focus_next
-		button.focus_neighbor_left = button.focus_previous
+		if not button is Slider:
+			button.focus_neighbor_right = button.focus_next
+			button.focus_neighbor_left = button.focus_previous
 		button.focus_neighbor_bottom = button.focus_next
 		button.focus_neighbor_top = button.focus_previous
 	first.grab_focus()
@@ -474,41 +562,146 @@ func _toggle_setting(id: String) -> void:
 		"motion":
 			ambient.animated = store.data.motion and screen == "home"
 			if is_instance_valid(mark): mark.motion = store.data.motion
-			if is_instance_valid(board): board.motion = store.data.motion
+			if is_instance_valid(board): _apply_board_preferences()
 		"fullscreen":
 			_apply_fullscreen(store.data.fullscreen)
-	if not store.flush():
-		status_text = store.last_error
+	_save_preferences()
 	if setting_values.has(id):
-		var label: Label = setting_values[id]
-		label.text = "On" if store.data[id] else "Off"
-		label.get_parent().accessibility_description = label.text
+		if id in ["sound", "motion", "paths"]:
+			show_settings(id)
+		else:
+			_update_option_label(id)
 	if screen == "game": _refresh()
 
-func show_settings() -> void:
-	# The native window controls can also change fullscreen outside the game.
+func _cycle_setting(id: String) -> void:
+	store.data[id] = (int(store.data[id]) + 1) % CHOICES[id].size()
+	if is_instance_valid(board):
+		_apply_board_preferences()
+		board.queue_redraw()
+	_save_preferences()
+	_update_option_label(id)
+
+func _save_preferences() -> void:
+	if not store.flush():
+		status_text = store.last_error
+
+func _update_option_label(id: String) -> void:
+	var label: Label = setting_values[id]
+	if CHOICES.has(id):
+		label.text = CHOICES[id][store.data[id]]
+	else:
+		label.text = "On" if store.data[id] else "Off"
+	var button: Button = label.get_parent()
+	button.accessibility_description = label.text
+	if button.disabled:
+		label.add_theme_color_override("font_color", DIM)
+
+func _add_option(rows: VBoxContainer, id: String, title: String, enabled: bool = true) -> Button:
+	var change := _cycle_setting if CHOICES.has(id) else _toggle_setting
+	var button := list_action(title, change.bind(id))
+	button.disabled = not enabled
+	rows.add_child(button)
+	setting_values[id] = _row_value(button, "")
+	_update_option_label(id)
+	return button
+
+func _commit_volume() -> void:
+	if volume_dirty:
+		volume_dirty = false
+		_save_preferences()
+
+func _add_volume(rows: VBoxContainer) -> void:
+	var inset := MarginContainer.new()
+	inset.add_theme_constant_override("margin_left", 12)
+	inset.add_theme_constant_override("margin_right", 12)
+	rows.add_child(inset)
+	var row := HBoxContainer.new()
+	row.custom_minimum_size.y = 48 * ui_scale()
+	inset.add_child(row)
+	row.add_child(text_label("Volume", 16))
+	var slider := HSlider.new()
+	slider.accessibility_name = "Volume"
+	slider.min_value = 0
+	slider.max_value = 100
+	slider.step = 1
+	slider.value = store.data.volume
+	slider.editable = store.data.sound
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color("3b454b")
+	track.set_corner_radius_all(2)
+	track.content_margin_top = 2
+	track.content_margin_bottom = 2
+	slider.add_theme_stylebox_override("slider", track)
+	var filled: StyleBoxFlat = track.duplicate()
+	filled.bg_color = MUTED if slider.editable else DIM
+	slider.add_theme_stylebox_override("grabber_area", filled)
+	slider.add_theme_stylebox_override("grabber_area_highlight", filled)
+	row.add_child(slider)
+	var percent := text_label("%d%%" % int(slider.value), 16, ACCENT if slider.editable else DIM, HORIZONTAL_ALIGNMENT_RIGHT)
+	percent.custom_minimum_size.x = 52 * ui_scale()
+	row.add_child(percent)
+	slider.value_changed.connect(func(value: float):
+		store.data.volume = roundi(value)
+		percent.text = "%d%%" % roundi(value)
+		_apply_volume()
+		volume_dirty = true
+		if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			_commit_volume()
+			_play("record"))
+	slider.drag_ended.connect(func(changed: bool):
+		_commit_volume()
+		if changed: _play("record"))
+
+func _select_settings(section: String) -> void:
+	settings_section = section
+	show_settings()
+
+func show_settings(focus_id: String = "") -> void:
 	var fullscreen := _window_fullscreen()
 	if store.data.fullscreen != fullscreen:
 		store.data.fullscreen = fullscreen
-		store.flush()
-	var content := _panel("settings", "Settings", 440)
+		_save_preferences()
+	var content := _panel("settings", "Settings", 525)
+	var tabs := HBoxContainer.new()
+	tabs.add_theme_constant_override("separation", 6)
+	content.add_child(tabs)
+	var current_tab: Button
+	for section in ["Audio", "Display", "Puzzle"]:
+		var tab := list_action(section, _select_settings.bind(section))
+		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tab.alignment = HORIZONTAL_ALIGNMENT_CENTER
+		if section == settings_section:
+			current_tab = tab
+			tab.add_theme_stylebox_override("normal", tab.get_theme_stylebox("hover"))
+			tab.accessibility_description = "Selected"
+		tabs.add_child(tab)
 	var rows := VBoxContainer.new()
-	rows.add_theme_constant_override("separation", 2)
+	rows.custom_minimum_size.y = 148 * ui_scale()
+	rows.add_theme_constant_override("separation", 6)
 	content.add_child(rows)
-	var prefs := {"sound": "Sound", "motion": "Motion", "paths": "Echo Paths", "fullscreen": "Fullscreen"}
-	for id in prefs:
-		var button := list_action(prefs[id], _toggle_setting.bind(id))
-		rows.add_child(button)
-		var value := "On" if store.data[id] else "Off"
-		button.accessibility_description = value
-		setting_values[id] = _row_value(button, value)
+	match settings_section:
+		"Audio":
+			_add_option(rows, "sound", "Sound")
+			_add_volume(rows)
+			_add_option(rows, "step_sounds", "Footsteps", store.data.sound)
+		"Display":
+			_add_option(rows, "fullscreen", "Fullscreen")
+			_add_option(rows, "motion", "Motion")
+			_add_option(rows, "move_speed", "Move Animation", store.data.motion)
+		"Puzzle":
+			_add_option(rows, "room_titles", "Room Titles")
+			_add_option(rows, "paths", "Echo Paths")
+			_add_option(rows, "path_weight", "Path Contrast", store.data.paths)
 	var foot := HBoxContainer.new()
 	content.add_child(foot)
 	foot.add_child(action("Back", _leave_settings))
 	foot.add_child(spacer())
 	foot.add_child(quiet_action("How to Play", show_help))
 	content.add_child(Control.new())
-	_focus_dialog(rows.get_child(0))
+	var first: Control = setting_values[focus_id].get_parent() if setting_values.has(focus_id) else current_tab
+	_focus_dialog(first)
 
 func _leave_settings() -> void:
 	if screen == "game": show_pause()
@@ -536,7 +729,33 @@ func show_pause() -> void:
 	if session.cleared():
 		_refresh()
 		return
-	var content := _panel("pause", "Room Menu", 410)
+	_begin_modal("pause")
+	modal_width = 362
+	modal_panel = PanelContainer.new()
+	modal.add_child(modal_panel)
+	modal_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	modal_panel.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
+	modal_panel.offset_left = -minf(size.x - 52, modal_width * ui_scale())
+	var surface := box(Color("101519"), Color("55616a"), 26 * ui_scale())
+	surface.set_corner_radius_all(0)
+	surface.set_border_width_all(0)
+	surface.border_width_left = 1
+	modal_panel.add_theme_stylebox_override("panel", surface)
+	if store.data.motion:
+		var left := modal_panel.offset_left
+		var slide := modal_panel.create_tween().set_parallel(true).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		slide.tween_property(modal_panel, "offset_left", left, 0.16).from(left + 20)
+		slide.tween_property(modal_panel, "offset_right", 0.0, 0.16).from(20.0)
+	modal.gui_input.connect(func(event: InputEvent):
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and not modal_panel.get_rect().has_point(event.position):
+			get_viewport().set_input_as_handled()
+			_resume_game())
+	var content := VBoxContainer.new()
+	content.alignment = BoxContainer.ALIGNMENT_CENTER
+	content.add_theme_constant_override("separation", roundi(14 * ui_scale()))
+	modal_panel.add_child(content)
+	content.add_child(text_label("Room %s   /   %s" % [session.level.id, session.level.title], 16, MUTED))
+	content.add_child(text_label("Paused", 34))
 	var resume := action("Resume", _resume_game, 0, true)
 	content.add_child(resume)
 	var rows := VBoxContainer.new()
@@ -570,6 +789,8 @@ func show_complete() -> void:
 		else: show_chapters()], ["Undo", func(): _close_modal(); undo_move()]])
 
 func _input(event: InputEvent) -> void:
+	if title_card != null and ((event is InputEventKey and event.pressed and not event.echo) or (event is InputEventMouseButton and event.pressed)):
+		_dismiss_room_title()
 	if not event is InputEventKey or not event.pressed or event.echo:
 		return
 	var code: Key = event.physical_keycode if event.physical_keycode != 0 else event.keycode

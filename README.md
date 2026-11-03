@@ -28,12 +28,14 @@ godot --headless --path . --export-release macOS builds/macos/ECHO.zip
 | 移动一格 | 方向键、WASD，或点击相邻格 |
 | 留下回声 | Enter 或“Leave an Echo” |
 | 撤销一拍 | Z、Backspace 或“Undo” |
-| 从头重开当前房间，清空本关所有回声与行动记录 | R 或 Menu → Restart Room |
-| 修改最近的录制 | Menu → Edit Last Echo，然后逐拍撤销或继续走 |
+| 从头重开当前房间，清空本关所有回声与行动记录 | R 或暂停侧栏 → Restart Room |
+| 修改最近的录制 | 暂停侧栏 → Edit Last Echo，然后逐拍撤销或继续走 |
 | 显示录制路线 / 查看提示 | T / H |
 | 暂停 / 全屏 | Esc / F11 |
 
-主页的 Settings 和关内的 Menu → Settings 共用同一组设置：声音、动效、回声路线和全屏。设置自动保存。How to Play 在设置内；需要本关提示时按 H 或选择 Menu → Hint。
+点右上角的暂停图标或按 Esc 打开侧栏。Settings 分为 Audio、Display 和 Puzzle，可调音效音量、脚步声、全屏、动效、棋子动画速度、入场标题时长、回声路线和路线深浅。设置自动保存。How to Play 在设置内。需要本关提示时按 H 或选择暂停侧栏里的 Hint。
+
+进入房间时会显示章节编号与关卡名，默认在 1.5 秒内淡出到棋盘。直接移动会略过标题并走出第一步。
 
 点击远处的压板或将指针停在压板上可查看关联门。提示逐级展开，最后一级给出一组可行路线。
 
