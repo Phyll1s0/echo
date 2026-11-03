@@ -164,12 +164,14 @@ func show_home() -> void:
 	var gap := Control.new()
 	gap.custom_minimum_size.y = 20 * ui_scale()
 	body.add_child(gap)
-	var buttons := HBoxContainer.new()
-	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	var buttons := VBoxContainer.new()
+	buttons.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	buttons.custom_minimum_size.x = 164 * ui_scale()
+	buttons.add_theme_constant_override("separation", roundi(12 * ui_scale()))
 	body.add_child(buttons)
 	var resume := _session_index()
-	buttons.add_child(action("Continue" if resume >= 0 else "Start", func(): open_level(resume if resume >= 0 else _next_unfinished(), true), 126, true))
-	buttons.add_child(action("Chapters", show_chapters, 110))
+	buttons.add_child(action("Continue" if resume >= 0 else "Start", func(): open_level(resume if resume >= 0 else _next_unfinished(), true), 0, true))
+	buttons.add_child(action("Chapters", show_chapters))
 	body.add_child(spacer(false))
 	_layout()
 
@@ -271,7 +273,14 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 	status_text = ""
 	var body := _body()
 	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation", roundi(22 * ui_scale()))
 	body.add_child(top)
+	var exit_button := action("←  Exit Room", show_home, 120 * ui_scale())
+	exit_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	exit_button.accessibility_name = "Exit Room"
+	exit_button.tooltip_text = "Return to Home"
+	exit_button.add_theme_stylebox_override("normal", box(Color("191f23"), MUTED))
+	top.add_child(exit_button)
 	var room_title := VBoxContainer.new()
 	room_title.add_theme_constant_override("separation", 0)
 	top.add_child(room_title)
