@@ -1,9 +1,8 @@
 [
   {
     "id": "01",
-    "title": "Trace",
-    "subtitle": "A trace remains",
-    "chapter": "First Steps",
+    "title": "First Trace",
+    "chapter": "Afterimage",
     "max_echoes": 1,
     "rows": [
       "A####",
@@ -38,9 +37,8 @@
   },
   {
     "id": "02",
-    "title": "Detour",
-    "subtitle": "The longer way",
-    "chapter": "First Steps",
+    "title": "Scenic Route",
+    "chapter": "Afterimage",
     "max_echoes": 1,
     "rows": [
       "A.####",
@@ -75,9 +73,8 @@
   },
   {
     "id": "03",
-    "title": "Reprise",
-    "subtitle": "Once more",
-    "chapter": "Crossings",
+    "title": "Refrain",
+    "chapter": "Afterimage",
     "max_echoes": 1,
     "rows": [
       "A#####",
@@ -125,9 +122,8 @@
   },
   {
     "id": "04",
-    "title": "Relay",
-    "subtitle": "From here to there",
-    "chapter": "Crossings",
+    "title": "Relay Line",
+    "chapter": "Afterimage",
     "max_echoes": 1,
     "rows": [
       "A...B###",
@@ -175,8 +171,7 @@
   },
   {
     "id": "05",
-    "title": "Duet",
-    "subtitle": "In the same moment",
+    "title": "Two Voices",
     "chapter": "Resonance",
     "max_echoes": 2,
     "rows": [
@@ -215,8 +210,7 @@
   },
   {
     "id": "06",
-    "title": "Interlock",
-    "subtitle": "A future made possible",
+    "title": "Interlace",
     "chapter": "Resonance",
     "max_echoes": 2,
     "rows": [
@@ -270,8 +264,8 @@
   },
   {
     "id": "07",
-    "title": "Ratchet",
-    "chapter": "Aftermath",
+    "title": "Turnabout",
+    "chapter": "Phase Shift",
     "max_echoes": 1,
     "rows": [
       ".B.A#####",
@@ -332,8 +326,8 @@
   },
   {
     "id": "08",
-    "title": "Switchyard",
-    "chapter": "Aftermath",
+    "title": "Tidal Shift",
+    "chapter": "Phase Shift",
     "max_echoes": 1,
     "rows": [
       "*######",
@@ -355,8 +349,8 @@
   },
   {
     "id": "09",
-    "title": "Undertow",
-    "chapter": "Aftermath",
+    "title": "Crosscurrent",
+    "chapter": "Phase Shift",
     "max_echoes": 1,
     "rows": [
       "#X####",
@@ -407,7 +401,7 @@
   {
     "id": "10",
     "title": "Counterpoint",
-    "chapter": "Aftermath",
+    "chapter": "Phase Shift",
     "max_echoes": 2,
     "rows": [
       "###X#####",

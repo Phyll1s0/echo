@@ -76,6 +76,24 @@ func spacer(horizontal: bool = true) -> Control:
 		space.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	return space
 
+# Quiet navigation: the underline defines the row; the full surface still takes focus.
+func list_action(value: String, callback: Callable) -> Button:
+	var button := action(value, callback)
+	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		var highlighted: bool = state in ["hover", "pressed"]
+		var style := box(Color("1b2024") if highlighted else Color.TRANSPARENT, MUTED if highlighted else Color("40494f"), 12)
+		style.set_border_width_all(0)
+		style.border_width_bottom = 1
+		style.set_corner_radius_all(0)
+		button.add_theme_stylebox_override(state, style)
+	return button
+
+func quiet_action(value: String, callback: Callable) -> Button:
+	var button := action(value, callback)
+	button.flat = true
+	return button
+
 func ui_scale() -> float:
 	return clampf(minf(size.x / 1280.0, size.y / 820.0), 0.86, 2.25)
 

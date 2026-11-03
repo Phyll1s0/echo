@@ -45,6 +45,29 @@ func click_named(value: String) -> void:
 			return
 	verify(false, "Missing button: " + value)
 
+func room_card(i: int) -> Button:
+	for item in ui.chapter_index.find_children("*", "Button", true, false):
+		if item.text.begins_with(ui.levels[i].id + " "):
+			return item
+	return null
+
+func test_home_settings() -> void:
+	verify(ui.page.find_children("*", "Button", true, false).size()==3, "Home shows three actions")
+	await click_named("Settings")
+	verify(ui.modal_kind=="settings", "Settings open from the home screen")
+	await click_named("Motion")
+	verify(ui.ambient.animated and ui.mark.motion and Store.new(path).data.motion, "Motion changes live and persists")
+	await click_named("Sound")
+	verify(Store.new(path).data.sound and ui.setting_values.sound.text=="On", "Sound is saved and the row reflects its state")
+	await capture("settings")
+	await click_named("Sound")
+	await click_named("Motion")
+	await click_named("How to Play")
+	await key(KEY_ESCAPE)
+	verify(ui.modal_kind=="settings", "Rules return to settings")
+	await click_named("Back")
+	verify(ui.modal==null and ui.screen=="home", "Settings return to home")
+
 func walk(letters: String) -> void:
 	for letter in letters:
 		var t: int = ui.session.tick()
@@ -67,6 +90,16 @@ func verify_fresh_room(expected: Dictionary, completed: Dictionary, entry: Strin
 	verify(reloaded.restore(disk.data.session) and reloaded.snapshot() == expected, entry + " resumes at the start of the room")
 	verify(disk.data.completed == completed, entry + " keeps campaign progress")
 
+func test_previous_save() -> void:
+	var file := FileAccess.open(path+".legacy", FileAccess.WRITE)
+	file.store_string('{"version":1,"completed":{"01":{"beats":4,"echoes":1}},"sound":false,"motion":false,"session":{"version":1,"level_id":"07","echoes":[[[0,2],[0,1],[0,0]]],"draft":[[0,2],[1,2]]}}')
+	file.close()
+	var old = Store.new(path+".legacy")
+	var puzzle = preload("res://scripts/puzzle.gd").new(ui.levels[6])
+	verify(puzzle.restore(old.data.session) and puzzle.echoes.size()==1 and puzzle.tick()==1, "The renamed room resumes an earlier version's tape and draft")
+	verify(old.data.completed.has("01") and not old.data.sound and not old.data.motion and not old.data.paths and not old.data.fullscreen, "Earlier progress and preferences survive the settings upgrade")
+	DirAccess.remove_absolute(path+".legacy")
+
 func test_room_restart() -> void:
 	ui.open_level(ui.levels.size()-1, false)
 	await settle()
@@ -84,11 +117,13 @@ func test_room_restart() -> void:
 	await walk("LL")
 	await key(KEY_ENTER)
 	await walk("L")
+	await click_named("Menu")
 	await click_named("Restart Room")
-	verify_fresh_room(initial, completed, "Gameplay button")
+	verify_fresh_room(initial, completed, "Room menu")
 	await walk("LL")
 	await key(KEY_ENTER)
 	await walk("L")
+	await click_named("Menu")
 	await click_named("Edit Last Echo")
 	verify(not ui.session.edit_origin.is_empty(), "Pending edit before restart from pause")
 	await key(KEY_ESCAPE)
@@ -104,14 +139,18 @@ func _run() -> void:
 	ui.store.data.sound = false
 	root.add_child(ui)
 	await settle()
+	test_previous_save()
 	verify(ui.screen=="home", "Home opens")
 	verify(TranslationServer.get_locale()=="en", "The game opens in English even with a Chinese system locale")
 	await capture("home")
+	await test_home_settings()
 	await click_named("Start")
 	verify(ui.screen=="game" and ui.level_index==0, "Start opens the first room")
 	if ui.screen!="game":
 		quit(1)
 		return
+	verify(ui.page.find_children("*", "Button", true, false).size()==3, "The board only shows Menu, Leave an Echo and Undo")
+	await click_named("Menu")
 	await click_named("Hint")
 	verify(ui.message_label.text==ui.session.level.intro, "Hint displays the English room introduction on demand")
 	await key(KEY_UP)
@@ -127,11 +166,24 @@ func _run() -> void:
 	var snapshot: Dictionary = ui.session.snapshot()
 	await key(KEY_LEFT)
 	verify(ui.modal_kind=="pause" and ui.session.snapshot()==snapshot, "Pause isolates puzzle input")
+	await click_named("Settings")
+	await key(KEY_DOWN)
+	await click_named("Echo Paths")
+	verify(ui.board.show_routes and Store.new(path).data.paths, "Changing paths in settings updates the board and persists")
+	await click_named("Motion")
+	verify(ui.board.motion, "Board motion changes before returning to play")
+	await click_named("Motion")
 	await click_named("How to Play")
-	verify(ui.modal_kind=="help", "Pause opens rules")
+	verify(ui.modal_kind=="help", "In-game settings open rules")
 	await click_named("Got It")
-	verify(ui.modal_kind=="pause", "Rules return to pause")
+	verify(ui.modal_kind=="settings", "Rules return to game settings")
 	await key(KEY_ESCAPE)
+	verify(ui.modal_kind=="pause" and ui.session.snapshot()==snapshot, "Settings return to the same room and beat")
+	var restored_puzzle = preload("res://scripts/puzzle.gd").new(ui.session.level)
+	verify(restored_puzzle.restore(Store.new(path).data.session) and restored_puzzle.snapshot()==snapshot, "The checkpoint still restores after settings changes")
+	await key(KEY_ESCAPE)
+	await key(KEY_T)
+	verify(not ui.board.show_routes and not Store.new(path).data.paths, "Path shortcut shares the setting")
 	await walk("RR")
 	verify(ui.modal_kind=="complete" and ui.store.data.completed.has("01"), "Completion saved")
 	await key(KEY_Z)
@@ -139,9 +191,14 @@ func _run() -> void:
 	await walk("R")
 	await click_named("Next Room")
 	verify(ui.level_index==1, "Next room opens")
-	await click_named("← Rooms")
-	verify(not ui.cards.get_child(6).disabled and ui.cards.get_child(7).disabled, "The advanced entry is available before completing the tutorials")
-	await click(ui.cards.get_child(6).get_global_rect().get_center())
+	await click_named("Menu")
+	await click_named("Chapters")
+	var groups: Array = ui.chapter_index.find_children("*", "GridContainer", true, false)
+	verify(groups.size()==3 and groups[0].get_child_count()==4 and groups[1].get_child_count()==2 and groups[2].get_child_count()==4, "Rooms are grouped into chapters by mechanic")
+	verify(room_card(0).accessibility_description=="Complete" and not room_card(1).disabled and room_card(2).disabled, "Earlier progress still unlocks the following room")
+	verify(not room_card(6).disabled and room_card(7).disabled, "The advanced entry is available before completing the tutorials")
+	await capture("chapters")
+	await click(room_card(6).get_global_rect().get_center())
 	verify(ui.level_index==6, "Advanced room opens through room selection")
 	for i in range(1,ui.levels.size()):
 		ui.open_level(i,false)
@@ -158,17 +215,23 @@ func _run() -> void:
 			var fresh = preload("res://scripts/puzzle.gd").new(ui.session.level)
 			verify(fresh.restore(restored.data.session) and fresh.snapshot()==ui.session.snapshot(), "Play saves an exact in-progress checkpoint")
 		if i==8 or i==9:
-			await key(KEY_T)
+			if not ui.board.show_routes: await key(KEY_T)
 			await capture("room-"+ui.session.level.id)
 		await walk(final.right(1))
 		verify(ui.modal_kind=="complete", "Room completed through keyboard: "+ui.session.level.id)
+		if i in [3,5]:
+			await click_named("Next Chapter")
+			verify(ui.level_index==i+1 and ui.modal==null, "Chapter completion opens the next chapter")
 	verify(ui.store.data.completed.size()==ui.levels.size(), "All rooms completed")
 	await capture("completion")
-	ui.show_levels()
-	await settle()
-	verify(ui.cards.get_child_count()==ui.levels.size() and not ui.cards.get_child(-1).disabled, "All cleared rooms unlocked")
+	await click_named("Chapters")
+	for i in ui.levels.size():
+		verify(not room_card(i).disabled and room_card(i).accessibility_description=="Complete", "Cleared room remains selectable: "+ui.levels[i].id)
 	await capture("rooms")
 	root.size = Vector2i(720,600)
+	await settle()
+	verify(room_card(9).get_global_rect().end.x <= root.size.x, "Chapter index reflows after resize")
+	await capture("chapters-small")
 	ui.open_level(ui.levels.size()-1,false)
 	await settle()
 	verify(ui.seal_button.get_global_rect().end.y <= root.size.y and ui.board.size.y>=145, "Board and actions fit small window")
@@ -177,11 +240,15 @@ func _run() -> void:
 		verify(window_rect.encloses(button.get_global_rect()), "English control fits the small window: "+button.text)
 	await capture("small")
 	await key(KEY_ESCAPE)
+	await click_named("Settings")
+	for button in ui.modal.find_children("*", "Button", true, false):
+		verify(window_rect.encloses(button.get_global_rect()), "Settings stay within the small window: "+button.text)
 	await click_named("How to Play")
 	for label in ui.modal.find_children("*", "Label", true, false):
 		verify(window_rect.encloses(label.get_global_rect()), "English help fits the small window")
 	await capture("help-small")
 	await click_named("Got It")
+	await key(KEY_ESCAPE)
 	await key(KEY_ESCAPE)
 	# A move may be undone while its visual interpolation is in flight.
 	ui.board.motion = true
@@ -193,6 +260,18 @@ func _run() -> void:
 	await create_timer(0.16).timeout
 	verify(ui.session.tick()==0 and ui.board.phase==1.0, "No stale movement after undo")
 	await test_room_restart()
+	await key(KEY_ESCAPE)
+	await click_named("Settings")
+	await click_named("Fullscreen")
+	verify(Store.new(path).data.fullscreen and ui.setting_values.fullscreen.text=="On", "Fullscreen setting persists")
+	if DisplayServer.get_name() != "headless":
+		await create_timer(0.8).timeout
+		verify(root.mode in [Window.MODE_FULLSCREEN, Window.MODE_EXCLUSIVE_FULLSCREEN], "Fullscreen switches the native window")
+	await key(KEY_F11)
+	verify(not Store.new(path).data.fullscreen and ui.setting_values.fullscreen.text=="Off", "F11 updates the same setting")
+	if DisplayServer.get_name() != "headless":
+		await create_timer(0.8).timeout
+		verify(root.mode==Window.MODE_WINDOWED, "F11 returns the native window to windowed mode")
 	DirAccess.remove_absolute(path)
 	print("ECHO UI: %d checks; %d failures." % [checks, failures])
 	quit(1 if failures else 0)

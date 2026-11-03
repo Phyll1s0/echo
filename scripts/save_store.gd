@@ -1,7 +1,7 @@
 extends RefCounted
 
 var path := "user://progress.json"
-var data := {"version": 1, "completed": {}, "session": {}, "sound": true, "motion": true}
+var data := {"version": 1, "completed": {}, "session": {}, "sound": true, "motion": true, "paths": false, "fullscreen": false}
 var last_error := ""
 
 func _init(custom_path: String = "") -> void:
@@ -14,7 +14,7 @@ func _init(custom_path: String = "") -> void:
 				data.completed = parsed.completed
 			if parsed.get("session") is Dictionary:
 				data.session = parsed.session
-			for key in ["sound", "motion"]:
+			for key in ["sound", "motion", "paths", "fullscreen"]:
 				if parsed.get(key) is bool:
 					data[key] = parsed[key]
 
