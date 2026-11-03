@@ -94,6 +94,23 @@ func quiet_action(value: String, callback: Callable) -> Button:
 	button.flat = true
 	return button
 
+func home_action(value: String, callback: Callable) -> Button:
+	var button := action(value, callback)
+	button.set_meta("base_px", 22)
+	var empty := StyleBoxEmpty.new()
+	for state in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
+		button.add_theme_stylebox_override(state, empty)
+	for state in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
+		button.add_theme_color_override(state, Color.WHITE)
+	button.draw.connect(func():
+		if not (button.is_hovered() or button.has_focus()): return
+		var font := button.get_theme_font("font")
+		var px := button.get_theme_font_size("font_size")
+		var half_width := font.get_string_size(button.text, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x * 0.5
+		var baseline := Vector2(button.size.x * 0.5, button.size.y * 0.5 + px * 0.66)
+		button.draw_line(baseline - Vector2(half_width, 0), baseline + Vector2(half_width, 0), Color.WHITE, 1.0, true))
+	return button
+
 func ui_scale() -> float:
 	return clampf(minf(size.x / 1280.0, size.y / 820.0), 0.86, 2.25)
 

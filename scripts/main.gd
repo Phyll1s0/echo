@@ -170,8 +170,8 @@ func show_home() -> void:
 	buttons.add_theme_constant_override("separation", roundi(12 * ui_scale()))
 	body.add_child(buttons)
 	var resume := _session_index()
-	buttons.add_child(action("Continue" if resume >= 0 else "Start", func(): open_level(resume if resume >= 0 else _next_unfinished(), true), 0, true))
-	buttons.add_child(action("Chapters", show_chapters))
+	buttons.add_child(home_action("Continue" if resume >= 0 else "Start", func(): open_level(resume if resume >= 0 else _next_unfinished(), true)))
+	buttons.add_child(home_action("Chapters", show_chapters))
 	body.add_child(spacer(false))
 	_layout()
 
