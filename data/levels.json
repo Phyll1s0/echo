@@ -1,0 +1,474 @@
+[
+  {
+    "id": "01",
+    "title": "Trace",
+    "subtitle": "A trace remains",
+    "chapter": "First Steps",
+    "max_echoes": 1,
+    "rows": [
+      "A####",
+      ".####",
+      "S...X"
+    ],
+    "gates": [
+      {
+        "a": [
+          2,
+          2
+        ],
+        "b": [
+          3,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "intro": "Walk to A and press Enter to leave an echo. Then take the path to the exit.",
+    "hints": [
+      "Your echo retraces one step each time you move.",
+      "Step onto A and leave an echo. Take the other path in the next round.",
+      "Record ↑ ↑, then leave the echo. Reach the exit with → → → →."
+    ],
+    "recordings": [
+      "UU"
+    ],
+    "final": "RRRR"
+  },
+  {
+    "id": "02",
+    "title": "Detour",
+    "subtitle": "The longer way",
+    "chapter": "First Steps",
+    "max_echoes": 1,
+    "rows": [
+      "A.####",
+      "..####",
+      "S....X"
+    ],
+    "gates": [
+      {
+        "a": [
+          4,
+          2
+        ],
+        "b": [
+          5,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "intro": "Your echo fades after its last move. Time its arrival at A to match yours at the gate.",
+    "hints": [
+      "The short path reaches A in two moves. The gate is four moves from the start.",
+      "Take the upper loop to reach A two beats later.",
+      "Record ↑ → ↑ ←. Leave the echo, then take five steps right."
+    ],
+    "recordings": [
+      "URUL"
+    ],
+    "final": "RRRRR"
+  },
+  {
+    "id": "03",
+    "title": "Reprise",
+    "subtitle": "Once more",
+    "chapter": "Crossings",
+    "max_echoes": 1,
+    "rows": [
+      "A#####",
+      ".#####",
+      "S....X"
+    ],
+    "gates": [
+      {
+        "a": [
+          2,
+          2
+        ],
+        "b": [
+          3,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          4,
+          2
+        ],
+        "b": [
+          5,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "intro": "Both gates open when someone steps on A. Your echo can visit A twice.",
+    "hints": [
+      "The gates close as soon as A is empty.",
+      "After opening the first gate, have your echo step off A and back onto it.",
+      "Record ↑ ↑ ↓ ↑. Leave the echo, then take five steps right."
+    ],
+    "recordings": [
+      "UUDU"
+    ],
+    "final": "RRRRR"
+  },
+  {
+    "id": "04",
+    "title": "Relay",
+    "subtitle": "From here to there",
+    "chapter": "Crossings",
+    "max_echoes": 1,
+    "rows": [
+      "A...B###",
+      ".#######",
+      "S......X"
+    ],
+    "gates": [
+      {
+        "a": [
+          2,
+          2
+        ],
+        "b": [
+          3,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          6,
+          2
+        ],
+        "b": [
+          7,
+          2
+        ],
+        "requires": [
+          "B"
+        ]
+      }
+    ],
+    "intro": "One echo can open both gates. Send it past A on the way to B.",
+    "hints": [
+      "Select a distant plate to see its gate. A opens the first gate and B opens the second.",
+      "The upper passage connects A to B.",
+      "Record ↑ ↑ → → → →. Leave the echo, then take seven steps right."
+    ],
+    "recordings": [
+      "UURRRR"
+    ],
+    "final": "RRRRRRR"
+  },
+  {
+    "id": "05",
+    "title": "Duet",
+    "subtitle": "In the same moment",
+    "chapter": "Resonance",
+    "max_echoes": 2,
+    "rows": [
+      "###X###",
+      "#A...B#",
+      "#.....#",
+      "#..S..#"
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          1
+        ],
+        "b": [
+          3,
+          0
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      }
+    ],
+    "intro": "Use two echoes to reach A and B on the same beat.",
+    "hints": [
+      "One echo must be on A and one on B, with you at the gate.",
+      "Both echoes reach their plates on beat four. Find a four-step path to the gate.",
+      "Echo 1  ← ← ↑ ↑     Echo 2  → → ↑ ↑     Exit  ← ↑ ↑ → ↑"
+    ],
+    "recordings": [
+      "LLUU",
+      "RRUU"
+    ],
+    "final": "LUURU"
+  },
+  {
+    "id": "06",
+    "title": "Interlock",
+    "subtitle": "A future made possible",
+    "chapter": "Resonance",
+    "max_echoes": 2,
+    "rows": [
+      "###X###",
+      "#C#.#B#",
+      "#.#.#.#",
+      "#A#.#.#",
+      "#...#.#",
+      "#..S..#"
+    ],
+    "gates": [
+      {
+        "a": [
+          5,
+          3
+        ],
+        "b": [
+          5,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          3,
+          1
+        ],
+        "b": [
+          3,
+          0
+        ],
+        "requires": [
+          "B",
+          "C"
+        ]
+      }
+    ],
+    "intro": "Let the first echo open a path for the second. Then use both to reach the exit.",
+    "hints": [
+      "A opens the passage to B. The exit gate needs both B and C.",
+      "Send the first echo through A to C. The second can then pass the gate and reach B.",
+      "Echo 1  ← ← ↑ ↑ ↑ ↑     Echo 2  → → ↑ ↑ ↑ ↑     Exit  ← ↑ → ↑ ↑ ↑ ↑"
+    ],
+    "recordings": [
+      "LLUUUU",
+      "RRUUUU"
+    ],
+    "final": "LURUUUU"
+  },
+  {
+    "id": "07",
+    "title": "Ratchet",
+    "chapter": "Aftermath",
+    "max_echoes": 1,
+    "rows": [
+      ".B.A#####",
+      ".########",
+      "S.......X"
+    ],
+    "gates": [
+      {
+        "a": [
+          5,
+          2
+        ],
+        "b": [
+          6,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          7,
+          2
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "requires": [
+          "B"
+        ]
+      }
+    ],
+    "turnstiles": [
+      [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ]
+      ]
+    ],
+    "recordings": [
+      "UURRRLL"
+    ],
+    "final": "RRRRRRRR",
+    "intro": "Cross the arrow once to turn it around.",
+    "hints": [
+      "The lower path needs A first and B second. The upper path reaches B first.",
+      "Record a trip past B to A, then come back through the reversed arrow.",
+      "Echo  ↑ ↑ → → → ← ←     Exit  eight steps right."
+    ],
+    "chapter_entry": true
+  },
+  {
+    "id": "08",
+    "title": "Switchyard",
+    "chapter": "Aftermath",
+    "max_echoes": 1,
+    "rows": [
+      "*######",
+      ".######",
+      "S..b.aX"
+    ],
+    "gates": [],
+    "turnstiles": [],
+    "recordings": [
+      "UUDU"
+    ],
+    "final": "RRRRRR",
+    "intro": "Step on the diamond to swap the two bridges. The change lasts until the next visit.",
+    "hints": [
+      "Your first crossing needs the folded bridge. Your second crossing needs the other bank.",
+      "Return to the diamond as your other self reaches the stone between the bridges.",
+      "Echo  ↑ ↑ ↓ ↑     Exit  six steps right."
+    ]
+  },
+  {
+    "id": "09",
+    "title": "Undertow",
+    "chapter": "Aftermath",
+    "max_echoes": 1,
+    "rows": [
+      "#X####",
+      "#.####",
+      "#bA.a#",
+      "#.##*#",
+      "#.S..#",
+      "##...#"
+    ],
+    "gates": [
+      {
+        "a": [
+          1,
+          1
+        ],
+        "b": [
+          1,
+          0
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "turnstiles": [
+      [
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          3
+        ]
+      ]
+    ],
+    "recordings": [
+      "DRRUUDUULL"
+    ],
+    "final": "RRUDUULLLUU",
+    "intro": "Two routes share one turnstile. A recorded echo always follows its original path.",
+    "hints": [
+      "The lower lane takes two beats longer to reach the arrow. Give that lane to the echo.",
+      "Cross, step back, then cross again. When both of you land on the diamond together, it switches only once.",
+      "Echo  ↓ → → ↑ ↑ ↓ ↑ ↑ ← ←     Exit  → → ↑ ↓ ↑ ↑ ← ← ← ↑ ↑."
+    ]
+  },
+  {
+    "id": "10",
+    "title": "Counterpoint",
+    "chapter": "Aftermath",
+    "max_echoes": 2,
+    "rows": [
+      "###X#####",
+      "###..#.a*",
+      "####a#B#.",
+      "#*##.###b",
+      "#.A.b###.",
+      "#.######.",
+      "C...S...."
+    ],
+    "gates": [
+      {
+        "a": [
+          8,
+          2
+        ],
+        "b": [
+          8,
+          1
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          3,
+          1
+        ],
+        "b": [
+          3,
+          0
+        ],
+        "requires": [
+          "B",
+          "C"
+        ]
+      }
+    ],
+    "turnstiles": [
+      [
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          3
+        ]
+      ]
+    ],
+    "recordings": [
+      "LLLUUUDRLDDL",
+      "RRRRUUUUULLD"
+    ],
+    "final": "LLLUURRRUUULU",
+    "intro": "One echo opens the bridge. The next swaps it back. Both must finish at the exit plates.",
+    "hints": [
+      "The left diamond opens both folded bridges. A lets the second echo reach the right diamond.",
+      "Send echo one through the arrow, back to A, then to C. Send echo two over the right bridge and through the A gate to B.",
+      "Echo 1  ←←←↑↑↑↓→←↓↓←     Echo 2  →→→→↑↑↑↑↑←←↓     Exit  ←←←↑↑→→→↑↑↑←↑."
+    ]
+  }
+]

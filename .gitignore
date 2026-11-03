@@ -1,0 +1,6 @@
+.godot/
+builds/*
+!builds/.gdignore
+*.tmp
+.DS_Store
+__pycache__/
