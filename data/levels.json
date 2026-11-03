@@ -464,5 +464,192 @@
       "Send echo one through the arrow, back to A, then to C. Send echo two over the right bridge and through the A gate to B.",
       "Echo 1  ←←←↑↑↑↓→←↓↓←     Echo 2  →→→→↑↑↑↑↑←←↓     Exit  ←←←↑↑→→→↑↑↑←↑."
     ]
+  },
+  {
+    "id": "11",
+    "title": "First Contact",
+    "chapter": "Penumbra",
+    "max_echoes": 1,
+    "rows": [
+      "##X##",
+      "##.##",
+      "#.@.#",
+      "#.#.#",
+      "#.S.#"
+    ],
+    "gates": [
+      {
+        "a": [
+          2,
+          2
+        ],
+        "b": [
+          2,
+          1
+        ],
+        "requires": [
+          "@"
+        ]
+      }
+    ],
+    "recordings": [
+      "LUUR"
+    ],
+    "final": "RUULUU",
+    "intro": "Find L, the lens. Two selves on its tile open the marked gate.",
+    "hints": [
+      "The two arms take the same number of steps.",
+      "End one recording on L. Come up the other arm and meet it there.",
+      "Echo  ← ↑ ↑ →     Exit  → ↑ ↑ ← ↑ ↑"
+    ],
+    "chapter_entry": true
+  },
+  {
+    "id": "12",
+    "title": "Borrowed Light",
+    "chapter": "Penumbra",
+    "max_echoes": 1,
+    "rows": [
+      "###X##",
+      "###b##",
+      "###a##",
+      "##*@.#",
+      "##.#.#",
+      "##.S.#"
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          3
+        ],
+        "b": [
+          3,
+          2
+        ],
+        "requires": [
+          "@"
+        ]
+      }
+    ],
+    "recordings": [
+      "RUULL"
+    ],
+    "final": "RUULUUU",
+    "intro": "After you meet at L, the two bridges need opposite banks on consecutive beats.",
+    "hints": [
+      "The bridge touching L must be raised as you leave the lens.",
+      "Let your echo take one more step after the meeting. While you step onto the first bridge, it can reach the switch.",
+      "Echo  → ↑ ↑ ← ←     Exit  → ↑ ↑ ← ↑ ↑ ↑"
+    ]
+  },
+  {
+    "id": "13",
+    "title": "Confluence",
+    "chapter": "Penumbra",
+    "max_echoes": 2,
+    "rows": [
+      "#A.@.B#",
+      "#.###.#",
+      "#..S..#",
+      "###.###",
+      "###....",
+      "######.",
+      "######X"
+    ],
+    "gates": [
+      {
+        "a": [
+          5,
+          4
+        ],
+        "b": [
+          6,
+          4
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          6,
+          5
+        ],
+        "b": [
+          6,
+          6
+        ],
+        "requires": [
+          "@"
+        ]
+      }
+    ],
+    "recordings": [
+      "LLUURR",
+      "RRUULL"
+    ],
+    "final": "DDRRRDD",
+    "intro": "The first gate needs two different places. The last needs the same place twice.",
+    "hints": [
+      "At the elbow in the lower passage, look at where both echoes must be.",
+      "Send an echo to each plate. After that beat, have both paths turn inward to the lens.",
+      "Echo 1  ← ← ↑ ↑ → →     Echo 2  → → ↑ ↑ ← ←     Exit  ↓ ↓ → → → ↓ ↓"
+    ]
+  },
+  {
+    "id": "14",
+    "title": "Totality",
+    "chapter": "Penumbra",
+    "max_echoes": 2,
+    "rows": [
+      ".aA.######",
+      ".##.######",
+      "@##S*.#..X",
+      ".##.#.#.##",
+      ".aB.#.#b##",
+      "#####...##"
+    ],
+    "gates": [
+      {
+        "a": [
+          7,
+          5
+        ],
+        "b": [
+          7,
+          4
+        ],
+        "requires": [
+          "@"
+        ]
+      },
+      {
+        "a": [
+          8,
+          2
+        ],
+        "b": [
+          9,
+          2
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      }
+    ],
+    "recordings": [
+      "UULLLDDUURR",
+      "DDLLLUUDDRR"
+    ],
+    "final": "RRDDDRRUUURR",
+    "intro": "A recorded crossing survives even when the bridge beneath it folds.",
+    "hints": [
+      "Record on the original bank. Both echoes must reach L, then return to their separate plates.",
+      "In the last round, flip the bank on your way to the lens gate. Your echoes can cross the folded bridges on the way back.",
+      "Echo 1  ↑ ↑ ← ← ← ↓ ↓ ↑ ↑ → →     Echo 2  ↓ ↓ ← ← ← ↑ ↑ ↓ ↓ → →     Exit  → → ↓ ↓ ↓ → → ↑ ↑ ↑ → →"
+    ]
   }
 ]

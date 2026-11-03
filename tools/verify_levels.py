@@ -24,7 +24,7 @@ class Room:
                 elif ch in "ab":
                     self.bridges[cell] = int(ch == "b")
                 elif ch != ".":
-                    assert ch in "SXABC" and ch not in marks
+                    assert ch in "SXABC@" and ch not in marks
                     marks[ch] = cell
         self.start, self.goal = marks.pop("S"), marks.pop("X")
         self.pads = marks
@@ -67,11 +67,14 @@ class Room:
                 continue
             if bit and bool(state & bit) != reverse:
                 continue
-            if pads <= occupied:
+            if not all(pos in occupied for pos in pads):
+                continue
+            lens = self.pads.get('@')
+            if lens not in pads or occupied.count(lens) >= 2:
                 yield letter, dest, trigger
 
     def tape_frame(self, recordings, t):
-        occupied = {r[t] for r in recordings if t < len(r)}
+        occupied = [r[t] for r in recordings if t < len(r)]
         triggered = 0
         for route in recordings:
             if t+1 < len(route):
@@ -87,7 +90,7 @@ class Room:
             player = path[-1]
             assert player != self.goal, "A completed route cannot continue"
             occupied, events = self.tape_frame(recordings, t)
-            move = next((m for m in self.choices(player, occupied | {player}, state) if m[0] == letter), None)
+            move = next((m for m in self.choices(player, occupied + [player], state) if m[0] == letter), None)
             assert move, (self.level["id"], letters, t+1, player, state)
             _, dest, trigger = move
             state ^= events | trigger
@@ -105,7 +108,7 @@ class Room:
             if player == self.goal:
                 return moves
             occupied, events = frames[t]
-            for _, dest, trigger in self.choices(player, occupied | {player}, state):
+            for _, dest, trigger in self.choices(player, occupied + [player], state):
                 node = dest, min(t+1, end), state ^ (events | trigger)
                 if node not in seen:
                     seen.add(node)
@@ -128,10 +131,10 @@ class Room:
                         recording.append(old_step)
                     finish.append(new_step)
                 return ''.join(recording[::-1]), ''.join(finish[::-1])
-            old_moves = list(self.choices(ghost, {ghost}, old_state)) if ghost is not None else []
+            old_moves = list(self.choices(ghost, [ghost], old_state)) if ghost is not None else []
             if node != start:
                 old_moves.append(('', None, 0))
-            current_moves = list(self.choices(player, {player, ghost}, live_state))
+            current_moves = list(self.choices(player, [player, ghost], live_state))
             for old_step, g, a in old_moves:
                 if g == self.goal:
                     continue
@@ -142,12 +145,15 @@ class Room:
                         q.append(child)
         return None
 
-    def relaxed_reach(self, start, *, both_banks, fixed_arrows):
-        """Ignore all pressure gates. Even this optimistic world must obey fixed arrows."""
+    def relaxed_reach(self, start, *, fixed_bank=None, fixed_arrows=False, blocked_edge=None):
+        """Ignore pressure gates; optionally hold one bank or cut one edge."""
         seen, q = {start}, deque([start])
         while q:
-            for _, dest, _, bank, bit, reverse, _ in self.links[q.popleft()]:
-                if (not both_banks and bank == 1) or (fixed_arrows and bit and reverse):
+            pos = q.popleft()
+            for _, dest, _, bank, bit, reverse, _ in self.links[pos]:
+                if (fixed_bank is not None and bank is not None and bank != fixed_bank) or (fixed_arrows and bit and reverse):
+                    continue
+                if blocked_edge and frozenset((pos, dest)) == blocked_edge:
                     continue
                 if dest not in seen:
                     seen.add(dest)
@@ -170,19 +176,23 @@ class Room:
             assert len(entrances) == 1
             pre = entrances[0]
             required = self.gates[frozenset((pre, self.goal))]
-            assert len(required) == 2 and pre not in required
+            assert pre not in required
+            if '@' in self.pads:
+                assert self.one_echo_solution() is None, "The remote lens must need two recordings"
+            else:
+                assert len(required) == 2
             if self.turns and self.bridges:
                 # Counterpoint: with no bridge swaps, at least one final post is
                 # unreachable. With static arrows the first person who can change
                 # banks is trapped away from *all three* posts. Two actors remain.
                 posts = required | {pre}
-                assert posts - self.relaxed_reach(self.start, both_banks=False, fixed_arrows=False)
-                initial = self.relaxed_reach(self.start, both_banks=False, fixed_arrows=True)
+                assert posts - self.relaxed_reach(self.start, fixed_bank=0)
+                initial = self.relaxed_reach(self.start, fixed_bank=0, fixed_arrows=True)
                 assert posts - initial
                 first_switches = initial & self.switches
                 assert first_switches
                 for switch in first_switches:
-                    assert not (posts & self.relaxed_reach(switch, both_banks=True, fixed_arrows=True))
+                    assert not (posts & self.relaxed_reach(switch, fixed_arrows=True))
         if len(records) == 1 and (self.turns or self.bridges):
             solution = self.one_echo_solution()
             assert solution
@@ -192,6 +202,16 @@ class Room:
                 assert Room(self.level, freeze_turns=True).one_echo_solution() is None, "Turn reversal can be skipped"
             if self.bridges:
                 assert Room(self.level, freeze_bridges=True).one_echo_solution() is None, "Bridge switching can be skipped"
+        if self.level["id"] == "14":
+            # At the last lens crossing the player enters bank b and both echoes
+            # occupy the lens. With b raised a live traveller there cannot reach
+            # either exit plate or the switch, even with all pressure gates open.
+            lens = self.pads['@']
+            lens_edge, = (edge for edge, pads in self.gates.items() if lens in pads)
+            deck, = (cell for cell in lens_edge if self.bridges.get(cell) == 1)
+            exit_side = self.relaxed_reach(deck, blocked_edge=lens_edge)
+            assert self.goal in exit_side and self.start not in exit_side and not exit_side & self.switches
+            assert not self.relaxed_reach(lens, fixed_bank=1) & (required | self.switches)
         print(f'{self.level["id"]} {self.level["title"]}: {len(records)} echo(es), '
               f'recordings {[len(r)-1 for r in records]}, final {shortest} beats for these recordings.')
 

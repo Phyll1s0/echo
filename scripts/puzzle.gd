@@ -4,6 +4,7 @@ extends RefCounted
 ## next beat. Adding newer actors never invalidates an older recording.
 
 const DIRECTIONS := {"U": Vector2i.UP, "D": Vector2i.DOWN, "L": Vector2i.LEFT, "R": Vector2i.RIGHT}
+const LENS := "@"
 var level: Dictionary
 var floor_cells: Array[Vector2i] = []
 var plates: Dictionary = {}
@@ -94,6 +95,8 @@ func occupied() -> Array[Vector2i]:
 	return result
 
 func plate_on(id: String) -> bool:
+	if id == LENS:
+		return plates.has(id) and occupied().count(plates[id]) >= 2
 	return plates.has(id) and plates[id] in occupied()
 
 func gate_open(gate: Dictionary) -> bool:
@@ -148,7 +151,9 @@ func blocked_reason(delta: Vector2i) -> String:
 	for gate in gates:
 		if (player() == gate.a and destination == gate.b) or (player() == gate.b and destination == gate.a):
 			if not gate_open(gate):
-				return "Gate requires " + " + ".join(PackedStringArray(gate.requires))
+				if LENS in gate.requires and not plate_on(LENS):
+					return "Two selves must meet on L."
+				return "Gate requires " + " + ".join(PackedStringArray(gate.requires)).replace(LENS, "L")
 	return ""
 
 func can_move(delta: Vector2i) -> bool:

@@ -11,7 +11,7 @@ const SOUNDS := {
 	"record": preload("res://assets/audio/record.wav"),
 	"complete": preload("res://assets/audio/complete.wav")
 }
-const ROMAN := ["I", "II", "III"]
+const ROMAN := ["I", "II", "III", "IV"]
 var chapters: Array[String] = []
 var levels: Array
 var store
@@ -79,7 +79,7 @@ func _layout() -> void:
 		modal_panel.custom_minimum_size.x = minf(size.x - 52, modal_width * ui_scale())
 		rescale_text(modal)
 
-func _fresh_page(name_: String) -> void:
+func _fresh_page(name_: String, landscape: String = "") -> void:
 	_close_modal()
 	if is_instance_valid(page):
 		remove_child(page)
@@ -92,8 +92,8 @@ func _fresh_page(name_: String) -> void:
 	add_child(page)
 	page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ambient.animated = bool(store.data.motion) and screen == "home"
-	ambient.visible = screen != "game"
-	ambient.modulate.a = 0.45 if screen in ["chapters", "rooms"] else 1.0
+	ambient.set_chapter(landscape)
+	ambient.modulate.a = 0.45 if screen == "chapters" else 1.0
 
 func _body() -> VBoxContainer:
 	var margin := MarginContainer.new()
@@ -156,7 +156,7 @@ func _chapter_heading(chapter: String, alignment: HorizontalAlignment) -> VBoxCo
 	var heading := VBoxContainer.new()
 	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	heading.add_theme_constant_override("separation", 0)
-	heading.add_child(text_label(_chapter_label(chapter), 17, MUTED, alignment))
+	heading.add_child(text_label(_chapter_label(chapter), 17, Atmosphere.WORLDS.get(chapter, {}).get("light", MUTED), alignment))
 	heading.add_child(text_label(chapter, 42, INK, alignment))
 	return heading
 
@@ -169,8 +169,8 @@ func _chapter_progress(chapter: String) -> Vector2i:
 				progress.x += 1
 	return progress
 
-func _selection_page(screen_name: String, back_label: String, on_back: Callable) -> VBoxContainer:
-	_fresh_page(screen_name)
+func _selection_page(screen_name: String, back_label: String, on_back: Callable, landscape: String = "") -> VBoxContainer:
+	_fresh_page(screen_name, landscape)
 	var body := _body()
 	var header := HBoxContainer.new()
 	body.add_child(header)
@@ -201,7 +201,7 @@ func show_chapters() -> void:
 	_layout()
 
 func show_rooms(chapter: String) -> void:
-	var index := _selection_page("rooms", "← Chapters", show_chapters)
+	var index := _selection_page("rooms", "← Chapters", show_chapters, chapter)
 	var heading := HBoxContainer.new()
 	index.add_child(heading)
 	heading.add_child(_chapter_heading(chapter, HORIZONTAL_ALIGNMENT_LEFT))
@@ -240,7 +240,7 @@ func open_level(index: int, resume: bool = false) -> void:
 	session = Puzzle.new(levels[index])
 	if resume and _session_index() == index:
 		session.restore(store.data.session)
-	_fresh_page("game")
+	_fresh_page("game", session.level.chapter)
 	hint_index = -1
 	status_text = ""
 	var body := _body()
@@ -262,6 +262,8 @@ func open_level(index: int, resume: bool = false) -> void:
 	hud.add_child(capacity_label)
 	board = Board.new()
 	board.puzzle = session
+	if Atmosphere.WORLDS.has(session.level.chapter):
+		board.set_colors(Atmosphere.WORLDS[session.level.chapter])
 	board.font = regular
 	board.motion = store.data.motion
 	body.add_child(board)
@@ -514,8 +516,10 @@ func _leave_settings() -> void:
 
 func show_help() -> void:
 	var back: Callable = show_settings
-	if screen == "game" and (not session.turnstiles.is_empty() or not session.switches.is_empty()):
+	if screen == "game" and (not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS)):
 		var rules := PackedStringArray(["Move one tile per beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."])
+		if session.plates.has(Puzzle.LENS):
+			rules.append("L is a lens. Two selves on its tile open the L gate for the next move. Two echoes count, even when you are elsewhere.")
 		if not session.turnstiles.is_empty():
 			rules.append("Cross an arrow in its marked direction. It reverses after the crossing.")
 		if not session.switches.is_empty():

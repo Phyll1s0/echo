@@ -101,7 +101,7 @@ func test_previous_save() -> void:
 	DirAccess.remove_absolute(path+".legacy")
 
 func test_room_restart() -> void:
-	ui.open_level(ui.levels.size()-1, false)
+	ui.open_level(9, false)
 	await settle()
 	var initial: Dictionary = ui.session.snapshot()
 	var completed: Dictionary = Store.new(path).data.completed
@@ -145,8 +145,11 @@ func _run() -> void:
 	await capture("home")
 	await test_home_settings()
 	await click_named("Chapters")
-	verify(ui.screen=="chapters" and ui.chapter_index.get_child_count()==3 and room_card(0)==null, "The index only offers chapter names")
+	verify(ui.screen=="chapters" and ui.chapter_index.get_child_count()==4 and room_card(0)==null, "The index only offers chapter names")
 	await capture("chapters")
+	await click_named("Penumbra")
+	verify(not room_card(10).disabled and room_card(11).disabled, "Penumbra starts at First Contact without requiring earlier chapters")
+	await click_named("← Chapters")
 	await click_named("Resonance")
 	verify(ui.screen=="rooms" and room_card(4).disabled and room_card(5).disabled and room_card(6)==null, "An unopened chapter can be browsed and its rooms stay locked")
 	await key(KEY_ESCAPE)
@@ -217,19 +220,24 @@ func _run() -> void:
 			await walk(route)
 			await key(KEY_ENTER)
 		var final: String = ui.session.level.final
-		await walk(final.substr(0,final.length()-1))
+		if ui.session.level.id == "14":
+			await walk(final.left(7))
+			await capture("room-14")
+			await walk(final.substr(7, final.length()-8))
+		else:
+			await walk(final.substr(0,final.length()-1))
 		if i==5:
 			await key(KEY_T)
 			await capture("room-06")
 			var restored = Store.new(path)
 			var fresh = preload("res://scripts/puzzle.gd").new(ui.session.level)
 			verify(fresh.restore(restored.data.session) and fresh.snapshot()==ui.session.snapshot(), "Play saves an exact in-progress checkpoint")
-		if i==8 or i==9:
+		if i in [8,9]:
 			if not ui.board.show_routes: await key(KEY_T)
 			await capture("room-"+ui.session.level.id)
 		await walk(final.right(1))
 		verify(ui.modal_kind=="complete", "Room completed through keyboard: "+ui.session.level.id)
-		if i in [3,5]:
+		if i in [3,5,9]:
 			await click_named("Next Chapter")
 			verify(ui.level_index==i+1 and ui.modal==null, "Chapter completion opens the next chapter")
 	verify(ui.store.data.completed.size()==ui.levels.size(), "All rooms completed")
@@ -253,7 +261,14 @@ func _run() -> void:
 	await click_named("Phase Shift")
 	verify(viewport_rect.encloses(room_card(6).get_global_rect()) and viewport_rect.encloses(room_card(9).get_global_rect()), "All four rooms fit the small window")
 	await capture("rooms-small")
-	ui.open_level(ui.levels.size()-1,false)
+	ui.open_level(13,false)
+	await settle()
+	await click_named("Menu")
+	await click_named("Settings")
+	await click_named("How to Play")
+	for label in ui.modal.find_children("*", "Label", true, false):
+		verify(viewport_rect.encloses(label.get_global_rect()), "Lens and bridge rules fit the small window")
+	ui.open_level(9,false)
 	await settle()
 	verify(ui.seal_button.get_global_rect().end.y <= root.size.y and ui.board.size.y>=145, "Board and actions fit small window")
 	var window_rect := Rect2(Vector2.ZERO, Vector2(root.size))

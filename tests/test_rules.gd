@@ -72,6 +72,7 @@ func _initialize() -> void:
 	verify(dual.restore(loaded.data.session), "Reload actual saved session")
 	DirAccess.remove_absolute(path)
 	_test_devices(catalog)
+	_test_lens(catalog)
 	print("ECHO rules: %d checks; %d failures." % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -117,3 +118,25 @@ func _test_devices(catalog: Array) -> void:
 	verify(loaded.restore(under.snapshot()) and loaded.mechanism_state()==under.mechanism_state(), "Mid-puzzle save restores both mechanisms")
 	walk(loaded,"LUU")
 	verify(loaded.cleared(), "Resumed dynamic room can finish")
+
+func _test_lens(catalog: Array) -> void:
+	var lens = Puzzle.new(catalog[10])
+	walk(lens, "LUUR")
+	verify(not lens.plate_on(Puzzle.LENS) and not lens.move(Vector2i.UP), "One actor cannot open the lens gate")
+	verify(lens.seal(), "Record a route ending at the lens")
+	walk(lens, "RUUL")
+	verify(lens.plate_on(Puzzle.LENS), "The echo's final beat counts for the lens")
+	walk(lens, "U")
+	verify(not lens.plate_on(Puzzle.LENS) and lens.undo() and lens.plate_on(Puzzle.LENS), "Undo restores the last shared beat")
+	var restored = Puzzle.new(lens.level)
+	verify(restored.restore(lens.snapshot()) and restored.move(Vector2i.UP), "A saved rendezvous can resume through the gate")
+	var finale = Puzzle.new(catalog[13])
+	for route in finale.level.recordings:
+		walk(finale, route)
+		verify(finale.seal(), "Record a return journey for Totality")
+	walk(finale, finale.level.final.substr(0, 7))
+	verify(finale.plate_on(Puzzle.LENS) and finale.player() != finale.plates[Puzzle.LENS], "Two echoes can open a lens far from the player")
+	walk(finale, finale.level.final.substr(7, 3))
+	for i in finale.echoes.size():
+		var cell: Vector2i = finale.echo_position(i)
+		verify(not finale.bridge_active(cell, finale.mechanism_state()), "After the rendezvous each tape crosses its folded bridge")
