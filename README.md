@@ -2,7 +2,7 @@
 
 一个人，分几次走完同一个房间。你走一格，过去的自己也重走一格。
 
-这是一个独立的 Godot 4.6.2 二维逻辑解谜游戏，十个房间分为 Afterimage、Resonance 和 Phase Shift 三章。在 Chapters 中可直接进入第三章的 07 Turnabout，完成后依次解锁 08 至 10。界面使用英文。
+这是一个独立的 Godot 4.6.2 二维逻辑解谜游戏，十个房间分为 Afterimage、Resonance 和 Phase Shift 三章。在 Chapters 选中章名后会进入该章的选关页，可直接选择第三章的 07 Turnabout，完成后依次解锁 08 至 10。界面使用英文。
 
 ![第一关中，过去的自己踩中压板，当前角色准备穿门](docs/images/room-01.png)
 

@@ -72,7 +72,9 @@ func _layout() -> void:
 	if is_instance_valid(page):
 		rescale_text(page)
 	if is_instance_valid(chapter_index):
-		chapter_index.custom_minimum_size.x = minf(780 * ui_scale(), size.x - 110 * ui_scale())
+		var gap := 32 if screen == "chapters" else 17
+		chapter_index.add_theme_constant_override("separation", roundi(gap * ui_scale()))
+		chapter_index.custom_minimum_size.x = minf(480 * ui_scale(), size.x - 110 * ui_scale())
 	if is_instance_valid(modal_panel):
 		modal_panel.custom_minimum_size.x = minf(size.x - 52, modal_width * ui_scale())
 		rescale_text(modal)
@@ -91,6 +93,7 @@ func _fresh_page(name_: String) -> void:
 	page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ambient.animated = bool(store.data.motion) and screen == "home"
 	ambient.visible = screen != "game"
+	ambient.modulate.a = 0.45 if screen in ["chapters", "rooms"] else 1.0
 
 func _body() -> VBoxContainer:
 	var margin := MarginContainer.new()
@@ -140,7 +143,7 @@ func show_home() -> void:
 	body.add_child(buttons)
 	var resume := _session_index()
 	buttons.add_child(action("Continue" if resume >= 0 else "Start", func(): open_level(resume if resume >= 0 else _next_unfinished(), true), 126, true))
-	buttons.add_child(action("Chapters", show_levels, 110))
+	buttons.add_child(action("Chapters", show_chapters, 110))
 	body.add_child(spacer(false))
 	_layout()
 
@@ -157,12 +160,12 @@ func _chapter_progress(chapter: String) -> Vector2i:
 				progress.x += 1
 	return progress
 
-func show_levels() -> void:
-	_fresh_page("levels")
+func _selection_page(screen_name: String, back_label: String, on_back: Callable) -> VBoxContainer:
+	_fresh_page(screen_name)
 	var body := _body()
 	var header := HBoxContainer.new()
 	body.add_child(header)
-	header.add_child(quiet_action("← Home", show_home))
+	header.add_child(quiet_action(back_label, on_back))
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -172,42 +175,42 @@ func show_levels() -> void:
 	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.add_child(center)
-	var index := VBoxContainer.new()
-	chapter_index = index
-	index.add_theme_constant_override("separation", roundi(16 * ui_scale()))
-	center.add_child(index)
-	index.add_child(text_label("Chapters", 42))
+	chapter_index = VBoxContainer.new()
+	center.add_child(chapter_index)
+	return chapter_index
+
+func show_chapters() -> void:
+	var index := _selection_page("chapters", "← Home", show_home)
 	for chapter in chapters:
-		var section := VBoxContainer.new()
-		index.add_child(section)
-		var heading := HBoxContainer.new()
-		section.add_child(heading)
-		heading.add_child(text_label(_chapter_tag(chapter), 22, ACCENT))
-		heading.add_child(text_label(chapter, 24))
-		heading.add_child(spacer())
-		var count := _chapter_progress(chapter)
-		heading.add_child(text_label("%d / %d" % [count.x, count.y], 17, MUTED))
-		var grid := GridContainer.new()
-		grid.columns = 2
-		grid.add_theme_constant_override("h_separation", roundi(24 * ui_scale()))
-		grid.add_theme_constant_override("v_separation", 2)
-		section.add_child(grid)
-		for i in levels.size():
-			var info: Dictionary = levels[i]
-			if info.chapter != chapter:
-				continue
-			var done: bool = store.data.completed.has(info.id)
-			var unlocked: bool = done or i == 0 or info.get("chapter_entry", false) or store.data.completed.has(levels[i-1].id)
-			var room := list_action("%s    %s" % [info.id, info.title], open_level.bind(i, true))
-			room.set_meta("base_px", 19)
-			room.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			room.disabled = not unlocked
-			var state := "Complete" if done else ("Locked" if not unlocked else "")
-			room.accessibility_description = state
-			room.tooltip_text = state
-			if done:
-				_row_value(room, "✓")
-			grid.add_child(room)
+		var entry := quiet_action(chapter, show_rooms.bind(chapter))
+		entry.set_meta("base_px", 42)
+		entry.add_theme_color_override("font_hover_color", ACCENT)
+		index.add_child(entry)
+	_layout()
+
+func show_rooms(chapter: String) -> void:
+	var index := _selection_page("rooms", "← Chapters", show_chapters)
+	var heading := HBoxContainer.new()
+	index.add_child(heading)
+	heading.add_child(text_label(chapter, 42))
+	heading.add_child(spacer())
+	var count := _chapter_progress(chapter)
+	heading.add_child(text_label("%d / %d" % [count.x, count.y], 18, MUTED))
+	for i in levels.size():
+		var info: Dictionary = levels[i]
+		if info.chapter != chapter:
+			continue
+		var done: bool = store.data.completed.has(info.id)
+		var unlocked: bool = done or i == 0 or info.get("chapter_entry", false) or store.data.completed.has(levels[i-1].id)
+		var room := list_action("%s    %s" % [info.id, info.title], open_level.bind(i, true))
+		room.set_meta("base_px", 21)
+		room.disabled = not unlocked
+		var state := "Complete" if done else ("Locked" if not unlocked else "")
+		room.accessibility_description = state
+		room.tooltip_text = state
+		if done:
+			_row_value(room, "✓")
+		index.add_child(room)
 	_layout()
 
 func _row_value(button: Button, value: String) -> Label:
@@ -528,7 +531,7 @@ func show_pause() -> void:
 		var edit := "Cancel Edit" if not session.edit_origin.is_empty() else "Edit Last Echo"
 		rows.add_child(list_action(edit, func(): _close_modal(); edit_last()))
 	rows.add_child(list_action("Restart Room", restart_room))
-	rows.add_child(list_action("Chapters", show_levels))
+	rows.add_child(list_action("Choose Room", show_rooms.bind(session.level.chapter)))
 	rows.add_child(list_action("Settings", show_settings))
 	content.add_child(Control.new())
 	_focus_dialog(resume)
@@ -548,7 +551,7 @@ func show_complete() -> void:
 	var next := "Next Room" if not at_boundary else ("Next Chapter" if has_next else "Chapters")
 	_dialog("complete", title, "Beats  %d    ·    Echoes  %d" % [session.tick(), session.echoes.size()], [[next, func():
 		if has_next: open_level(level_index + 1, true)
-		else: show_levels()], ["Undo", func(): _close_modal(); undo_move()]])
+		else: show_chapters()], ["Undo", func(): _close_modal(); undo_move()]])
 
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo:
@@ -558,7 +561,7 @@ func _input(event: InputEvent) -> void:
 		_toggle_setting("fullscreen")
 	elif modal != null:
 		if code == KEY_ESCAPE:
-			if modal_kind == "complete": show_levels()
+			if modal_kind == "complete": show_rooms(session.level.chapter)
 			elif modal_kind == "help": show_settings()
 			elif modal_kind == "settings": _leave_settings()
 			elif modal_kind == "pause": _resume_game()
@@ -583,7 +586,9 @@ func _input(event: InputEvent) -> void:
 			KEY_H: next_hint()
 			KEY_ESCAPE: show_pause()
 			_: return
-	elif screen == "levels" and code == KEY_ESCAPE:
+	elif screen == "rooms" and code == KEY_ESCAPE:
+		show_chapters()
+	elif screen == "chapters" and code == KEY_ESCAPE:
 		show_home()
 	else:
 		return
