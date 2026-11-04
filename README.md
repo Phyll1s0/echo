@@ -1,116 +1,122 @@
-# ECHO / 回声
+# ECHO
 
-一个人，分几次走完同一个房间。你走一格，过去的自己也重走一格。
+Every step you take moves your past selves, too.
 
-这是一个独立的 Godot 4.6.2 二维逻辑解谜游戏，十七个房间分为五章。整体采用纸白底色、墨色文字和稀疏点纹。前四章分别以淡绿松林、浅蓝海面、沙色山丘和淡紫日食呈现，Chapter V · Nocturne（夜曲）进入黑色背景与明亮棋子的世界。在 Chapters 选中章名即可查看本章房间。07 Turnabout、11 First Contact 和 15 Hush 都是可直接游玩的章节入口，后续房间按顺序解锁。默认使用英文，可在设置顶部切换简体中文。
+ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through seventeen rooms across five chapters. There is no time pressure: the world advances only when you move.
 
-![纸白主页](docs/images/home.png)
+Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. The interface defaults to English, with Simplified Chinese available in Settings.
 
-![四章实机画面：松林、海面、沙丘与日食](docs/images/landscapes.png)
+![The paper-white home screen](docs/images/home.png)
 
-## 运行
+![Four chapter landscapes: forest, ocean, desert, and eclipse](docs/images/landscapes.png)
 
-用 Godot 4.6 打开此目录的 `project.godot` 并按 F5 运行项目。命令行也可以直接运行：
+## Run
+
+Open `project.godot` in Godot 4.6.2 and press **F5**, or launch it from the command line:
 
 ```sh
 godot --path .
 ```
 
-要生成 macOS 应用，先安装 Godot 4.6.2 的导出模板，再在项目目录运行以下命令。解压生成的 `ECHO.zip` 即可得到 `ECHO.app`。
+To build the macOS app, install the Godot 4.6.2 export templates, then run these commands from the project directory. Extract `ECHO.zip` to get `ECHO.app`.
 
 ```sh
 mkdir -p builds/macos
 godot --headless --path . --export-release macOS builds/macos/ECHO.zip
 ```
 
-## 操作
+## Controls
 
-| 操作 | 输入 |
+| Action | Input |
 | --- | --- |
-| 移动一格 | 方向键、WASD，或点击相邻格 |
-| 留下回声 | Enter 或“Leave an Echo” |
-| 撤销一拍 | Z、Backspace 或“Undo” |
-| 从头重开当前房间，清空本关所有回声与行动记录 | R 或暂停侧栏 → Restart Room |
-| 修改最近的录制 | 暂停侧栏 → Edit Last Echo，然后逐拍撤销或继续走 |
-| 显示录制路线 / 查看提示 | T / H |
-| 暂停 / 全屏 | Esc / F11 |
-| 返回进入关卡前的页面 | 左上角的 ←，从章节列表进入就回到该列表，从主页进入就回到主页，当前进度自动保留 |
+| Move one tile | Arrow keys, WASD, or click an adjacent tile |
+| Leave an echo | Enter or **Leave an Echo** |
+| Undo one beat | Z, Backspace, or **Undo** |
+| Restart the room, clearing all echoes and the current route | R or Pause → **Restart Room** |
+| Edit the latest recording | Pause → **Edit Last Echo**, then undo steps or continue walking |
+| Show recorded routes / reveal a hint | T / H |
+| Pause / toggle fullscreen | Esc / F11 |
+| Return to the page you entered from | The **←** in the upper-left corner; your current progress is saved |
 
-主页右上角的小齿轮打开设置。关卡中点右上角的暂停图标或按 Esc 打开侧栏。Settings 分为 Audio、Display 和 Puzzle，可分别调节背景音乐和音效音量，也可调整脚步声、全屏、动效、棋子动画速度、入场标题时长、回声路线和路线深浅。设置自动保存。How to Play 在设置内。需要本关提示时按 H 或选择暂停侧栏里的 Hint。
+The small gear in the upper-right corner of the home screen opens Settings. During play, use the pause icon or press Esc to open the sidebar. Settings has **Audio**, **Display**, and **Puzzle** tabs for music and effects levels, footsteps, fullscreen, motion, movement animation speed, room title duration, echo paths, and path contrast. Preferences save automatically. **How to Play** is available in Settings; room hints are available with H or **Hint** in the pause sidebar.
 
-设置顶部的 Language / 语言提供 English 和中文两种选择，立即生效，重启后保留。菜单、章节与关卡名称、逐级提示、玩法说明和通关结果都会随语言切换。切换过程中保留正在进行的解谜、回声修改和撤销记录。
+Choose **English** or **Simplified Chinese** in the language row at the top of Settings. Changes apply immediately and persist after restarting. Menus, chapter and room names, hints, instructions, and completion messages all follow the selected language. Switching languages preserves the current puzzle, pending echo edits, and undo history.
 
-![中文设置](docs/images/settings-zh.png)
+![Settings with language, audio, display, and puzzle controls](docs/images/settings.png)
 
-进入房间时会显示章节编号与关卡名，默认在 1.5 秒内淡出到棋盘。直接移动会略过标题并走出第一步。
+Each room opens with its chapter and title, fading into the board over 1.5 seconds by default. Moving dismisses the title and takes your first step immediately.
 
-点击远处的压板或将指针停在压板上可查看关联门。提示逐级展开，最后一级给出一组可行路线。
+Click a distant plate or hover over it to highlight its linked gates. Hints progress from a nudge to a complete example route.
 
-## 规则
+## Rules
 
-- 一拍只允许向上下左右的相邻地板移动。折返合法，等待、穿墙和对角移动不合法。无效输入不推进时间。
-- 房间内没有现实时间限制；停止输入，世界也停止。
-- 留下回声会保存当前路线，把房间恢复到第 0 拍。所有记录都从同一个起点开始，角色之间互不阻挡。
-- 回声到达最后一格时仍能触发压板，下一拍消散。它不会永远停在终点，也不会自动循环。
-- 门位于格子之间。一次移动使用**移动前**的压板状态判定能否通过，随后全体角色同时行动并更新机关。
-- L 是透镜，图案是两个相交的圆。两名角色同拍站在透镜上才会打开 L 门。可以是玩家和一个回声，也可以是两个回声。回声消散前的最后一拍也算。
-- 夜曲中的减号表示空置条件。−A 门要求移动前 A 上无人，−L 门要求透镜上完全无人，留着一个回声也不行。B −A 同时要求 B 有人、A 无人。回声离开或消散都能满足空置条件，撤销会恢复此前的占用状态。
-- 条件门要求标出的压板同时有人。只有当前角色进入方框出口时才完成房间。
-- 箭头门只允许沿箭头穿过。穿过后箭头反向，方向一直保留到下次穿越。同一拍有多个角色穿过时，门转动一次。
-- 踩上菱形开关，两组桥面交换。平展的桥可以进入，收起的桥只能离开。一次行动按起步时的桥面判定，多个角色同拍踩到同组开关也只切换一次。
-- 回声保留录制时走过的路线，即使后来改变了门或桥，也会继续回放并触发机关。每轮从初始机关状态开始，撤销会恢复该拍的箭头方向和桥面。
-- 撤销会恢复角色、回声和门；在新一轮的起点撤销会撤回上次录制。修改较早的记录时，从最近的回声逐段撤回。在重新留下回声之前，可以取消修改，恢复之前的完整方案。
-- 关卡进度、当前轮和设置偏好保存在 Godot 的 `user://progress.json`。读档会逐拍验证每段录制。
+- Every successful move goes to an orthogonally adjacent tile and advances one beat. Backtracking is allowed. Waiting, diagonal movement, and walking through walls are not. Invalid input does not advance time.
+- There is no real-time limit. When you stop moving, the world stops.
+- Leaving an echo records your current route and resets the room to beat zero. Every route starts at the same position, and actors can share a tile.
+- An echo can still activate a plate on its final recorded beat. It disappears on the next beat; recordings do not loop or remain at their endpoints.
+- Gates sit between tiles. Whether you can cross is determined by occupancy **before the move**, then the actors move and devices update.
+- **L** is a lens, drawn as two overlapping circles. At least two selves must occupy it to open an L gate. That can be you and an echo, or two echoes elsewhere on the board. An echo's final recorded beat counts.
+- In Nocturne, a minus sign marks an empty-plate condition. **−A** needs A empty before the move. **−L** needs a completely empty lens; even one echo keeps it shut. **B −A** requires B occupied and A empty at the same time. An echo can satisfy an empty-plate condition by leaving or fading, and undo restores the previous occupancy.
+- Gates with multiple plate requirements need all of them active at once. Only the current player can finish a room by entering the outlined square.
+- Arrow gates allow passage only in the indicated direction, then reverse when crossed. Multiple actors crossing the same gate on one beat reverse it only once.
+- Stepping onto a diamond swaps the raised and folded bridge banks. You can enter a raised bridge and leave a folded bridge beneath you. Movement uses the bank state at the start of the beat. Multiple actors triggering the shared switch bank on one beat swap it only once.
+- Echoes follow their original recorded routes even after gates or bridges change, and still trigger devices. Each round starts with the initial device state. Undo restores the arrow directions and bridge banks for that beat.
+- Undo restores actors, echoes, and gates. At the start of a round, it takes back the latest recording. To revise earlier recordings, undo them from newest to oldest. Before sealing an edited route, **Cancel Edit** restores the previous plan.
+- Campaign progress, the current round, and preferences are stored in Godot's `user://progress.json`. Saved routes are validated by replaying every step. Restarting a room keeps completed campaign progress.
 
-## 房间
+## Chapters and rooms
 
-![章节目录](docs/images/chapters.png)
+Choose a chapter in **Chapters** to see its rooms. **07 Turnabout**, **11 First Contact**, and **15 Hush** are available as direct chapter entries. Subsequent rooms unlock in order.
 
-| 章节 | 房间 | 要发现的关系 |
+![The chapter index](docs/images/chapters.png)
+
+| Chapter | Room | What to discover |
 | --- | --- | --- |
-| I · Afterimage | 01 First Trace | 让过去的自己为现在的自己开门 |
-| | 02 Scenic Route | 绕远两步，让回声在需要的那一拍到达 |
-| | 03 Refrain | 一段记录两次经过同一压板 |
-| | 04 Relay Line | 同一个回声先后负责两扇门 |
-| II · Resonance | 05 Two Voices | 两段记录在同一拍满足双重条件 |
-| | 06 Interlace | 第一段记录为第二段开路，再共同开启出口 |
-| III · Phase Shift | 07 Turnabout | 利用反向后的箭头门为两道门先后提供条件 |
-| | 08 Tidal Shift | 两次踩中开关，让另一条路线两次过桥 |
-| | 09 Crosscurrent | 在共享转门前错开两拍，利用同拍触发只切换一次的规则 |
-| | 10 Counterpoint | 两个回声交替铺桥，最后同时占住出口压板 |
-| IV · Penumbra | 11 First Contact | 绕过两条支路，让现在和过去在透镜上碰面 |
-| | 12 Borrowed Light | 会合后分头行动，一个踏上桥，另一个再走一步切换桥面 |
-| | 13 Confluence | 两个回声先各占一块压板，随后从两侧汇合，遥开第二道门 |
-| | 14 Totality | 在录制时通过展开的桥，回放时穿过已经折起的桥，分头回到出口所需的两块压板 |
-| V · Nocturne | 15 Hush | 让回声先开启一扇门，再在下一扇空置门前消散 |
-| | 16 Negative Space | 两个回声先同时踩住压板，再让一段结束、另一段回访 |
-| | 17 Coda | 让两个回声经历分开、相遇、消散，依次满足三扇门 |
+| I · Afterimage | 01 First Trace | Let your past self open a gate for you |
+| | 02 Scenic Route | Take a two-step detour to arrive at the right beat |
+| | 03 Refrain | Visit the same plate twice in one recording |
+| | 04 Relay Line | Use one echo to open two gates in sequence |
+| II · Resonance | 05 Two Voices | Meet two conditions on the same beat |
+| | 06 Interlace | Let one recording make the next possible, then use both to reach the exit |
+| III · Phase Shift | 07 Turnabout | Cross a reversed arrow gate to activate two plates in order |
+| | 08 Tidal Shift | Visit a switch twice to support two crossings |
+| | 09 Crosscurrent | Offset two routes by two beats and share a single device trigger |
+| | 10 Counterpoint | Alternate bridge banks, then bring both echoes to the exit plates |
+| IV · Penumbra | 11 First Contact | Meet your past self at a lens from the opposite branch |
+| | 12 Borrowed Light | Split after a meeting: one self takes the bridge while the other reaches the switch |
+| | 13 Confluence | Occupy separate plates, then converge to open a remote lens gate |
+| | 14 Totality | Record crossings on raised bridges, then replay them across folded bridges to reach separate plates |
+| V · Nocturne | 15 Hush | Open one gate with an echo, then let it fade before an empty-plate gate |
+| | 16 Negative Space | Activate two plates together, then end one recording while the other returns |
+| | 17 Coda | Separate, meet, and disappear to satisfy three gates in sequence |
 
 ![Chapter V · Nocturne](docs/images/room-17.png)
 
-数据与参考路线位于 `data/levels.json`。参考路线用于验证可达性，不要求玩家使用同一路线。可用 `godot --path . -- --level=6` 直接进入指定房间进行开发调试。
+Room data and example solutions live in `data/levels.json`. These routes verify that each room is solvable; players can find their own solutions. To launch a specific room during development, use `godot --path . -- --level=6`.
 
-新机关在地图中使用 `*` 表示同组菱形开关，`a` 和 `b` 分别表示初始展开和初始收起的桥。`turnstiles` 中每对相邻坐标的顺序给出初始通行方向。
+In map data, `*` marks switches belonging to the shared bridge bank. Tiles `a` and `b` represent initially raised and folded bridges. Each coordinate pair in `turnstiles` defines an arrow gate's initial direction.
 
-门的 `requires` 数组列出需要激活的压板，`vacant` 数组列出必须无人占用的压板，两组条件同时判断。透镜在 `requires` 中要求至少两人，在 `vacant` 中要求零人。
+A gate's `requires` array lists plates that must be active, while `vacant` lists plates that must be empty. Both sets of conditions apply together. A lens in `requires` needs at least two occupants; a lens in `vacant` needs zero.
 
-## 验证
+## Validation
 
 ```sh
 python3 tools/check.py
 python3 tools/check.py --visual
 ```
 
-独立 Python 模型检查地图和参考路线，并在给定录制的情况下搜索最终轮的最短路径。所有房间均检查无回声无法通关，所有双回声房间也穷举验证单回声无法通关。Godot 测试另行回放全部解法与实际键鼠输入，检查消散、同拍穿门、空置门、错过时机、撤销、重录、暂停、读档和窗口布局。空置门测试包括回声晚一步离开、透镜只剩一人，以及撤销后重新关闭。视觉测试的截图写入 `builds/`，测试存档与玩家存档分离。
+An independent Python model checks maps and example solutions, then searches for the shortest final route with the supplied recordings. It verifies that every room requires an echo and that every two-echo room has no one-echo solution. Godot tests replay all solutions through both the rules model and actual keyboard and pointer input, covering fading, simultaneous crossings, empty-plate gates, missed timing, undo, editing, pause, saves, and window layouts. Empty-plate checks include delayed departures, a lens with one remaining occupant, and gates closing again after undo. Visual captures are written to `builds/`; test saves are isolated from player progress.
 
-中英文界面测试还检查语言保存、全部关卡文本、最小窗口布局，以及修改回声时切换语言后的撤销与恢复。中文翻译集中在 `i18n/zh_CN.po`，关卡内部标识和存档保持独立。
+English and Chinese interface checks cover saved language preferences, every room's text, minimum window layouts, and undo or cancellation after changing language during an echo edit. Chinese translations live in `i18n/zh_CN.po`; internal room identifiers and saves are language-independent.
 
-进阶房间的搜索状态包含箭头方向与桥面。对 07 至 09，验证器同时搜索录制世界和回放世界，检查固定其中一种新机关后是否存在替代解。对 10，验证器检查出口所需的三个位置，以及固定机关后不可达的位置或无法离开的开关区域。对 14，还会检查双回声离开透镜后，当前桥面能否把它们送回压板，从而验证录制路线穿过折叠桥是解题所需的一步。
+For rooms with devices, search states include arrow directions and bridge banks. Rooms 07–09 are checked in separate recording and playback worlds, including searches with either device type frozen. Room 10 checks the three required exit positions and the areas that become inaccessible or trap the first switch user when devices cannot change. Room 14 also checks whether the active bridge bank allows live actors to return from the lens to the plates, establishing why replaying recorded crossings over folded bridges is necessary.
 
-## 声音
+## Audio
 
-原创配乐 **Stillwater** 是一段 96 秒的立体声循环，以轻柔的琴音、缓缓变化的弦乐和远处的应答组成。从主页到关卡共用同一段音乐，思考和暂停时也会继续。Settings → Audio 中的 Music 和 Effects 可分别调节，Music 调至 0 即可静音，Footsteps 单独控制走格的轻触声。
+**Stillwater** is an original 96-second stereo loop of soft piano, slow strings, and distant answering phrases. It plays continuously across the home screen, rooms, and pause menus. In **Settings → Audio**, adjust **Music** and **Effects** independently. Set Music to zero to mute it, or toggle **Footsteps** to control movement sounds separately.
 
-## 素材
+## Assets
 
-几何标记和场景由 Godot 绘制。短音效由 `tools/make_assets.py` 合成，每步轮换三种轻触声。配乐已随游戏打包，可用 `uv run tools/make_music.py` 从乐谱重新合成。字体 Poppins 遵循 `assets/fonts/poppins-OFL.txt` 中的 SIL Open Font License。中文文字使用系统字体回退。
+Godot draws the geometric marks and landscapes. Short effects are synthesized by `tools/make_assets.py`, with three subtle movement sounds played in rotation. The score is bundled with the game and can be regenerated from its notation with `uv run tools/make_music.py`.
+
+Poppins is distributed under the SIL Open Font License in `assets/fonts/poppins-OFL.txt`. Chinese text uses system font fallback.
