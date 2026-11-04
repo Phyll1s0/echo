@@ -10,6 +10,11 @@ var last_error := ""
 func _init(custom_path: String = "") -> void:
 	if not custom_path.is_empty():
 		path = custom_path
+	elif OS.has_feature("web"):
+		# Other Godot games on phyll1s0.com share the same browser origin.
+		# Keep ECHO's progress separate from their user://progress.json files.
+		DirAccess.make_dir_recursive_absolute("user://echo")
+		path = "user://echo/progress.json"
 	if FileAccess.file_exists(path):
 		var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
 		if parsed is Dictionary and parsed.get("version") == 1:
@@ -42,4 +47,5 @@ func flush() -> bool:
 	if error != OK:
 		last_error = "Could not save your progress."
 		return false
+	if OS.has_feature("web"): JavaScriptBridge.force_fs_sync()
 	return true

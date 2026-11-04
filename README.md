@@ -2,6 +2,8 @@
 
 Every step you take moves your past selves, too.
 
+**[Play in your browser](https://phyll1s0.com/echo/)** — on desktop or phone.
+
 ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through seventeen rooms across five chapters. There is no time pressure: the world advances only when you move.
 
 Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. The interface defaults to English, with Simplified Chinese available in Settings.
@@ -25,11 +27,31 @@ mkdir -p builds/macos
 godot --headless --path . --export-release macOS builds/macos/ECHO.zip
 ```
 
+## Web and mobile
+
+The Web build uses the same Godot puzzle rules and all seventeen rooms. It has a paper-white loading screen, download progress, retry handling, and a reduced-rendering fallback after graphics context loss. No download or account is required.
+
+```sh
+mkdir -p builds/web
+godot --headless --path . --export-release Web builds/web/index.html
+python3 tools/serve_web.py
+```
+
+Open the local URL printed by the server. Web export uses the single-threaded Compatibility renderer, so it works on GitHub Pages without cross-origin isolation headers. `web/shell.html` keeps safe-area insets and bounds the rendering resolution independently of layout size.
+
+On touch devices, a four-way direction pad appears below the board in portrait, or beside it in landscape. Each press moves exactly one tile; holding never repeats. **Leave an Echo** and **Undo** sit beside the pad. On desktop, the pad is hidden and keyboard/mouse input remains available. Detection uses the browser's primary pointer, hover capability, and touch support; screen dimensions choose the layout, rather than treating every narrow window as a phone.
+
+Rotating or resizing preserves the current round, echoes, and undo history. Menus, settings, and help scroll where needed. Browser progress is stored locally in IndexedDB under `user://echo/progress.json`, separate from other games on the same domain. It persists on the same browser and device; clearing site data also clears those saves. Native saves are unchanged.
+
+The release is deployed at `/echo/` through the existing [personal-site repository](https://github.com/Phyll1s0/Phyll1s0.com), which verifies the exported files and their hashes before publishing.
+
+![ECHO on a phone](docs/images/web-phone.png)
+
 ## Controls
 
 | Action | Input |
 | --- | --- |
-| Move one tile | Arrow keys, WASD, or click an adjacent tile |
+| Move one tile | Arrow keys, WASD, the touch direction pad, or an adjacent tile |
 | Leave an echo | Enter or **Leave an Echo** |
 | Undo one beat | Z, Backspace, or **Undo** |
 | Restart the room, clearing all echoes and the current route | R or Pause → **Restart Room** |
@@ -107,6 +129,17 @@ python3 tools/check.py --visual
 
 An independent Python model checks maps and example solutions, then searches for the shortest final route with the supplied recordings. It verifies that every room requires an echo and that every two-echo room has no one-echo solution. Godot tests replay all solutions through both the rules model and actual keyboard and pointer input, covering fading, simultaneous crossings, empty-plate gates, missed timing, undo, editing, pause, saves, and window layouts. Empty-plate checks include delayed departures, a lens with one remaining occupant, and gates closing again after undo. Visual captures are written to `builds/`; test saves are isolated from player progress.
 
+Phone checks exercise every room at 320×568, 390×664, 844×390, 844×300, 750×279 (landscape safe area), and 768×1024. Browser tests use real touch and keyboard events, verify echo completion and undo, rotate during a round, switch languages, reload saved progress, and check loading failure handling.
+
+```sh
+godot --headless --path . --script tests/test_mobile.gd
+# With Playwright installed and the preview server running:
+node tools/check_web.cjs
+BROWSER=webkit node tools/check_web.cjs
+```
+
+Set `BROWSER_EXECUTABLE` if using a locally installed browser, and `ECHO_URL` to test a deployed build. `--touch` enables the pad in the native game for layout inspection.
+
 English and Chinese interface checks cover saved language preferences, every room's text, minimum window layouts, and undo or cancellation after changing language during an echo edit. Chinese translations live in `i18n/zh_CN.po`; internal room identifiers and saves are language-independent.
 
 For rooms with devices, search states include arrow directions and bridge banks. Rooms 07–09 are checked in separate recording and playback worlds, including searches with either device type frozen. Room 10 checks the three required exit positions and the areas that become inaccessible or trap the first switch user when devices cannot change. Room 14 also checks whether the active bridge bank allows live actors to return from the lens to the plates, establishing why replaying recorded crossings over folded bridges is necessary.
@@ -120,3 +153,5 @@ For rooms with devices, search states include arrow directions and bridge banks.
 Godot draws the geometric marks and landscapes. Short effects are synthesized by `tools/make_assets.py`, with three subtle movement sounds played in rotation. The score is bundled with the game and can be regenerated from its notation with `uv run tools/make_music.py`.
 
 Poppins is distributed under the SIL Open Font License in `assets/fonts/poppins-OFL.txt`. Chinese text uses system font fallback.
+
+The bundled Noto Sans SC subset provides Chinese text in browsers, where system fonts are unavailable. It is licensed under the SIL Open Font License in `assets/fonts/noto-OFL.txt`. After adding translations, run `uv run tools/subset_font.py` to refresh its glyphs.

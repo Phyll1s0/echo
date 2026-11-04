@@ -17,8 +17,8 @@ func verify(ok: bool, description: String) -> void:
 		push_error(description)
 
 func settle() -> void:
-	await process_frame
-	await process_frame
+	# Deferred navigation and wrapped, scrollable dialogs need layout passes.
+	for frame in 6: await process_frame
 
 func key(code: Key) -> void:
 	for down in [true, false]:

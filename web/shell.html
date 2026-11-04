@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="theme-color" content="#fcfcfb">
+	<meta name="description" content="A quiet puzzle about moving alongside your past selves. Seventeen rooms. Every step leaves an echo.">
+	<link rel="canonical" href="https://phyll1s0.com/echo/">
+	<title>$GODOT_PROJECT_NAME</title>
+	<style>
+		:root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+		html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #fcfcfb; overscroll-behavior: none; }
+		#game { position: fixed; inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+		#canvas { display: block; width: 100% !important; height: 100% !important; outline: none; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+		#status { position: fixed; inset: 0; display: grid; place-items: center; background: #fcfcfb; background-image: radial-gradient(#405c6110 .7px, transparent .9px); background-size: 26px 26px; color: #292d2e; transition: opacity .25s; }
+		.loader { width: min(70vw, 300px); text-align: center; }
+		.orbit { width: 48px; height: 48px; margin: 0 auto 30px; border: 1px solid #405c6138; border-radius: 50%; box-shadow: 0 0 0 12px #fcfcfb, 0 0 0 13px #405c6126; animation: orbit 4s ease-in-out infinite; }
+		h1 { font-size: clamp(32px, 7vw, 48px); font-weight: 200; letter-spacing: .32em; padding-left: .32em; margin: 0 0 42px; }
+		progress { display: block; width: 128px; height: 1px; margin: auto; border: 0; border-radius: 0; background: #dce1dc; accent-color: #405c61; }
+		progress::-webkit-progress-bar { background: #dce1dc; }
+		progress::-webkit-progress-value { background: #405c61; }
+		progress::-moz-progress-bar { background: #405c61; }
+		#loading-label, #status-notice { font-size: 12px; line-height: 1.8; color: #626a6d; margin-top: 18px; }
+		#retry { margin-top: 18px; min-width: 100px; min-height: 44px; border: 0; background: transparent; color: #292d2e; font: inherit; cursor: pointer; text-underline-offset: 6px; }
+		#retry:hover, #retry:focus-visible { text-decoration: underline; }
+		[hidden] { display: none !important; }
+		@keyframes orbit { 50% { opacity: .4; transform: scale(.94); } }
+		@media (prefers-reduced-motion: reduce) { .orbit { animation: none; } #status { transition: none; } }
+	</style>
+	$GODOT_HEAD_INCLUDE
+</head>
+<body>
+	<div id="game"><canvas id="canvas" tabindex="0" aria-label="ECHO puzzle game"></canvas></div>
+	<noscript>Enable JavaScript to play ECHO.</noscript>
+	<div id="status" role="status" aria-live="polite">
+		<div class="loader">
+			<div class="orbit" aria-hidden="true"></div>
+			<h1>ECHO</h1>
+			<progress id="status-progress" aria-label="Downloading game"></progress>
+			<div id="loading-label">Loading</div>
+			<div id="status-notice" hidden></div>
+			<button id="retry" type="button" hidden>Retry</button>
+		</div>
+	</div>
+	<script src="$GODOT_URL"></script>
+	<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+// CSS owns the safe area; Godot alone resizes the drawing buffer (policy 1).
+// Keep layout in CSS pixels, and bound GPU memory independently of screen DPR.
+const canvas = document.getElementById('canvas');
+const compatible = new URL(location.href).searchParams.get('render') === 'compat';
+const coarsePointer = matchMedia('(pointer: coarse)');
+const noHover = matchMedia('(hover: none)');
+function prefersTouch() {
+	return coarsePointer.matches || (navigator.maxTouchPoints > 0 && noHover.matches);
+}
+const viewport = window.echoViewport = { revision: 0 };
+function commitViewport() {
+	const rect = document.getElementById('game').getBoundingClientRect();
+	const width = Math.max(1, Math.round(rect.width));
+	const height = Math.max(1, Math.round(rect.height));
+	const phone = prefersTouch();
+	const maxSide = phone ? 2048 : 4096;
+	const maxPixels = phone ? 3000000 : 8000000;
+	const ratio = Math.min(window.devicePixelRatio || 1, compatible ? 1 : phone ? 1.5 : 2,
+		maxSide / width, maxSide / height, Math.sqrt(maxPixels / (width * height)));
+	const renderWidth = Math.max(1, Math.floor(width * ratio));
+	const renderHeight = Math.max(1, Math.floor(height * ratio));
+	if (viewport.width === width && viewport.height === height &&
+		viewport.renderWidth === renderWidth && viewport.renderHeight === renderHeight && viewport.touch === phone) return;
+	Object.assign(viewport, { width, height, renderWidth, renderHeight, touch: phone, revision: viewport.revision + 1 });
+}
+let resizeTimer;
+function queueViewport() {
+	clearTimeout(resizeTimer);
+	resizeTimer = setTimeout(commitViewport, 150);
+}
+new ResizeObserver(queueViewport).observe(document.getElementById('game'));
+window.addEventListener('resize', queueViewport);
+coarsePointer.addEventListener('change', queueViewport);
+noHover.addEventListener('change', queueViewport);
+window.visualViewport?.addEventListener('resize', queueViewport);
+commitViewport();
+
+(function () {
+	const overlay = document.getElementById('status');
+	const progress = document.getElementById('status-progress');
+	const label = document.getElementById('loading-label');
+	const notice = document.getElementById('status-notice');
+	const retry = document.getElementById('retry');
+	let initializing = true;
+	let failed = false;
+	let graphicsLost = false;
+	retry.addEventListener('click', () => {
+		if (!graphicsLost || compatible) {
+			location.reload();
+			return;
+		}
+		const url = new URL(location.href);
+		url.searchParams.set('render', 'compat');
+		location.replace(url.href);
+	});
+	function fail(error) {
+		if (!initializing) return;
+		failed = true;
+		initializing = false;
+		progress.hidden = true;
+		label.hidden = true;
+		notice.textContent = 'Unable to load the game. Check your connection and try again.';
+		notice.hidden = false;
+		retry.hidden = false;
+		console.error(error);
+	}
+	// Godot cannot rebuild its renderer after a lost context. Offer a full restart
+	// with a smaller buffer, including when the loader has already been removed.
+	canvas.addEventListener('webglcontextlost', event => {
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		failed = true;
+		graphicsLost = true;
+		initializing = false;
+		progress.hidden = true;
+		label.hidden = true;
+		notice.textContent = 'The graphics session stopped. Reload with reduced graphics to continue.';
+		notice.hidden = false;
+		retry.textContent = compatible ? 'Reload game' : 'Reload with reduced graphics';
+		retry.hidden = false;
+		overlay.style.opacity = '1';
+		document.body.appendChild(overlay);
+	}, true);
+	window.addEventListener('unhandledrejection', event => fail(event.reason));
+	if (typeof Engine === 'undefined') {
+		fail(new Error('Unable to download the game runtime.'));
+		return;
+	}
+	const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+	if (missing.length) {
+		fail(new Error(missing.join(', ')));
+		notice.textContent = 'This browser cannot run the game. Please use a current browser with WebGL 2 and WebAssembly support.';
+		return;
+	}
+	function onProgress(current, total) {
+		if (current > 0 && total > 0) {
+			progress.value = current;
+			progress.max = total;
+			label.textContent = current >= total ? 'Starting' : `Loading ${Math.floor(current / total * 100)}%`;
+		}
+	}
+	// A fresh HTML page must not start an older cached pack after a deployment.
+	const pack = `${GODOT_CONFIG.executable}.pck`;
+	const version = document.querySelector('meta[name="application-version"]')?.content || 'local';
+	const packURL = `${pack}?build=${version}-${GODOT_CONFIG.fileSizes[pack]}`;
+	GODOT_CONFIG.fileSizes[packURL] = GODOT_CONFIG.fileSizes[pack];
+	const engine = new Engine({ ...GODOT_CONFIG, onProgress });
+	Promise.all([
+		engine.init(GODOT_CONFIG.executable),
+		engine.preloadFile(packURL, pack),
+	]).then(() => engine.start({ args: [
+		'--resolution', `${viewport.renderWidth}x${viewport.renderHeight}`,
+		'--main-pack', pack, ...GODOT_CONFIG.args,
+	] })).then(() => {
+		if (failed) return;
+		initializing = false;
+		overlay.style.opacity = '0';
+		setTimeout(() => { if (!graphicsLost) overlay.remove(); }, 260);
+	}, fail);
+}());
+	</script>
+</body>
+</html>

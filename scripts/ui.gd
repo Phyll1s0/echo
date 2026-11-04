@@ -9,14 +9,22 @@ var edge := Color("d6dad8")
 var dark := false
 var regular: Font
 var thin: Font
+var touch_controls := false
+
+func compact_ui() -> bool:
+	return size.x < 680 or size.y < 500
+
+func touch_landscape() -> bool:
+	return touch_controls and size.x > size.y and size.y < 600
 
 func setup_skin() -> void:
 	var fallback := SystemFont.new()
 	fallback.font_names = PackedStringArray(["PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "sans-serif"])
 	regular = preload("res://assets/fonts/Poppins-Regular.ttf").duplicate()
 	thin = preload("res://assets/fonts/Poppins-Thin.ttf").duplicate()
-	regular.fallbacks = [fallback]
-	thin.fallbacks = [fallback]
+	var chinese := preload("res://assets/fonts/NotoSansSC-Echo.ttf")
+	regular.fallbacks = [chinese, fallback]
+	thin.fallbacks = [chinese, fallback]
 	var skin := Theme.new()
 	skin.default_font = regular
 	skin.default_font_size = 15
@@ -74,9 +82,9 @@ func text_label(value: String, px: int = 16, color: Color = Color.TRANSPARENT, a
 func action(value: String, callback: Callable, width: float = 0, primary: bool = false) -> Button:
 	var button := Button.new()
 	button.text = tr(value)
-	button.custom_minimum_size = Vector2(width, 40 * ui_scale())
+	button.custom_minimum_size = Vector2(width, maxf(44 if touch_controls else 0, 40 * ui_scale()))
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.pressed.connect(callback)
+	button.pressed.connect(callback, CONNECT_DEFERRED)
 	if primary:
 		button.set_meta("base_px", 18)
 		button.add_theme_font_size_override("font_size", roundi(18 * ui_scale()))
@@ -120,6 +128,7 @@ func home_action(value: String, callback: Callable) -> Button:
 	return button
 
 func ui_scale() -> float:
+	if compact_ui(): return 1.0
 	return clampf(minf(size.x / 1280.0, size.y / 820.0), 0.86, 2.25)
 
 func rescale_text(node: Node) -> void:

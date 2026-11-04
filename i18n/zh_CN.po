@@ -505,3 +505,24 @@ msgstr "让两段录制同时在 L 结束。在它们的最后一拍穿过 L 门
 
 msgid "Echo 1  ← ← ↑ ↑ → →     Echo 2  → → ↑ ↑ ← ←     Exit  ↓ ↓ → → → ↓ ↓ ↓ ↓"
 msgstr "回声 1  ← ← ↑ ↑ → →     回声 2  → → ↑ ↑ ← ←     出口  ↓ ↓ → → → ↓ ↓ ↓ ↓"
+
+msgid "Move up"
+msgstr "向上移动"
+
+msgid "Move down"
+msgstr "向下移动"
+
+msgid "Move left"
+msgstr "向左移动"
+
+msgid "Move right"
+msgstr "向右移动"
+
+msgid "Echo"
+msgstr "回声"
+
+msgid "Tap a direction to move one tile per beat. Tap Leave an Echo to record your route. Undo takes back a beat; Pause offers hints and Restart Room."
+msgstr "点方向盘，每步移动一格。点“留下回声”记录路线；“撤销”退回一步，暂停菜单中可以查看提示或重开关卡。"
+
+msgid "Tap a direction on the pad, or an adjacent tile, to move one step. Each move advances one beat.\n\nTap Leave an Echo to record your route and return to the start. Your echo retraces your steps, then fades after its last move.\n\nA plate opens its matching gate. Guide the solid dot into the outlined square to finish.\n\nUndo takes back a step. Open Pause for hints or Restart Room."
+msgstr "点方向盘或相邻格子，每次移动一步。世界只在你移动时前进一步。\n\n点“留下回声”记录路线并回到起点。回声会重走这条路线，并在最后一步之后消散。\n\n踏板可以开启对应的门。让实心棋子走到空心方框中即可过关。\n\n“撤销”退回一步。暂停菜单中可以查看提示或重开关卡。"

@@ -57,8 +57,15 @@ var volume_dirty := false
 var title_card: CenterContainer
 var title_underlay: Control
 var title_tween: Tween
+var layout_profile := ""
+var modal_scroll: ScrollContainer
+var direction_pad: Control
 
 func _ready() -> void:
+	if OS.has_feature("web"):
+		add_child(preload("res://scripts/web_viewport.gd").new())
+	else:
+		touch_controls = DisplayServer.is_touchscreen_available() or "--touch" in OS.get_cmdline_user_args()
 	setup_skin()
 	if store == null:
 		store = Store.new()
@@ -72,7 +79,7 @@ func _ready() -> void:
 	for info in levels:
 		if info.chapter not in chapters:
 			chapters.append(info.chapter)
-	if store.data.fullscreen:
+	if store.data.fullscreen and not OS.has_feature("web"):
 		_apply_fullscreen(true)
 	ambient = Atmosphere.new()
 	add_child(ambient)
@@ -89,22 +96,46 @@ func _ready() -> void:
 			if number >= 1 and number <= levels.size():
 				open_level(number - 1, false)
 
+func _profile() -> String:
+	return "%s:%s:%s:%s:%s:%s" % [compact_ui(), touch_controls, touch_landscape(), size.x < 360, size.y < 500, size.y < 360]
+
+func _adapt_layout() -> void:
+	if not is_instance_valid(page) or layout_profile == _profile(): return
+	var previous_modal := modal_kind
+	var return_page := room_return
+	match screen:
+		"home": show_home()
+		"chapters": show_chapters()
+		"rooms": show_rooms(ambient.chapter)
+		"game": _show_game()
+	room_return = return_page
+	match previous_modal:
+		"settings": show_settings()
+		"pause": show_pause()
+		"help": show_help()
+		"complete":
+			if modal == null: show_complete()
+
 func _layout() -> void:
+	if not screen.is_empty() and layout_profile != _profile():
+		call_deferred("_adapt_layout")
 	if theme != null:
 		theme.default_font_size = roundi(15 * ui_scale())
 	if is_instance_valid(page):
 		rescale_text(page)
 	if is_instance_valid(chapter_index):
-		var gap := (26 if size.y >= 720 else 12) if screen == "chapters" else 17
+		var gap := (24 if size.y >= 720 else 14) if screen == "chapters" else 17
 		chapter_index.add_theme_constant_override("separation", roundi(gap * ui_scale()))
-		chapter_index.custom_minimum_size.x = minf(480 * ui_scale(), size.x - 110 * ui_scale())
+		chapter_index.custom_minimum_size.x = minf(480 * ui_scale(), size.x - (40 if compact_ui() else 110 * ui_scale()))
 	if is_instance_valid(modal_panel):
-		var panel_width := minf(size.x - 52, modal_width * ui_scale())
+		var panel_width := minf(size.x - (24 if compact_ui() else 52), modal_width * ui_scale())
 		if modal_kind == "pause":
 			modal_panel.offset_left = -panel_width
 		else:
 			modal_panel.custom_minimum_size.x = panel_width
 		rescale_text(modal)
+		if is_instance_valid(modal_scroll) and modal_kind != "pause":
+			modal_scroll.custom_minimum_size.y = minf(modal_scroll.get_child(0).get_combined_minimum_size().y, maxf(100, size.y - 70))
 
 func _fresh_page(name_: String, landscape: String = "") -> void:
 	_dismiss_room_title()
@@ -113,24 +144,28 @@ func _fresh_page(name_: String, landscape: String = "") -> void:
 		remove_child(page)
 		page.queue_free()
 	board = null
+	direction_pad = null
 	chapter_index = null
 	mark = null
 	apply_palette(landscape == "Nocturne")
 	screen = name_
+	layout_profile = _profile()
 	page = Control.new()
 	add_child(page)
 	page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ambient.animated = bool(store.data.motion) and screen == "home"
 	ambient.set_chapter(landscape)
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("document.body.style.background = '%s'; document.querySelector('meta[name=theme-color]').content = '%s'" % ["#08090a" if dark else "#fcfcfb", "#08090a" if dark else "#fcfcfb"])
 
 func _body() -> VBoxContainer:
 	var margin := MarginContainer.new()
 	page.add_child(margin)
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	for side in ["left", "right"]:
-		margin.add_theme_constant_override("margin_" + side, roundi(38 * ui_scale()))
+		margin.add_theme_constant_override("margin_" + side, (14 if size.x < 360 else 18) if compact_ui() else roundi(38 * ui_scale()))
 	for side in ["top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, roundi(22 * ui_scale()))
+		margin.add_theme_constant_override("margin_" + side, (8 if size.y < 500 else 14) if compact_ui() else roundi(22 * ui_scale()))
 	var body := VBoxContainer.new()
 	margin.add_child(body)
 	return body
@@ -168,13 +203,13 @@ func show_home() -> void:
 	mark = Mark.new()
 	mark.ink = ink
 	mark.motion = store.data.motion
-	mark.custom_minimum_size.y = 94 * ui_scale()
+	mark.custom_minimum_size.y = (40 if size.y < 500 else 68) if compact_ui() else 94 * ui_scale()
 	body.add_child(mark)
-	var title := text_label("E C H O", 100, ink, HORIZONTAL_ALIGNMENT_CENTER)
+	var title := text_label("E C H O", 54 if compact_ui() else 100, ink, HORIZONTAL_ALIGNMENT_CENTER)
 	title.add_theme_font_override("font", thin)
 	body.add_child(title)
 	var gap := Control.new()
-	gap.custom_minimum_size.y = 20 * ui_scale()
+	gap.custom_minimum_size.y = 8 if compact_ui() else 20 * ui_scale()
 	body.add_child(gap)
 	var buttons := VBoxContainer.new()
 	buttons.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -199,7 +234,7 @@ func _chapter_heading(chapter: String, alignment: HorizontalAlignment) -> VBoxCo
 	var chapter_color: Color = Atmosphere.WORLDS.get(chapter, {}).get("light", muted)
 	if chapter == "Nocturne" and not dark: chapter_color = muted
 	heading.add_child(text_label(_chapter_label(chapter), 17, chapter_color, alignment))
-	heading.add_child(text_label(chapter, 36 if screen == "chapters" else 42, ink, alignment))
+	heading.add_child(text_label(chapter, 30 if compact_ui() else (36 if screen == "chapters" else 42), ink, alignment))
 	return heading
 
 func _chapter_progress(chapter: String) -> Vector2i:
@@ -259,7 +294,7 @@ func show_rooms(chapter: String) -> void:
 		var done: bool = store.data.completed.has(info.id)
 		var unlocked: bool = done or i == 0 or info.get("chapter_entry", false) or store.data.completed.has(levels[i-1].id)
 		var room := list_action("%s    %s" % [info.id, tr(info.title)], open_level.bind(i, true))
-		room.set_meta("base_px", 21)
+		room.set_meta("base_px", 18 if compact_ui() else 21)
 		room.disabled = not unlocked
 		var state := tr("Complete") if done else (tr("Locked") if not unlocked else "")
 		room.accessibility_description = state
@@ -293,7 +328,7 @@ func _show_game(introduce: bool = false) -> void:
 	_fresh_page("game", session.level.chapter)
 	var body := _body()
 	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", roundi(22 * ui_scale()))
+	top.add_theme_constant_override("separation", 8 if compact_ui() else roundi(22 * ui_scale()))
 	body.add_child(top)
 	var back := action("←", room_return, 46 * ui_scale())
 	back.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -303,10 +338,13 @@ func _show_game(introduce: bool = false) -> void:
 	top.add_child(back)
 	var room_title := VBoxContainer.new()
 	room_title.add_theme_constant_override("separation", 0)
+	room_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(room_title)
-	room_title.add_child(text_label("%s   /   %s" % [_chapter_label(session.level.chapter), tr(session.level.chapter)], 17, muted))
-	room_title.add_child(text_label("%s   %s" % [session.level.id, tr(session.level.title)], 26))
-	top.add_child(spacer())
+	var chapter_text := _chapter_label(session.level.chapter) if compact_ui() else "%s   /   %s" % [_chapter_label(session.level.chapter), tr(session.level.chapter)]
+	room_title.add_child(text_label(chapter_text, 13 if compact_ui() else 17, muted))
+	var name_label := text_label("%s   %s" % [session.level.id, tr(session.level.title)], 18 if compact_ui() else 26)
+	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	room_title.add_child(name_label)
 	var pause := action("", show_pause)
 	pause.icon = preload("res://assets/pause.svg")
 	pause.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -317,9 +355,9 @@ func _show_game(introduce: bool = false) -> void:
 	var hud := HBoxContainer.new()
 	body.add_child(hud)
 	hud.alignment = BoxContainer.ALIGNMENT_CENTER
-	beat_label = text_label("", 25)
+	beat_label = text_label("", 18 if compact_ui() else 25)
 	hud.add_child(beat_label)
-	capacity_label = text_label("", 18, muted)
+	capacity_label = text_label("", 14 if compact_ui() else 18, muted)
 	hud.add_child(capacity_label)
 	board = Board.new()
 	board.puzzle = session
@@ -327,23 +365,60 @@ func _show_game(introduce: bool = false) -> void:
 		board.set_colors(Atmosphere.WORLDS[session.level.chapter])
 	board.font = regular
 	_apply_board_preferences()
-	body.add_child(board)
+	var arena := BoxContainer.new()
+	arena.vertical = not touch_landscape()
+	arena.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	arena.add_theme_constant_override("separation", 14)
+	body.add_child(arena)
+	var playfield := VBoxContainer.new()
+	playfield.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	playfield.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	arena.add_child(playfield)
+	playfield.add_child(board)
+	if compact_ui(): board.custom_minimum_size.y = 60
 	board.move_requested.connect(try_move)
 	board.motion_finished.connect(_animation_done)
-	message_label = text_label("", 18, ink, HORIZONTAL_ALIGNMENT_CENTER)
+	message_label = text_label("", 14 if compact_ui() else 18, ink, HORIZONTAL_ALIGNMENT_CENTER)
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	message_label.custom_minimum_size.y = 38 * ui_scale()
+	message_label.custom_minimum_size.y = 24 if compact_ui() else 38 * ui_scale()
 	message_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	body.add_child(message_label)
+	playfield.add_child(message_label)
+	var controls := BoxContainer.new()
+	controls.vertical = touch_landscape() and size.y >= 360
+	controls.alignment = BoxContainer.ALIGNMENT_CENTER
+	controls.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	controls.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	controls.add_theme_constant_override("separation", 8 if size.x < 360 else 18)
+	arena.add_child(controls)
+	if touch_controls:
+		direction_pad = preload("res://scripts/direction_pad.gd").new()
+		direction_pad.ink = ink
+		direction_pad.rim = Color(accent, 0.22)
+		var diameter := 132 if touch_landscape() else (144 if size.x < 360 else 168)
+		direction_pad.custom_minimum_size = Vector2.ONE * diameter
+		direction_pad.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		controls.add_child(direction_pad)
+		direction_pad.move_requested.connect(func(delta): _dismiss_room_title(); try_move(delta))
 	var actions := HFlowContainer.new()
 	actions.alignment = FlowContainer.ALIGNMENT_CENTER
+	actions.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	actions.add_theme_constant_override("h_separation", 10)
-	body.add_child(actions)
-	seal_button = action("Leave an Echo", seal_route, 134, true)
-	undo_button = action("Undo", undo_move, 90)
-	undo_button.set_meta("base_px", 18)
+	if touch_controls:
+		actions.custom_minimum_size.x = (112 if size.y < 360 else 166) if touch_landscape() else (120 if size.x < 360 else 142)
+	else:
+		actions.custom_minimum_size.x = 300 * ui_scale()
+	controls.add_child(actions)
+	seal_button = action("Echo" if touch_landscape() else "Leave an Echo", seal_route, 0 if touch_controls else 134, true)
+	if touch_controls:
+		seal_button.accessibility_name = tr("Leave an Echo")
+		seal_button.set_meta("base_px", 14 if size.x < 360 else 16)
+	undo_button = action("Undo", undo_move, 0 if touch_controls else 90)
+	undo_button.set_meta("base_px", 16 if touch_controls else 18)
 	actions.add_child(seal_button)
 	actions.add_child(undo_button)
+	if touch_controls and (not touch_landscape() or size.y < 360):
+		seal_button.custom_minimum_size.x = actions.custom_minimum_size.x
+		undo_button.custom_minimum_size.x = actions.custom_minimum_size.x
 	_refresh()
 	_layout()
 
@@ -367,7 +442,10 @@ func _show_room_title(underlay: Control) -> void:
 	var color: Color = Atmosphere.WORLDS.get(session.level.chapter, {}).get("light", muted)
 	var reference := tr("%s   /   Room %s") % [_chapter_label(session.level.chapter), session.level.id]
 	stack.add_child(text_label(reference, 19, color, HORIZONTAL_ALIGNMENT_CENTER))
-	stack.add_child(text_label(session.level.title, 60, ink, HORIZONTAL_ALIGNMENT_CENTER))
+	var title_name := text_label(session.level.title, 32 if compact_ui() else 60, ink, HORIZONTAL_ALIGNMENT_CENTER)
+	stack.custom_minimum_size.x = minf(size.x - 40, 700)
+	title_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	stack.add_child(title_name)
 	title_tween = page.create_tween()
 	var fade := minf(0.40, seconds * 0.25) if store.data.motion else 0.0
 	title_tween.tween_interval(seconds - fade)
@@ -475,6 +553,7 @@ func _refresh() -> void:
 	beat_label.text = tr("Beat %02d") % session.tick()
 	capacity_label.text = tr("  /  Echoes  %d / %d") % [session.echoes.size(), session.level.max_echoes]
 	message_label.text = tr(status_text)
+	message_label.visible = not compact_ui() or not status_text.is_empty()
 	if status_text.begins_with("Gate requires "):
 		message_label.text = tr("Gate requires %s") % status_text.trim_prefix("Gate requires ")
 	elif status_text.begins_with("Gate needs empty "):
@@ -570,6 +649,7 @@ func _close_modal() -> void:
 	modal = null
 	modal_kind = ""
 	modal_panel = null
+	modal_scroll = null
 	setting_values.clear()
 	if is_instance_valid(page):
 		page.process_mode = Node.PROCESS_MODE_INHERIT
@@ -596,12 +676,19 @@ func _panel(kind: String, title: String, width: float = 570) -> VBoxContainer:
 	var panel := PanelContainer.new()
 	modal_panel = panel
 	modal_width = width
-	panel.custom_minimum_size.x = minf(size.x - 52, width * ui_scale())
-	panel.add_theme_stylebox_override("panel", box(surface, edge, 28))
+	panel.custom_minimum_size.x = minf(size.x - (24 if compact_ui() else 52), width * ui_scale())
+	panel.add_theme_stylebox_override("panel", box(surface, edge, 16 if compact_ui() else 28))
 	center.add_child(panel)
+	modal_scroll = ScrollContainer.new()
+	modal_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	modal_scroll.follow_focus = true
+	panel.add_child(modal_scroll)
 	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 17)
-	panel.add_child(content)
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 12 if compact_ui() else 17)
+	modal_scroll.add_child(content)
+	content.minimum_size_changed.connect(func(): _layout.call_deferred())
+	call_deferred("_layout")
 	content.add_child(Control.new())
 	content.add_child(text_label(title, 31))
 	return content
@@ -609,7 +696,7 @@ func _panel(kind: String, title: String, width: float = 570) -> VBoxContainer:
 func _dialog(kind: String, title: String, description: String, choices: Array) -> void:
 	var content := _panel(kind, title)
 	if not description.is_empty():
-		var desc := text_label(description, 18, muted)
+		var desc := text_label(description, 15 if compact_ui() else 18, muted)
 		desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		content.add_child(desc)
 	var buttons := HFlowContainer.new()
@@ -854,7 +941,7 @@ func show_help() -> void:
 	var back: Callable = show_settings
 	var silence: bool = screen == "game" and session.gates.any(func(gate): return not gate.vacant.is_empty())
 	if screen == "game" and (silence or not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS)):
-		var rules := PackedStringArray(["Move one tile per beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."])
+		var rules := PackedStringArray(["Tap a direction to move one tile per beat. Tap Leave an Echo to record your route. Undo takes back a beat; Pause offers hints and Restart Room." if touch_controls else "Move one tile per beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."])
 		if silence:
 			rules.append("A gate marked −A needs A empty before you move. −L needs an empty lens; even one echo keeps it shut. A fading echo can open the way.")
 		if session.plates.has(Puzzle.LENS):
@@ -867,6 +954,9 @@ func show_help() -> void:
 		for i in rules.size():
 			rules[i] = tr(rules[i])
 		_dialog("help", "How to Play", "\n\n".join(rules), [["Got It", back]])
+		return
+	if touch_controls:
+		_dialog("help", "How to Play", "Tap a direction on the pad, or an adjacent tile, to move one step. Each move advances one beat.\n\nTap Leave an Echo to record your route and return to the start. Your echo retraces your steps, then fades after its last move.\n\nA plate opens its matching gate. Guide the solid dot into the outlined square to finish.\n\nUndo takes back a step. Open Pause for hints or Restart Room.", [["Got It", back]])
 		return
 	_dialog("help", "How to Play", "Move one tile with the arrow keys, WASD, or a click on an adjacent tile. Each move advances one beat.\n\nPress Enter to leave an echo and return to the start. It retraces your steps, then fades on the beat after its last move.\n\nA plate opens its matching gate. Cross while the gate is open. Guide the solid dot into the outlined square to finish.\n\nZ undoes a step. R restarts the room and clears all echoes.", [["Got It", back]])
 
@@ -883,7 +973,7 @@ func show_pause() -> void:
 	modal.add_child(modal_panel)
 	modal_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	modal_panel.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
-	modal_panel.offset_left = -minf(size.x - 52, modal_width * ui_scale())
+	modal_panel.offset_left = -minf(size.x - (24 if compact_ui() else 52), modal_width * ui_scale())
 	var panel_style := box(surface, edge, 26 * ui_scale())
 	panel_style.set_corner_radius_all(0)
 	panel_style.set_border_width_all(0)
@@ -901,8 +991,16 @@ func show_pause() -> void:
 	var content := VBoxContainer.new()
 	content.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_theme_constant_override("separation", roundi(14 * ui_scale()))
-	modal_panel.add_child(content)
-	content.add_child(text_label(tr("Room %s   /   %s") % [session.level.id, tr(session.level.title)], 16, muted))
+	modal_scroll = ScrollContainer.new()
+	modal_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	modal_scroll.follow_focus = true
+	modal_panel.add_child(modal_scroll)
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	modal_scroll.add_child(content)
+	var pause_caption := text_label(tr("Room %s   /   %s") % [session.level.id, tr(session.level.title)], 16, muted)
+	pause_caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(pause_caption)
 	content.add_child(text_label("Paused", 34))
 	var rows := VBoxContainer.new()
 	rows.add_theme_constant_override("separation", 2)
@@ -937,7 +1035,7 @@ func show_complete() -> void:
 		else: show_chapters()], ["Undo", func(): _close_modal(); undo_move()]])
 
 func _input(event: InputEvent) -> void:
-	if title_card != null and ((event is InputEventKey and event.pressed and not event.echo) or (event is InputEventMouseButton and event.pressed)):
+	if title_card != null and ((event is InputEventKey and event.pressed and not event.echo) or (event is InputEventMouseButton and event.pressed) or (event is InputEventScreenTouch and event.pressed)):
 		_dismiss_room_title()
 	if not event is InputEventKey or not event.pressed or event.echo:
 		return
