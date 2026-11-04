@@ -91,7 +91,7 @@ func _draw_action_line(button: Button) -> void:
 	var width := button.get_theme_font("font").get_string_size(button.text, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
 	var y := button.size.y * 0.5 + px * 0.66
 	if button.text.is_empty():
-		# The pause icon and chapter titles use a short mark below their content.
+		# Icon buttons and chapter titles use a short mark below their content.
 		width = 20 * ui_scale()
 		y = button.size.y - 2
 	var x := (button.size.x - width) * 0.5
@@ -125,5 +125,7 @@ func ui_scale() -> float:
 func rescale_text(node: Node) -> void:
 	if node.has_meta("base_px"):
 		node.add_theme_font_size_override("font_size", roundi(int(node.get_meta("base_px")) * ui_scale()))
+	if node.has_meta("icon_px"):
+		node.add_theme_constant_override("icon_max_width", roundi(int(node.get_meta("icon_px")) * ui_scale()))
 	for child in node.get_children():
 		rescale_text(child)

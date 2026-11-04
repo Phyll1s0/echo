@@ -155,7 +155,15 @@ func show_home() -> void:
 	var top := HBoxContainer.new()
 	body.add_child(top)
 	top.add_child(spacer())
-	top.add_child(action("Settings", show_settings))
+	var settings := action("", show_settings)
+	settings.icon = preload("res://assets/settings.svg")
+	settings.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	settings.expand_icon = true
+	settings.set_meta("icon_px", 22)
+	settings.custom_minimum_size = Vector2(46, 40) * ui_scale()
+	settings.accessibility_name = tr("Settings")
+	settings.tooltip_text = tr("Settings")
+	top.add_child(settings)
 	body.add_child(spacer(false))
 	mark = Mark.new()
 	mark.ink = ink
