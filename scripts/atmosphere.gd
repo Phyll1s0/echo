@@ -2,10 +2,10 @@ extends Control
 
 # Four quiet pigments on paper, followed by an ink-black final chapter.
 const WORLDS := {
-	"Afterimage": {"sky": Color("f7faf6"), "far": Color("e9efe8"), "near": Color("dde7dd"), "ink": Color("728a77"), "tile": Color("eef3ec"), "grid": Color("89988c"), "light": Color("3c684c")},
-	"Resonance": {"sky": Color("f7fafb"), "far": Color("e5eef2"), "near": Color("d8e6eb"), "ink": Color("708c9a"), "tile": Color("ebf2f5"), "grid": Color("879aa4"), "light": Color("326279")},
-	"Phase Shift": {"sky": Color("fcfaf5"), "far": Color("f0e9dc"), "near": Color("e8decb"), "ink": Color("a28d69"), "tile": Color("f5efe3"), "grid": Color("a99a82"), "light": Color("88623b")},
-	"Penumbra": {"sky": Color("faf9fc"), "far": Color("eeebf4"), "near": Color("e3dfed"), "ink": Color("9990ac"), "tile": Color("f0edf6"), "grid": Color("9a91aa"), "light": Color("6c5585")},
+	"Afterimage": {"sky": Color("f2f6ef"), "far": Color("dce7d8"), "near": Color("c9dac6"), "ink": Color("617f63"), "tile": Color("e0eadb"), "grid": Color("6f866f"), "light": Color("335f40")},
+	"Resonance": {"sky": Color("f0f5f8"), "far": Color("d8e6ee"), "near": Color("c1d7e3"), "ink": Color("567d92"), "tile": Color("deebf2"), "grid": Color("6b8697"), "light": Color("2d607a")},
+	"Phase Shift": {"sky": Color("faf5eb"), "far": Color("ecdfc5"), "near": Color("dfccaa"), "ink": Color("92764b"), "tile": Color("efe2c9"), "grid": Color("96805b"), "light": Color("7d572e")},
+	"Penumbra": {"sky": Color("f5f2f9"), "far": Color("e4ddef"), "near": Color("d5c9e2"), "ink": Color("806c9d"), "tile": Color("e8dff1"), "grid": Color("877599"), "light": Color("63477d")},
 	"Nocturne": {"dark": true, "sky": Color("08090a"), "far": Color("111315"), "near": Color("171a1c"), "ink": Color("899295"), "tile": Color("171a1c"), "grid": Color("748083"), "light": Color("e3e8e8")}
 }
 
