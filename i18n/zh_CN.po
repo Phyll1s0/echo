@@ -1,6 +1,6 @@
 # Simplified Chinese. English source strings remain the fallback.
 msgid ""
-msgstr "Project-Id-Version: ECHO 0.6.0\nLanguage: zh_CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\n"
+msgstr "Project-Id-Version: ECHO 0.7.0\nLanguage: zh_CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\n"
 
 msgid "Settings"
 msgstr "设置"
@@ -451,3 +451,57 @@ msgstr "最后一轮，在走向 L 门的途中切换桥。回声返回时，依
 
 msgid "Echo 1  ↑ ↑ ← ← ← ↓ ↓ ↑ ↑ → →     Echo 2  ↓ ↓ ← ← ← ↑ ↑ ↓ ↓ → →     Exit  → → ↓ ↓ ↓ → → ↑ ↑ ↑ → →"
 msgstr "回声 1  ↑ ↑ ← ← ← ↓ ↓ ↑ ↑ → →     回声 2  ↓ ↓ ← ← ← ↑ ↑ ↓ ↓ → →     出口  → → ↓ ↓ ↓ → → ↑ ↑ ↑ → →"
+
+msgid "Nocturne"
+msgstr "夜曲"
+
+msgid "Hush"
+msgstr "静息"
+
+msgid "Negative Space"
+msgstr "留空"
+
+msgid "Coda"
+msgstr "尾声"
+
+msgid "Gate needs empty %s"
+msgstr "需要让 %s 上空无一人。"
+
+msgid "A gate marked −A needs A empty before you move. −L needs an empty lens; even one echo keeps it shut. A fading echo can open the way."
+msgstr "标有 −A 的门，需要在移动前让 A 空置。−L 需要透镜上空无一人，留下一个回声也无法通过。回声消散后，路才会打开。"
+
+msgid "A opens one gate. An empty A opens the next. Let your echo finish its part."
+msgstr "A 开启第一扇门，空置的 A 开启下一扇。让回声完成它的任务。"
+
+msgid "A minus sign marks an empty-plate gate. It checks the board before your move."
+msgstr "减号表示空置门。它会在你移动之前，检查对应压板是否空着。"
+
+msgid "End the recording on A. The echo opens the first gate, then fades before you reach the second."
+msgstr "让录制停在 A。回声开启第一扇门，在你到达第二扇门前消散。"
+
+msgid "Echo  ↑ ↑     Exit  five steps right."
+msgstr "回声  ↑ ↑     出口  向右五步。"
+
+msgid "Together at first. Then only B. Give one echo a shorter ending."
+msgstr "先同时踩住两处，再只留下 B。让一个回声更早结束。"
+
+msgid "The first gate needs both plates. The last needs B occupied and A empty."
+msgstr "第一扇门需要同时踩住两块压板。最后一扇需要 B 有人、A 空置。"
+
+msgid "Let the A recording end on beat four. Have the B recording leave its plate and return on beat six."
+msgstr "让 A 的录制在第四拍结束。B 的录制离开压板一步，再在第六拍返回。"
+
+msgid "Echo 1  ← ← ↑ ↑     Echo 2  → → ↑ ↑ ↓ ↑     Exit  ← → ↑ ↑ ↑ ↑ ↑"
+msgstr "回声 1  ← ← ↑ ↑     回声 2  → → ↑ ↑ ↓ ↑     出口  ← → ↑ ↑ ↑ ↑ ↑"
+
+msgid "Separate, meet, disappear. Three gates need three different moments."
+msgstr "分开，相遇，消散。三扇门，需要三个不同的时刻。"
+
+msgid "The first gate needs A and B. The second needs two selves on L. The final gate needs L completely empty."
+msgstr "第一扇门需要 A 和 B，第二扇需要两个自己在 L 相遇，最后一扇需要 L 完全空置。"
+
+msgid "Let both recordings end together on L. Cross the L gate on their last beat; after they fade, the last gate opens."
+msgstr "让两段录制同时在 L 结束。在它们的最后一拍穿过 L 门，消散后再通过最后一扇门。"
+
+msgid "Echo 1  ← ← ↑ ↑ → →     Echo 2  → → ↑ ↑ ← ←     Exit  ↓ ↓ → → → ↓ ↓ ↓ ↓"
+msgstr "回声 1  ← ← ↑ ↑ → →     回声 2  → → ↑ ↑ ← ←     出口  ↓ ↓ → → → ↓ ↓ ↓ ↓"

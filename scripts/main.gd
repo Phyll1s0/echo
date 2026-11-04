@@ -20,7 +20,7 @@ const CHOICES := {
 	"room_titles": ["Off", "1 s", "1.5 s", "2 s"],
 	"path_weight": ["Faint", "Standard", "Bold"]
 }
-const ROMAN := ["I", "II", "III", "IV"]
+const ROMAN := ["I", "II", "III", "IV", "V"]
 var chapters: Array[String] = []
 var levels: Array
 var store
@@ -95,7 +95,7 @@ func _layout() -> void:
 	if is_instance_valid(page):
 		rescale_text(page)
 	if is_instance_valid(chapter_index):
-		var gap := 32 if screen == "chapters" else 17
+		var gap := (26 if size.y >= 720 else 12) if screen == "chapters" else 17
 		chapter_index.add_theme_constant_override("separation", roundi(gap * ui_scale()))
 		chapter_index.custom_minimum_size.x = minf(480 * ui_scale(), size.x - 110 * ui_scale())
 	if is_instance_valid(modal_panel):
@@ -115,13 +115,13 @@ func _fresh_page(name_: String, landscape: String = "") -> void:
 	board = null
 	chapter_index = null
 	mark = null
+	apply_palette(landscape == "Nocturne")
 	screen = name_
 	page = Control.new()
 	add_child(page)
 	page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ambient.animated = bool(store.data.motion) and screen == "home"
 	ambient.set_chapter(landscape)
-	ambient.modulate.a = 0.45 if screen == "chapters" else 1.0
 
 func _body() -> VBoxContainer:
 	var margin := MarginContainer.new()
@@ -158,10 +158,11 @@ func show_home() -> void:
 	top.add_child(action("Settings", show_settings))
 	body.add_child(spacer(false))
 	mark = Mark.new()
+	mark.ink = ink
 	mark.motion = store.data.motion
 	mark.custom_minimum_size.y = 94 * ui_scale()
 	body.add_child(mark)
-	var title := text_label("E C H O", 100, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	var title := text_label("E C H O", 100, ink, HORIZONTAL_ALIGNMENT_CENTER)
 	title.add_theme_font_override("font", thin)
 	body.add_child(title)
 	var gap := Control.new()
@@ -187,8 +188,10 @@ func _chapter_heading(chapter: String, alignment: HorizontalAlignment) -> VBoxCo
 	var heading := VBoxContainer.new()
 	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	heading.add_theme_constant_override("separation", 0)
-	heading.add_child(text_label(_chapter_label(chapter), 17, Atmosphere.WORLDS.get(chapter, {}).get("light", MUTED), alignment))
-	heading.add_child(text_label(chapter, 42, INK, alignment))
+	var chapter_color: Color = Atmosphere.WORLDS.get(chapter, {}).get("light", muted)
+	if chapter == "Nocturne" and not dark: chapter_color = muted
+	heading.add_child(text_label(_chapter_label(chapter), 17, chapter_color, alignment))
+	heading.add_child(text_label(chapter, 36 if screen == "chapters" else 42, ink, alignment))
 	return heading
 
 func _chapter_progress(chapter: String) -> Vector2i:
@@ -240,7 +243,7 @@ func show_rooms(chapter: String) -> void:
 	heading.add_child(_chapter_heading(chapter, HORIZONTAL_ALIGNMENT_LEFT))
 	heading.add_child(spacer())
 	var count := _chapter_progress(chapter)
-	heading.add_child(text_label("%d / %d" % [count.x, count.y], 18, MUTED))
+	heading.add_child(text_label("%d / %d" % [count.x, count.y], 18, muted))
 	for i in levels.size():
 		var info: Dictionary = levels[i]
 		if info.chapter != chapter:
@@ -259,7 +262,7 @@ func show_rooms(chapter: String) -> void:
 	_layout()
 
 func _row_value(button: Button, value: String) -> Label:
-	var caption := text_label(value, 16, ACCENT, HORIZONTAL_ALIGNMENT_RIGHT)
+	var caption := text_label(value, 16, accent, HORIZONTAL_ALIGNMENT_RIGHT)
 	button.add_child(caption)
 	caption.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	caption.offset_right = -13
@@ -293,7 +296,7 @@ func _show_game(introduce: bool = false) -> void:
 	var room_title := VBoxContainer.new()
 	room_title.add_theme_constant_override("separation", 0)
 	top.add_child(room_title)
-	room_title.add_child(text_label("%s   /   %s" % [_chapter_label(session.level.chapter), tr(session.level.chapter)], 17, MUTED))
+	room_title.add_child(text_label("%s   /   %s" % [_chapter_label(session.level.chapter), tr(session.level.chapter)], 17, muted))
 	room_title.add_child(text_label("%s   %s" % [session.level.id, tr(session.level.title)], 26))
 	top.add_child(spacer())
 	var pause := action("", show_pause)
@@ -308,7 +311,7 @@ func _show_game(introduce: bool = false) -> void:
 	hud.alignment = BoxContainer.ALIGNMENT_CENTER
 	beat_label = text_label("", 25)
 	hud.add_child(beat_label)
-	capacity_label = text_label("", 18, MUTED)
+	capacity_label = text_label("", 18, muted)
 	hud.add_child(capacity_label)
 	board = Board.new()
 	board.puzzle = session
@@ -319,7 +322,7 @@ func _show_game(introduce: bool = false) -> void:
 	body.add_child(board)
 	board.move_requested.connect(try_move)
 	board.motion_finished.connect(_animation_done)
-	message_label = text_label("", 18, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	message_label = text_label("", 18, ink, HORIZONTAL_ALIGNMENT_CENTER)
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	message_label.custom_minimum_size.y = 38 * ui_scale()
 	message_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -353,10 +356,10 @@ func _show_room_title(underlay: Control) -> void:
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stack.add_theme_constant_override("separation", roundi(10 * ui_scale()))
 	title_card.add_child(stack)
-	var color: Color = Atmosphere.WORLDS.get(session.level.chapter, {}).get("light", MUTED)
+	var color: Color = Atmosphere.WORLDS.get(session.level.chapter, {}).get("light", muted)
 	var reference := tr("%s   /   Room %s") % [_chapter_label(session.level.chapter), session.level.id]
 	stack.add_child(text_label(reference, 19, color, HORIZONTAL_ALIGNMENT_CENTER))
-	stack.add_child(text_label(session.level.title, 60, INK, HORIZONTAL_ALIGNMENT_CENTER))
+	stack.add_child(text_label(session.level.title, 60, ink, HORIZONTAL_ALIGNMENT_CENTER))
 	title_tween = page.create_tween()
 	var fade := minf(0.40, seconds * 0.25) if store.data.motion else 0.0
 	title_tween.tween_interval(seconds - fade)
@@ -466,6 +469,8 @@ func _refresh() -> void:
 	message_label.text = tr(status_text)
 	if status_text.begins_with("Gate requires "):
 		message_label.text = tr("Gate requires %s") % status_text.trim_prefix("Gate requires ")
+	elif status_text.begins_with("Gate needs empty "):
+		message_label.text = tr("Gate needs empty %s") % status_text.trim_prefix("Gate needs empty ")
 	seal_button.disabled = not session.can_seal()
 	undo_button.disabled = not session.can_undo()
 	board.show_routes = store.data.paths
@@ -567,7 +572,7 @@ func _begin_modal(kind: String) -> void:
 	modal_kind = kind
 	page.process_mode = Node.PROCESS_MODE_DISABLED
 	modal = ColorRect.new()
-	modal.color = Color(0, 0, 0, 0.42 if kind == "pause" else 0.85)
+	modal.color = Color(0, 0, 0, 0.42 if kind == "pause" else 0.85) if dark else Color("fcfcfbd4" if kind != "pause" else "fcfcfb65")
 	modal.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(modal)
 	modal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -584,7 +589,7 @@ func _panel(kind: String, title: String, width: float = 570) -> VBoxContainer:
 	modal_panel = panel
 	modal_width = width
 	panel.custom_minimum_size.x = minf(size.x - 52, width * ui_scale())
-	panel.add_theme_stylebox_override("panel", box(Color("101214"), Color("41474c"), 28))
+	panel.add_theme_stylebox_override("panel", box(surface, edge, 28))
 	center.add_child(panel)
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 17)
@@ -596,7 +601,7 @@ func _panel(kind: String, title: String, width: float = 570) -> VBoxContainer:
 func _dialog(kind: String, title: String, description: String, choices: Array) -> void:
 	var content := _panel(kind, title)
 	if not description.is_empty():
-		var desc := text_label(description, 18, MUTED)
+		var desc := text_label(description, 18, muted)
 		desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		content.add_child(desc)
 	var buttons := HFlowContainer.new()
@@ -683,7 +688,7 @@ func _update_option_label(id: String) -> void:
 	var button: Button = label.get_parent()
 	button.accessibility_description = label.text
 	if button.disabled:
-		label.add_theme_color_override("font_color", DIM)
+		label.add_theme_color_override("font_color", dim)
 
 func _add_option(rows: VBoxContainer, id: String, title: String, enabled: bool = true) -> Button:
 	var change := _cycle_setting if CHOICES.has(id) else _toggle_setting
@@ -711,6 +716,8 @@ func _add_volume(rows: VBoxContainer, id: String, title: String) -> void:
 	caption.custom_minimum_size.x = 66 * ui_scale()
 	row.add_child(caption)
 	var slider := HSlider.new()
+	for icon_state in ["grabber", "grabber_highlight", "grabber_disabled"]:
+		slider.add_theme_icon_override(icon_state, preload("res://assets/slider-grip.svg"))
 	slider.accessibility_name = tr("%s Volume") % tr(title)
 	slider.min_value = 0
 	slider.max_value = 100
@@ -720,17 +727,17 @@ func _add_volume(rows: VBoxContainer, id: String, title: String) -> void:
 	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var track := StyleBoxFlat.new()
-	track.bg_color = Color("3b454b")
+	track.bg_color = Color("3b454b") if dark else Color("d7dcdb")
 	track.set_corner_radius_all(2)
 	track.content_margin_top = 2
 	track.content_margin_bottom = 2
 	slider.add_theme_stylebox_override("slider", track)
 	var filled: StyleBoxFlat = track.duplicate()
-	filled.bg_color = MUTED if slider.editable else DIM
+	filled.bg_color = muted if slider.editable else dim
 	slider.add_theme_stylebox_override("grabber_area", filled)
 	slider.add_theme_stylebox_override("grabber_area_highlight", filled)
 	row.add_child(slider)
-	var percent := text_label("%d%%" % int(slider.value), 16, ACCENT if slider.editable else DIM, HORIZONTAL_ALIGNMENT_RIGHT)
+	var percent := text_label("%d%%" % int(slider.value), 16, accent if slider.editable else dim, HORIZONTAL_ALIGNMENT_RIGHT)
 	percent.custom_minimum_size.x = 52 * ui_scale()
 	row.add_child(percent)
 	slider.value_changed.connect(func(value: float):
@@ -781,8 +788,8 @@ func show_settings(focus_id: String = "") -> void:
 		language.toggle_mode = true
 		language.button_group = language_group
 		language.set_pressed_no_signal(locale == store.data.language)
-		language.add_theme_color_override("font_color", MUTED)
-		language.add_theme_color_override("font_pressed_color", Color.WHITE)
+		language.add_theme_color_override("font_color", muted)
+		language.add_theme_color_override("font_pressed_color", ink)
 		if locale == store.data.language:
 			current_language = language
 			language.accessibility_description = tr("Selected")
@@ -797,8 +804,8 @@ func show_settings(focus_id: String = "") -> void:
 		tab.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		tab.toggle_mode = true
 		tab.set_pressed_no_signal(section == settings_section)
-		tab.add_theme_color_override("font_color", MUTED)
-		tab.add_theme_color_override("font_pressed_color", Color.WHITE)
+		tab.add_theme_color_override("font_color", muted)
+		tab.add_theme_color_override("font_pressed_color", ink)
 		if section == settings_section:
 			current_tab = tab
 			tab.accessibility_description = tr("Selected")
@@ -837,8 +844,11 @@ func _leave_settings() -> void:
 
 func show_help() -> void:
 	var back: Callable = show_settings
-	if screen == "game" and (not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS)):
+	var silence: bool = screen == "game" and session.gates.any(func(gate): return not gate.vacant.is_empty())
+	if screen == "game" and (silence or not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS)):
 		var rules := PackedStringArray(["Move one tile per beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."])
+		if silence:
+			rules.append("A gate marked −A needs A empty before you move. −L needs an empty lens; even one echo keeps it shut. A fading echo can open the way.")
 		if session.plates.has(Puzzle.LENS):
 			rules.append("L is a lens. Two selves on its tile open the L gate for the next move. Two echoes count, even when you are elsewhere.")
 		if not session.turnstiles.is_empty():
@@ -866,11 +876,11 @@ func show_pause() -> void:
 	modal_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	modal_panel.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
 	modal_panel.offset_left = -minf(size.x - 52, modal_width * ui_scale())
-	var surface := box(Color("101519"), Color("55616a"), 26 * ui_scale())
-	surface.set_corner_radius_all(0)
-	surface.set_border_width_all(0)
-	surface.border_width_left = 1
-	modal_panel.add_theme_stylebox_override("panel", surface)
+	var panel_style := box(surface, edge, 26 * ui_scale())
+	panel_style.set_corner_radius_all(0)
+	panel_style.set_border_width_all(0)
+	panel_style.border_width_left = 1
+	modal_panel.add_theme_stylebox_override("panel", panel_style)
 	if store.data.motion:
 		var left := modal_panel.offset_left
 		var slide := modal_panel.create_tween().set_parallel(true).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -884,7 +894,7 @@ func show_pause() -> void:
 	content.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_theme_constant_override("separation", roundi(14 * ui_scale()))
 	modal_panel.add_child(content)
-	content.add_child(text_label(tr("Room %s   /   %s") % [session.level.id, tr(session.level.title)], 16, MUTED))
+	content.add_child(text_label(tr("Room %s   /   %s") % [session.level.id, tr(session.level.title)], 16, muted))
 	content.add_child(text_label("Paused", 34))
 	var rows := VBoxContainer.new()
 	rows.add_theme_constant_override("separation", 2)

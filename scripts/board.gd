@@ -3,14 +3,15 @@ extends Control
 signal move_requested(delta: Vector2i)
 signal motion_finished
 
-const INK := Color("f2f6f8")
-const MUTED := Color("abb9c3")
+var ink := Color("f2f6f8")
+var muted := Color("abb9c3")
 var active := Color("c7e0ec")
+var player_fill := Color("e5f0f7")
 var floor_color := Color("161a1d")
 var grid_color := Color("6a7780")
-const PIECE_EDGE := Color.WHITE
-const SECOND_ECHO_EDGE := Color("d5efff")
-const PIECE_SHADOW := Color("0c1115")
+var piece_edge := Color.WHITE
+var second_echo_edge := Color("d5efff")
+var piece_shadow := Color("0c1115")
 const VOID_CELL := Vector2i(-999, -999)
 var puzzle
 var font: Font
@@ -30,6 +31,13 @@ func set_colors(colors: Dictionary) -> void:
 	floor_color = colors.tile
 	grid_color = colors.grid
 	active = colors.light
+	var night: bool = colors.get("dark", false)
+	ink = Color("f2f4f3") if night else Color("242d30")
+	muted = Color("abb9c3") if night else Color("66777c")
+	player_fill = Color("e5f0f7") if night else Color("263135")
+	piece_edge = Color.WHITE if night else Color("17262a")
+	second_echo_edge = Color("d5efff") if night else Color("53696f")
+	piece_shadow = Color("0c1115") if night else Color("fffefa")
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -120,7 +128,7 @@ func _draw() -> void:
 		var edge := grid_color
 		if cell == hover and puzzle.can_move(cell - player):
 			fill = floor_color.lerp(active, 0.14)
-			edge = MUTED
+			edge = muted
 		draw_rect(rect, fill)
 		draw_rect(rect, edge, false, maxf(1.0, unit * 0.012), true)
 	var linked_switch: Vector2i = hover if hover in puzzle.switches else selected_switch
@@ -135,14 +143,14 @@ func _draw() -> void:
 	if hover in puzzle.plates.values():
 		inspected = puzzle.plates.find_key(hover)
 	for gate in puzzle.gates:
-		if inspected in gate.requires:
+		if inspected in gate.requires or inspected in gate.vacant:
 			var midpoint := (center_of(gate.a) + center_of(gate.b)) * 0.5
 			draw_dashed_line(center_of(puzzle.plates[inspected]), midpoint, Color(active, 0.4), 1.25, 5.0, true, true)
 	for id in puzzle.plates:
 		var center := center_of(puzzle.plates[id])
 		var enabled: bool = puzzle.plate_on(id)
 		var r := unit * 0.30
-		var edge: Color = active if enabled else MUTED
+		var edge: Color = active if enabled else muted
 		var caption: String = id
 		if id == puzzle.LENS:
 			caption = "L"
@@ -156,9 +164,9 @@ func _draw() -> void:
 		draw_string(font, base, caption, HORIZONTAL_ALIGNMENT_LEFT, -1, text_size, edge)
 	var exit_center := center_of(puzzle.goal)
 	var exit_rect := Rect2(exit_center - Vector2.ONE * unit * 0.205, Vector2.ONE * unit * 0.41)
-	draw_rect(exit_rect, INK, false, maxf(1.3, unit * 0.019), true)
+	draw_rect(exit_rect, ink, false, maxf(1.3, unit * 0.019), true)
 	var start_center := center_of(puzzle.start)
-	draw_circle(start_center, unit * 0.065, Color(MUTED, 0.55), false, 1, true)
+	draw_circle(start_center, unit * 0.065, Color(muted, 0.55), false, 1, true)
 	for i in puzzle.gates.size():
 		var gate: Dictionary = puzzle.gates[i]
 		var a := center_of(gate.a)
@@ -172,15 +180,18 @@ func _draw() -> void:
 			draw_line(middle - end, middle - end * 0.72, active, width, true)
 			draw_line(middle + end, middle + end * 0.72, active, width, true)
 		else:
-			draw_line(middle - end, middle + end, INK, width, true)
-		var name := "+".join(PackedStringArray(gate.requires)).replace(puzzle.LENS, "L")
+			draw_line(middle - end, middle + end, ink, width, true)
+		var name := "+".join(PackedStringArray(gate.requires))
+		for id in gate.vacant:
+			name += ("  " if not name.is_empty() else "") + "−" + id
+		name = name.replace(puzzle.LENS, "L")
 		var anchor := middle + Vector2(5.0, -unit * 0.49) if absf(a.y - b.y) < 1.0 else middle + Vector2(unit * 0.53, -3)
-		draw_string(font, anchor, name, HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(11, roundi(unit * 0.15)), active if open else MUTED)
+		draw_string(font, anchor, name, HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(11, roundi(unit * 0.15)), active if open else muted)
 	if show_routes:
 		for i in puzzle.echoes.size():
 			var route: Array = puzzle.echoes[i]
 			for j in range(1, route.size()):
-				draw_dashed_line(center_of(route[j-1]), center_of(route[j]), Color(MUTED, path_opacity), 1.3, 5.0, true, true)
+				draw_dashed_line(center_of(route[j-1]), center_of(route[j]), Color(muted, path_opacity), 1.3, 5.0, true, true)
 	var now: Array = puzzle.actors()
 	var eased := smoothstep(0.0, 1.0, phase)
 	# Draw older actors first, then the solid player on top of overlapping rings.
@@ -194,15 +205,15 @@ func _draw() -> void:
 			center = center_of(old).lerp(center_of(target), eased)
 		if n == 0:
 			var radius := unit * 0.125
-			draw_circle(center, radius, Color("e5f0f7"), true, -1, true)
-			draw_arc(center, radius, 0, TAU, 64, PIECE_EDGE, maxf(1.6, unit * 0.024), true)
+			draw_circle(center, radius, player_fill, true, -1, true)
+			draw_arc(center, radius, 0, TAU, 64, piece_edge, maxf(1.6, unit * 0.024), true)
 		else:
 			var alpha := 1.0 - eased if target == null else 1.0
 			var radius := unit * (0.18 if n == 1 else 0.245)
 			var width := maxf(2.0, unit * 0.036)
-			# Separate the bright ring from a plate or bridge underneath it.
-			draw_arc(center, radius, 0, TAU, 64, Color(PIECE_SHADOW, alpha), width + 2.0, true)
-			draw_arc(center, radius, 0, TAU, 64, Color(PIECE_EDGE if n == 1 else SECOND_ECHO_EDGE, alpha), width, true)
+			# Separate the echo ring from a plate or bridge underneath it.
+			draw_arc(center, radius, 0, TAU, 64, Color(piece_shadow, alpha), width + 2.0, true)
+			draw_arc(center, radius, 0, TAU, 64, Color(piece_edge if n == 1 else second_echo_edge, alpha), width, true)
 
 func _draw_switch(center: Vector2, unit: float, state: int) -> void:
 	var r := unit * 0.32
@@ -223,7 +234,7 @@ func _draw_bridge(cell: Vector2i, rect: Rect2, state: int) -> void:
 	deck.size.y *= 0.22 + 0.78*strength
 	deck.position.y = center.y - deck.size.y*0.5
 	draw_rect(deck, floor_color.lerp(active, 0.04 + 0.18*strength))
-	draw_rect(deck, Color(MUTED, 0.56+0.42*strength), false, maxf(1.2,unit*0.022), true)
+	draw_rect(deck, Color(muted, 0.56+0.42*strength), false, maxf(1.2,unit*0.022), true)
 	var slope := 1 if puzzle.bridges[cell] == 0 else -1
 	for n in [-1, 0, 1]:
 		var x: float = center.x + n*unit*0.20
@@ -235,12 +246,12 @@ func _draw_turnstile(index: int, unit: float, state: int) -> void:
 	var dir := Vector2(puzzle.turn_direction(index, state))
 	var normal := dir.orthogonal()
 	var half := unit*0.36
-	draw_line(middle-normal*half, middle+normal*half, MUTED, maxf(1.3,unit*0.025), true)
+	draw_line(middle-normal*half, middle+normal*half, muted, maxf(1.3,unit*0.025), true)
 	if phase < 1.0 and puzzle.turn_direction(index, previous_mechanisms) != puzzle.turn_direction(index, state):
 		dir = Vector2(puzzle.turn_direction(index, previous_mechanisms)).rotated(PI*smoothstep(0.0, 1.0, phase))
 	normal = dir.orthogonal()
-	draw_circle(middle, unit*0.21, Color("182127"), true, -1, true)
-	draw_arc(middle, unit*0.21, 0, TAU, 48, MUTED, maxf(1,unit*0.014), true)
+	draw_circle(middle, unit*0.21, floor_color, true, -1, true)
+	draw_arc(middle, unit*0.21, 0, TAU, 48, muted, maxf(1,unit*0.014), true)
 	var tip := middle + dir*unit*0.135
 	draw_line(middle-dir*unit*0.13, tip, active, maxf(1.5,unit*0.032), true)
 	draw_polyline(PackedVector2Array([tip-dir*unit*0.09+normal*unit*0.085, tip, tip-dir*unit*0.09-normal*unit*0.085]), active, maxf(1.5,unit*0.032), true)

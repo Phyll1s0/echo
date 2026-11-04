@@ -1,9 +1,12 @@
 extends Control
 
-const INK := Color("f2f6f8")
-const MUTED := Color("b2bec7")
-const DIM := Color("8996a0")
-const ACCENT := Color("cbe1ed")
+var ink := Color("292d2e")
+var muted := Color("626a6d")
+var dim := Color("969c9d")
+var accent := Color("405c61")
+var surface := Color("fcfcfb")
+var edge := Color("d6dad8")
+var dark := false
 var regular: Font
 var thin: Font
 
@@ -17,12 +20,6 @@ func setup_skin() -> void:
 	var skin := Theme.new()
 	skin.default_font = regular
 	skin.default_font_size = 15
-	skin.set_color("font_color", "Label", INK)
-	skin.set_color("font_color", "Button", INK)
-	skin.set_color("font_hover_color", "Button", Color.WHITE)
-	skin.set_color("font_focus_color", "Button", Color.WHITE)
-	skin.set_color("font_pressed_color", "Button", ACCENT)
-	skin.set_color("font_disabled_color", "Button", Color("8996a0"))
 	var bare := StyleBoxEmpty.new()
 	bare.content_margin_left = 13
 	bare.content_margin_right = 13
@@ -33,6 +30,24 @@ func setup_skin() -> void:
 	skin.set_constant("separation", "VBoxContainer", 8)
 	skin.set_constant("separation", "HBoxContainer", 12)
 	theme = skin
+	apply_palette(false)
+
+func apply_palette(night: bool) -> void:
+	dark = night
+	ink = Color("f2f4f3") if dark else Color("292d2e")
+	muted = Color("b2b9bc") if dark else Color("626a6d")
+	dim = Color("858e93") if dark else Color("969c9d")
+	accent = Color("d9e3e5") if dark else Color("405c61")
+	surface = Color("101214") if dark else Color("fcfcfb")
+	edge = Color("41474c") if dark else Color("d6dad8")
+	theme.set_color("font_color", "Label", ink)
+	theme.set_color("font_color", "Button", ink)
+	for state in ["hover", "focus", "pressed", "hover_pressed"]:
+		theme.set_color("font_" + state + "_color", "Button", Color.WHITE if dark else Color("101617"))
+	theme.set_color("font_disabled_color", "Button", dim)
+	for state in ["normal", "hover", "focus", "pressed", "hover_pressed"]:
+		theme.set_color("icon_" + state + "_color", "Button", ink)
+	theme.set_color("icon_disabled_color", "Button", dim)
 
 func box(fill: Color, edge: Color, margin: float = 13) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
@@ -46,14 +61,14 @@ func box(fill: Color, edge: Color, margin: float = 13) -> StyleBoxFlat:
 	style.content_margin_bottom = 7
 	return style
 
-func text_label(value: String, px: int = 16, color: Color = INK, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
+func text_label(value: String, px: int = 16, color: Color = Color.TRANSPARENT, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
 	var node := Label.new()
 	node.text = tr(value)
 	node.horizontal_alignment = align
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	node.set_meta("base_px", px)
 	node.add_theme_font_size_override("font_size", roundi(px * ui_scale()))
-	node.add_theme_color_override("font_color", color)
+	node.add_theme_color_override("font_color", ink if color == Color.TRANSPARENT else color)
 	return node
 
 func action(value: String, callback: Callable, width: float = 0, primary: bool = false) -> Button:
@@ -65,7 +80,7 @@ func action(value: String, callback: Callable, width: float = 0, primary: bool =
 	if primary:
 		button.set_meta("base_px", 18)
 		button.add_theme_font_size_override("font_size", roundi(18 * ui_scale()))
-		button.add_theme_color_override("font_color", Color.WHITE)
+		button.add_theme_color_override("font_color", ink)
 	button.draw.connect(_draw_action_line.bind(button))
 	return button
 
@@ -82,7 +97,7 @@ func _draw_action_line(button: Button) -> void:
 	var x := (button.size.x - width) * 0.5
 	if button.alignment == HORIZONTAL_ALIGNMENT_LEFT:
 		x = button.get_theme_stylebox("normal").get_content_margin(SIDE_LEFT)
-	button.draw_line(Vector2(x, y), Vector2(x + width, y), ACCENT, 1.0, true)
+	button.draw_line(Vector2(x, y), Vector2(x + width, y), accent, 1.0, true)
 
 func spacer(horizontal: bool = true) -> Control:
 	var space := Control.new()
@@ -101,7 +116,7 @@ func list_action(value: String, callback: Callable) -> Button:
 func home_action(value: String, callback: Callable) -> Button:
 	var button := action(value, callback)
 	button.set_meta("base_px", 22)
-	button.add_theme_color_override("font_color", Color.WHITE)
+	button.add_theme_color_override("font_color", ink)
 	return button
 
 func ui_scale() -> float:

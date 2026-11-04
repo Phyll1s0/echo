@@ -73,6 +73,7 @@ func _initialize() -> void:
 	DirAccess.remove_absolute(path)
 	_test_devices(catalog)
 	_test_lens(catalog)
+	_test_silence(catalog)
 	print("ECHO rules: %d checks; %d failures." % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -140,3 +141,24 @@ func _test_lens(catalog: Array) -> void:
 	for i in finale.echoes.size():
 		var cell: Vector2i = finale.echo_position(i)
 		verify(not finale.bridge_active(cell, finale.mechanism_state()), "After the rendezvous each tape crosses its folded bridge")
+
+func _test_silence(catalog: Array) -> void:
+	var hush = Puzzle.new(catalog[14])
+	walk(hush, "UUDU")
+	verify(hush.seal(), "Record a return visit to A")
+	walk(hush, "RRRR")
+	var before: Dictionary = hush.snapshot()
+	verify(not hush.move(Vector2i.RIGHT) and hush.snapshot()==before, "An occupied silence plate blocks without consuming a beat")
+	walk(hush, "LRR")
+	verify(hush.cleared(), "Pacing lets the echo fade and opens the silence gate")
+	var last = Puzzle.new(catalog[16])
+	walk(last, "LLUURRRL")
+	verify(last.seal(), "Record a later return to the lens")
+	walk(last, "RRUULL")
+	verify(last.seal(), "The other echo ends on its first meeting")
+	walk(last, "DDRRRDDD")
+	verify(not last.plate_on(Puzzle.LENS) and not last.gate_open(last.gates[-1]), "One remaining self keeps a silence lens shut even though it is no longer activated")
+	var restored = Puzzle.new(catalog[16])
+	verify(restored.restore(last.snapshot()) and not restored.can_move(Vector2i.DOWN), "A saved silence gate restores its occupancy")
+	walk(last, "UDD")
+	verify(last.cleared() and last.undo() and last.undo() and last.undo() and not last.can_move(Vector2i.DOWN), "Undo restores the echo and closes the silence gate again")

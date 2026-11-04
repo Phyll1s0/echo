@@ -1,12 +1,12 @@
 extends Control
 
-# The background, floor, grid and active hardware share a palette. Actors
-# and closed gates keep their original white silhouettes in every landscape.
+# Four quiet pigments on paper, followed by an ink-black final chapter.
 const WORLDS := {
-	"Afterimage": {"sky": Color("071510"), "far": Color("142d24"), "near": Color("0c211a"), "ink": Color("93bb97"), "tile": Color("172720"), "grid": Color("738e7e"), "light": Color("bfe6c6")},
-	"Resonance": {"sky": Color("071620"), "far": Color("133748"), "near": Color("102a39"), "ink": Color("87becb"), "tile": Color("122833"), "grid": Color("6c90a1"), "light": Color("aee7f2")},
-	"Phase Shift": {"sky": Color("1b1411"), "far": Color("3b2c23"), "near": Color("2c211c"), "ink": Color("d0a578"), "tile": Color("2c231d"), "grid": Color("a18a73"), "light": Color("f3d5aa")},
-	"Penumbra": {"sky": Color("100e20"), "far": Color("2c2947"), "near": Color("1d1a30"), "ink": Color("aaa2d4"), "tile": Color("211f32"), "grid": Color("87849f"), "light": Color("dbd4ff")}
+	"Afterimage": {"sky": Color("f7faf6"), "far": Color("e9efe8"), "near": Color("dde7dd"), "ink": Color("728a77"), "tile": Color("eef3ec"), "grid": Color("89988c"), "light": Color("3c684c")},
+	"Resonance": {"sky": Color("f7fafb"), "far": Color("e5eef2"), "near": Color("d8e6eb"), "ink": Color("708c9a"), "tile": Color("ebf2f5"), "grid": Color("879aa4"), "light": Color("326279")},
+	"Phase Shift": {"sky": Color("fcfaf5"), "far": Color("f0e9dc"), "near": Color("e8decb"), "ink": Color("a28d69"), "tile": Color("f5efe3"), "grid": Color("a99a82"), "light": Color("88623b")},
+	"Penumbra": {"sky": Color("faf9fc"), "far": Color("eeebf4"), "near": Color("e3dfed"), "ink": Color("9990ac"), "tile": Color("f0edf6"), "grid": Color("9a91aa"), "light": Color("6c5585")},
+	"Nocturne": {"dark": true, "sky": Color("08090a"), "far": Color("111315"), "near": Color("171a1c"), "ink": Color("899295"), "tile": Color("171a1c"), "grid": Color("748083"), "light": Color("e3e8e8")}
 }
 
 var animated := true
@@ -40,13 +40,31 @@ func _draw() -> void:
 			"Resonance": _ocean(colors)
 			"Phase Shift": _desert(colors)
 			"Penumbra": _eclipse(colors)
+			"Nocturne": _nocturne(colors)
 		return
-	draw_rect(Rect2(Vector2.ZERO, size), Color.BLACK)
+	draw_rect(Rect2(Vector2.ZERO, size), Color("fcfcfb"))
+	# Sparse dots suggest the echo rings, leaving a clean centre for the title.
 	var span := maxf(size.x, size.y)
-	var center := Vector2(size.x * 0.14, size.y * 0.86)
-	for i in 4:
-		var radius := span * (0.33 + i * 0.12) + sin(clock * 0.12 + i) * 3
-		draw_arc(center, radius, -1.72, 0.46, 150, Color(0.75, 0.82, 0.86, 0.055 + i * 0.006), 1.0, true)
+	var spacing := maxf(18, span / 64)
+	for row in range(ceili(size.y / spacing)):
+		for col in range(ceili(size.x / spacing)):
+			var point := Vector2((col + 0.5) * spacing, (row + 0.5) * spacing)
+			var quiet := smoothstep(0.18, 0.48, point.distance_to(size * 0.5) / span)
+			var wave := 0.5 + 0.5 * sin(point.distance_to(size * Vector2(0.16, 0.86)) * 0.023 - clock * 0.05)
+			draw_circle(point, 0.8, Color(0.35, 0.42, 0.42, quiet * (0.025 + wave * 0.045)), true, -1, true)
+
+func _nocturne(c: Dictionary) -> void:
+	var centre := Vector2(0.13, 0.25) * size
+	var radius := size.y * 0.063
+	draw_arc(centre, radius, 0, TAU, 80, Color(c.ink, 0.20), 1, true)
+	draw_circle(centre + Vector2(radius, 0), 2.0, Color(c.light, 0.68), true, -1, true)
+	for layer in 5:
+		var line := PackedVector2Array()
+		for n in 101:
+			var x := n / 100.0
+			var y := 0.87 + layer * 0.029 + 0.012 * sin(x * 9.0 + layer * 0.22)
+			line.append(Vector2(x, y) * size)
+		draw_polyline(line, Color(c.ink, 0.10 + layer * 0.018), 1, true)
 
 # Fill the landscape down to the bottom edge, preserving the upper contour.
 func _bank(line: PackedVector2Array, fill: Color, edge: Color) -> void:

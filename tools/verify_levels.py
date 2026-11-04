@@ -29,10 +29,13 @@ class Room:
         self.start, self.goal = marks.pop("S"), marks.pop("X")
         self.pads = marks
         self.gates = {}
+        self.vacancies = {}
         for gate in level["gates"]:
             edge = self.edge(*gate["a"], *gate["b"])
-            assert edge not in self.gates and gate["requires"]
+            assert edge not in self.gates and (gate["requires"] or gate.get("vacant"))
             self.gates[edge] = {marks[key] for key in gate["requires"]}
+            self.vacancies[edge] = {marks[key] for key in gate.get("vacant", [])}
+            assert not self.gates[edge] & self.vacancies[edge]
         self.turns = {}
         for i, (a, b) in enumerate(level.get("turnstiles", [])):
             edge = self.edge(*a, *b)
@@ -54,7 +57,8 @@ class Room:
                 bit = turn[1] if turn else 0
                 trigger = (bit | int(dest in self.switches)) & self.live_bits
                 self.links[p].append((letter, dest, trigger, self.bridges.get(dest),
-                                      bit, bool(turn and turn[0] != p), self.gates.get(edge, set())))
+                                      bit, bool(turn and turn[0] != p), self.gates.get(edge, set()),
+                                      self.vacancies.get(edge, set())))
 
     def edge(self, x, y, u, v):
         a, b = (x, y), (u, v)
@@ -62,12 +66,14 @@ class Room:
         return frozenset((a, b))
 
     def choices(self, player, occupied, state):
-        for letter, dest, trigger, bank, bit, reverse, pads in self.links[player]:
+        for letter, dest, trigger, bank, bit, reverse, pads, vacant in self.links[player]:
             if bank is not None and bank != (state & 1):
                 continue
             if bit and bool(state & bit) != reverse:
                 continue
             if not all(pos in occupied for pos in pads):
+                continue
+            if any(pos in occupied for pos in vacant):
                 continue
             lens = self.pads.get('@')
             if lens not in pads or occupied.count(lens) >= 2:
@@ -150,7 +156,7 @@ class Room:
         seen, q = {start}, deque([start])
         while q:
             pos = q.popleft()
-            for _, dest, _, bank, bit, reverse, _ in self.links[pos]:
+            for _, dest, _, bank, bit, reverse, _, _ in self.links[pos]:
                 if (fixed_bank is not None and bank is not None and bank != fixed_bank) or (fixed_arrows and bit and reverse):
                     continue
                 if blocked_edge and frozenset((pos, dest)) == blocked_edge:
@@ -177,10 +183,7 @@ class Room:
             pre = entrances[0]
             required = self.gates[frozenset((pre, self.goal))]
             assert pre not in required
-            if '@' in self.pads:
-                assert self.one_echo_solution() is None, "The remote lens must need two recordings"
-            else:
-                assert len(required) == 2
+            assert self.one_echo_solution() is None, "This room must require two recordings"
             if self.turns and self.bridges:
                 # Counterpoint: with no bridge swaps, at least one final post is
                 # unreachable. With static arrows the first person who can change

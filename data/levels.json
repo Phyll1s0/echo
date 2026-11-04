@@ -651,5 +651,184 @@
       "In the last round, flip the bank on your way to the lens gate. Your echoes can cross the folded bridges on the way back.",
       "Echo 1  ↑ ↑ ← ← ← ↓ ↓ ↑ ↑ → →     Echo 2  ↓ ↓ ← ← ← ↑ ↑ ↓ ↓ → →     Exit  → → ↓ ↓ ↓ → → ↑ ↑ ↑ → →"
     ]
+  },
+  {
+    "id": "15",
+    "title": "Hush",
+    "chapter": "Nocturne",
+    "chapter_entry": true,
+    "max_echoes": 1,
+    "rows": [
+      "A#####",
+      ".#####",
+      "S....X"
+    ],
+    "gates": [
+      {
+        "a": [
+          2,
+          2
+        ],
+        "b": [
+          3,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          4,
+          2
+        ],
+        "b": [
+          5,
+          2
+        ],
+        "requires": [],
+        "vacant": [
+          "A"
+        ]
+      }
+    ],
+    "intro": "A opens one gate. An empty A opens the next. Let your echo finish its part.",
+    "hints": [
+      "A minus sign marks an empty-plate gate. It checks the board before your move.",
+      "End the recording on A. The echo opens the first gate, then fades before you reach the second.",
+      "Echo  ↑ ↑     Exit  five steps right."
+    ],
+    "recordings": [
+      "UU"
+    ],
+    "final": "RRRRR"
+  },
+  {
+    "id": "16",
+    "title": "Negative Space",
+    "chapter": "Nocturne",
+    "max_echoes": 2,
+    "rows": [
+      "###X###",
+      "###.###",
+      "###.###",
+      "#A...B#",
+      "#.#.#.#",
+      "#..S..#"
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          3
+        ],
+        "b": [
+          3,
+          2
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          3,
+          1
+        ],
+        "b": [
+          3,
+          0
+        ],
+        "requires": [
+          "B"
+        ],
+        "vacant": [
+          "A"
+        ]
+      }
+    ],
+    "intro": "Together at first. Then only B. Give one echo a shorter ending.",
+    "hints": [
+      "The first gate needs both plates. The last needs B occupied and A empty.",
+      "Let the A recording end on beat four. Have the B recording leave its plate and return on beat six.",
+      "Echo 1  ← ← ↑ ↑     Echo 2  → → ↑ ↑ ↓ ↑     Exit  ← → ↑ ↑ ↑ ↑ ↑"
+    ],
+    "recordings": [
+      "LLUU",
+      "RRUUDU"
+    ],
+    "final": "LRUUUUU"
+  },
+  {
+    "id": "17",
+    "title": "Coda",
+    "chapter": "Nocturne",
+    "max_echoes": 2,
+    "rows": [
+      "#A.@.B#",
+      "#.###.#",
+      "#..S..#",
+      "###.###",
+      "###....",
+      "######.",
+      "######.",
+      "######.",
+      "######X"
+    ],
+    "gates": [
+      {
+        "a": [
+          5,
+          4
+        ],
+        "b": [
+          6,
+          4
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          6,
+          5
+        ],
+        "b": [
+          6,
+          6
+        ],
+        "requires": [
+          "@"
+        ]
+      },
+      {
+        "a": [
+          6,
+          7
+        ],
+        "b": [
+          6,
+          8
+        ],
+        "requires": [],
+        "vacant": [
+          "@"
+        ]
+      }
+    ],
+    "intro": "Separate, meet, disappear. Three gates need three different moments.",
+    "hints": [
+      "The first gate needs A and B. The second needs two selves on L. The final gate needs L completely empty.",
+      "Let both recordings end together on L. Cross the L gate on their last beat; after they fade, the last gate opens.",
+      "Echo 1  ← ← ↑ ↑ → →     Echo 2  → → ↑ ↑ ← ←     Exit  ↓ ↓ → → → ↓ ↓ ↓ ↓"
+    ],
+    "recordings": [
+      "LLUURR",
+      "RRUULL"
+    ],
+    "final": "DDRRRDDDD"
   }
 ]

@@ -295,8 +295,23 @@ func _run() -> void:
 	await capture("home-start")
 	await test_home_settings()
 	await click_named("Chapters")
-	verify(ui.screen=="chapters" and ui.chapter_index.get_child_count()==4 and room_card(0)==null, "The index only offers chapter names")
+	verify(ui.screen=="chapters" and ui.chapter_index.get_child_count()==5 and room_card(0)==null, "The index only offers five chapter names")
 	await capture("chapters")
+	await click_named("Nocturne")
+	verify(not room_card(14).disabled and room_card(15).disabled and ui.dark, "The black chapter can be entered directly, with later rooms locked")
+	await click(room_card(14).get_global_rect().get_center())
+	await key(KEY_ESCAPE)
+	await click_named("Settings")
+	verify(ui.dark and ui.surface.r < 0.1, "Black chapter settings retain a readable dark surface")
+	await capture("settings-nocturne")
+	await click_named("How to Play")
+	await capture("help-nocturne")
+	await click_named("Got It")
+	await click_named("Back")
+	await click_named("Resume")
+	await click_named("Back")
+	await click_named("← Chapters")
+	verify(not ui.dark and ui.ink.r < 0.25, "Returning from the black chapter restores paper and dark text")
 	await click_named("Penumbra")
 	verify(not room_card(10).disabled and room_card(11).disabled, "Penumbra starts at First Contact without requiring earlier chapters")
 	await click_named("← Chapters")
@@ -306,6 +321,10 @@ func _run() -> void:
 	verify(ui.screen=="chapters", "Escape from rooms returns to the chapter names")
 	await key(KEY_ESCAPE)
 	verify(ui.screen=="home", "Escape from the chapter index returns home")
+	# The chapter preview creates a resumable room; reset only this isolated test save.
+	ui.store.data.session = {}
+	ui.show_home()
+	await settle()
 	await click_named("Start")
 	verify(ui.screen=="game" and ui.level_index==0, "Start opens the first room")
 	if ui.screen!="game":
@@ -446,9 +465,11 @@ func _run() -> void:
 		if i in [8,9]:
 			if not ui.board.show_routes: await key(KEY_T)
 			await capture("room-"+ui.session.level.id)
+		if i >= 14:
+			await capture("room-"+ui.session.level.id)
 		await walk(final.right(1))
 		verify(ui.modal_kind=="complete", "Room completed through keyboard: "+ui.session.level.id)
-		if i in [3,5,9]:
+		if i in [3,5,9,13]:
 			await click_named("Next Chapter")
 			verify(ui.level_index==i+1 and ui.modal==null, "Chapter completion opens the next chapter")
 	verify(ui.store.data.completed.size()==ui.levels.size(), "All rooms completed")

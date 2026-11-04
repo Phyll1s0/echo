@@ -57,7 +57,7 @@ func configure(data: Dictionary) -> void:
 			elif mark != ".":
 				plates[mark] = cell
 	for item in level.gates:
-		gates.append({"a": Vector2i(int(item.a[0]), int(item.a[1])), "b": Vector2i(int(item.b[0]), int(item.b[1])), "requires": item.requires.duplicate()})
+		gates.append({"a": Vector2i(int(item.a[0]), int(item.a[1])), "b": Vector2i(int(item.b[0]), int(item.b[1])), "requires": item.requires.duplicate(), "vacant": item.get("vacant", []).duplicate()})
 	for edge in level.get("turnstiles", []):
 		turnstiles.append([Vector2i(int(edge[0][0]), int(edge[0][1])), Vector2i(int(edge[1][0]), int(edge[1][1]))])
 	reset_all()
@@ -102,6 +102,9 @@ func plate_on(id: String) -> bool:
 func gate_open(gate: Dictionary) -> bool:
 	for id in gate.requires:
 		if not plate_on(id):
+			return false
+	for id in gate.vacant:
+		if plates[id] in occupied():
 			return false
 	return true
 
@@ -153,6 +156,9 @@ func blocked_reason(delta: Vector2i) -> String:
 			if not gate_open(gate):
 				if LENS in gate.requires and not plate_on(LENS):
 					return "Two selves must meet on L."
+				for id in gate.vacant:
+					if plates[id] in occupied():
+						return "Gate needs empty " + id.replace(LENS, "L")
 				return "Gate requires " + " + ".join(PackedStringArray(gate.requires)).replace(LENS, "L")
 	return ""
 
