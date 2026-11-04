@@ -27,6 +27,8 @@ var store
 var session
 var level_index := 0
 var screen := ""
+# Keep the entry page when restarting or advancing to another room.
+var room_return: Callable
 var ambient
 var page: Control
 var modal: ColorRect
@@ -147,6 +149,7 @@ func _next_unfinished() -> int:
 	return 0
 
 func show_home() -> void:
+	room_return = show_home
 	_fresh_page("home")
 	var body := _body()
 	var top := HBoxContainer.new()
@@ -217,6 +220,7 @@ func _selection_page(screen_name: String, back_label: String, on_back: Callable,
 	return chapter_index
 
 func show_chapters() -> void:
+	room_return = show_chapters
 	var index := _selection_page("chapters", "← Home", show_home)
 	for chapter in chapters:
 		var item := MarginContainer.new()
@@ -229,6 +233,7 @@ func show_chapters() -> void:
 	_layout()
 
 func show_rooms(chapter: String) -> void:
+	room_return = show_rooms.bind(chapter)
 	var index := _selection_page("rooms", "← Chapters", show_chapters, chapter)
 	var heading := HBoxContainer.new()
 	index.add_child(heading)
@@ -275,12 +280,12 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", roundi(22 * ui_scale()))
 	body.add_child(top)
-	var exit_button := action("←  Exit Room", show_home, 120 * ui_scale())
-	exit_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	exit_button.accessibility_name = "Exit Room"
-	exit_button.tooltip_text = "Return to Home"
-	exit_button.set_meta("base_px", 18)
-	top.add_child(exit_button)
+	var back := action("←", room_return, 46 * ui_scale())
+	back.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	back.accessibility_name = "Back"
+	back.tooltip_text = "Back"
+	back.set_meta("base_px", 26)
+	top.add_child(back)
 	var room_title := VBoxContainer.new()
 	room_title.add_theme_constant_override("separation", 0)
 	top.add_child(room_title)

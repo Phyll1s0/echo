@@ -32,7 +32,7 @@ godot --headless --path . --export-release macOS builds/macos/ECHO.zip
 | 修改最近的录制 | 暂停侧栏 → Edit Last Echo，然后逐拍撤销或继续走 |
 | 显示录制路线 / 查看提示 | T / H |
 | 暂停 / 全屏 | Esc / F11 |
-| 退出关卡并回到主页 | 左上角的 Exit Room，再选 Continue 可从原来那一拍继续 |
+| 返回进入关卡前的页面 | 左上角的 ←，从章节列表进入就回到该列表，从主页进入就回到主页，当前进度自动保留 |
 
 点右上角的暂停图标或按 Esc 打开侧栏。Settings 分为 Audio、Display 和 Puzzle，可分别调节背景音乐和音效音量，也可调整脚步声、全屏、动效、棋子动画速度、入场标题时长、回声路线和路线深浅。设置自动保存。How to Play 在设置内。需要本关提示时按 H 或选择暂停侧栏里的 Hint。
 
