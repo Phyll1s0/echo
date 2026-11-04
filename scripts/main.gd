@@ -59,10 +59,10 @@ var title_underlay: Control
 var title_tween: Tween
 
 func _ready() -> void:
-	TranslationServer.set_locale("en")
 	setup_skin()
 	if store == null:
 		store = Store.new()
+	TranslationServer.set_locale(store.data.language)
 	var catalog = JSON.parse_string(FileAccess.get_file_as_string("res://data/levels.json"))
 	if not catalog is Array or catalog.is_empty():
 		push_error("ECHO: level catalog missing")
@@ -181,7 +181,7 @@ func show_home() -> void:
 func _chapter_label(chapter: String) -> String:
 	var order := chapters.find(chapter)
 	var numeral: String = ROMAN[order] if order >= 0 and order < ROMAN.size() else str(order + 1)
-	return "Chapter " + numeral
+	return tr("Chapter %s") % numeral
 
 func _chapter_heading(chapter: String, alignment: HorizontalAlignment) -> VBoxContainer:
 	var heading := VBoxContainer.new()
@@ -226,7 +226,7 @@ func show_chapters() -> void:
 		var item := MarginContainer.new()
 		index.add_child(item)
 		var entry := action("", show_rooms.bind(chapter))
-		entry.accessibility_name = chapter
+		entry.accessibility_name = tr(chapter)
 		entry.accessibility_description = _chapter_label(chapter)
 		item.add_child(entry)
 		item.add_child(_chapter_heading(chapter, HORIZONTAL_ALIGNMENT_CENTER))
@@ -247,10 +247,10 @@ func show_rooms(chapter: String) -> void:
 			continue
 		var done: bool = store.data.completed.has(info.id)
 		var unlocked: bool = done or i == 0 or info.get("chapter_entry", false) or store.data.completed.has(levels[i-1].id)
-		var room := list_action("%s    %s" % [info.id, info.title], open_level.bind(i, true))
+		var room := list_action("%s    %s" % [info.id, tr(info.title)], open_level.bind(i, true))
 		room.set_meta("base_px", 21)
 		room.disabled = not unlocked
-		var state := "Complete" if done else ("Locked" if not unlocked else "")
+		var state := tr("Complete") if done else (tr("Locked") if not unlocked else "")
 		room.accessibility_description = state
 		room.tooltip_text = state
 		if done:
@@ -273,31 +273,35 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 	session = Puzzle.new(levels[index])
 	if resume and _session_index() == index:
 		session.restore(store.data.session)
-	_fresh_page("game", session.level.chapter)
 	hint_index = -1
 	status_text = ""
+	_save_session()
+	_show_game(introduce)
+
+func _show_game(introduce: bool = false) -> void:
+	_fresh_page("game", session.level.chapter)
 	var body := _body()
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", roundi(22 * ui_scale()))
 	body.add_child(top)
 	var back := action("←", room_return, 46 * ui_scale())
 	back.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	back.accessibility_name = "Back"
-	back.tooltip_text = "Back"
+	back.accessibility_name = tr("Back")
+	back.tooltip_text = tr("Back")
 	back.set_meta("base_px", 26)
 	top.add_child(back)
 	var room_title := VBoxContainer.new()
 	room_title.add_theme_constant_override("separation", 0)
 	top.add_child(room_title)
-	room_title.add_child(text_label("%s   /   %s" % [_chapter_label(session.level.chapter), session.level.chapter], 17, MUTED))
-	room_title.add_child(text_label("%s   %s" % [session.level.id, session.level.title], 26))
+	room_title.add_child(text_label("%s   /   %s" % [_chapter_label(session.level.chapter), tr(session.level.chapter)], 17, MUTED))
+	room_title.add_child(text_label("%s   %s" % [session.level.id, tr(session.level.title)], 26))
 	top.add_child(spacer())
 	var pause := action("", show_pause)
 	pause.icon = preload("res://assets/pause.svg")
 	pause.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pause.custom_minimum_size = Vector2(46, 44) * ui_scale()
-	pause.accessibility_name = "Pause"
-	pause.tooltip_text = "Pause (Esc)"
+	pause.accessibility_name = tr("Pause")
+	pause.tooltip_text = tr("Pause (Esc)")
 	top.add_child(pause)
 	var hud := HBoxContainer.new()
 	body.add_child(hud)
@@ -329,7 +333,6 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 	undo_button.set_meta("base_px", 18)
 	actions.add_child(seal_button)
 	actions.add_child(undo_button)
-	_save_session()
 	_refresh()
 	_layout()
 
@@ -351,7 +354,7 @@ func _show_room_title(underlay: Control) -> void:
 	stack.add_theme_constant_override("separation", roundi(10 * ui_scale()))
 	title_card.add_child(stack)
 	var color: Color = Atmosphere.WORLDS.get(session.level.chapter, {}).get("light", MUTED)
-	var reference := "%s   /   Room %s" % [_chapter_label(session.level.chapter), session.level.id]
+	var reference := tr("%s   /   Room %s") % [_chapter_label(session.level.chapter), session.level.id]
 	stack.add_child(text_label(reference, 19, color, HORIZONTAL_ALIGNMENT_CENTER))
 	stack.add_child(text_label(session.level.title, 60, INK, HORIZONTAL_ALIGNMENT_CENTER))
 	title_tween = page.create_tween()
@@ -458,9 +461,11 @@ func _save_session() -> void:
 func _refresh() -> void:
 	if screen != "game":
 		return
-	beat_label.text = "Beat %02d" % session.tick()
-	capacity_label.text = "  /  Echoes  %d / %d" % [session.echoes.size(), session.level.max_echoes]
-	message_label.text = status_text
+	beat_label.text = tr("Beat %02d") % session.tick()
+	capacity_label.text = tr("  /  Echoes  %d / %d") % [session.echoes.size(), session.level.max_echoes]
+	message_label.text = tr(status_text)
+	if status_text.begins_with("Gate requires "):
+		message_label.text = tr("Gate requires %s") % status_text.trim_prefix("Gate requires ")
 	seal_button.disabled = not session.can_seal()
 	undo_button.disabled = not session.can_undo()
 	board.show_routes = store.data.paths
@@ -672,9 +677,9 @@ func _save_preferences() -> void:
 func _update_option_label(id: String) -> void:
 	var label: Label = setting_values[id]
 	if CHOICES.has(id):
-		label.text = CHOICES[id][store.data[id]]
+		label.text = tr(CHOICES[id][store.data[id]])
 	else:
-		label.text = "On" if store.data[id] else "Off"
+		label.text = tr("On") if store.data[id] else tr("Off")
 	var button: Button = label.get_parent()
 	button.accessibility_description = label.text
 	if button.disabled:
@@ -706,7 +711,7 @@ func _add_volume(rows: VBoxContainer, id: String, title: String) -> void:
 	caption.custom_minimum_size.x = 66 * ui_scale()
 	row.add_child(caption)
 	var slider := HSlider.new()
-	slider.accessibility_name = title + " Volume"
+	slider.accessibility_name = tr("%s Volume") % tr(title)
 	slider.min_value = 0
 	slider.max_value = 100
 	slider.step = 1
@@ -745,12 +750,43 @@ func _select_settings(section: String) -> void:
 	settings_section = section
 	show_settings()
 
+func _set_language(locale: String) -> void:
+	if store.data.language == locale:
+		return
+	store.data.language = locale
+	_save_preferences()
+	TranslationServer.set_locale(locale)
+	# Rebuild only the view. Keep the live puzzle, undo stack and edit backup.
+	match screen:
+		"home": show_home()
+		"chapters": show_chapters()
+		"rooms": show_rooms(ambient.chapter)
+		"game": _show_game()
+	show_settings("language")
+
 func show_settings(focus_id: String = "") -> void:
 	var fullscreen := _window_fullscreen()
 	if store.data.fullscreen != fullscreen:
 		store.data.fullscreen = fullscreen
 		_save_preferences()
 	var content := _panel("settings", "Settings", 525)
+	var languages := HBoxContainer.new()
+	content.add_child(languages)
+	languages.add_child(text_label("Language", 16))
+	languages.add_child(spacer())
+	var language_group := ButtonGroup.new()
+	var current_language: Button
+	for locale in ["en", "zh_CN"]:
+		var language := action("English" if locale == "en" else "中文", _set_language.bind(locale))
+		language.toggle_mode = true
+		language.button_group = language_group
+		language.set_pressed_no_signal(locale == store.data.language)
+		language.add_theme_color_override("font_color", MUTED)
+		language.add_theme_color_override("font_pressed_color", Color.WHITE)
+		if locale == store.data.language:
+			current_language = language
+			language.accessibility_description = tr("Selected")
+		languages.add_child(language)
 	var tabs := HBoxContainer.new()
 	tabs.add_theme_constant_override("separation", 6)
 	content.add_child(tabs)
@@ -765,7 +801,7 @@ func show_settings(focus_id: String = "") -> void:
 		tab.add_theme_color_override("font_pressed_color", Color.WHITE)
 		if section == settings_section:
 			current_tab = tab
-			tab.accessibility_description = "Selected"
+			tab.accessibility_description = tr("Selected")
 		tabs.add_child(tab)
 	var rows := VBoxContainer.new()
 	rows.custom_minimum_size.y = 148 * ui_scale()
@@ -792,6 +828,7 @@ func show_settings(focus_id: String = "") -> void:
 	foot.add_child(action("How to Play", show_help))
 	content.add_child(Control.new())
 	var first: Control = setting_values[focus_id].get_parent() if setting_values.has(focus_id) else current_tab
+	if focus_id == "language": first = current_language
 	_focus_dialog(first)
 
 func _leave_settings() -> void:
@@ -809,6 +846,8 @@ func show_help() -> void:
 		if not session.switches.is_empty():
 			rules.append("Step onto a diamond to swap the raised and folded bridges. If the bridge beneath you folds, you can step off it.")
 		rules.append("Echoes follow their recorded routes and still trigger devices. If two actors trigger the same device on one beat, it changes once.")
+		for i in rules.size():
+			rules[i] = tr(rules[i])
 		_dialog("help", "How to Play", "\n\n".join(rules), [["Got It", back]])
 		return
 	_dialog("help", "How to Play", "Move one tile with the arrow keys, WASD, or a click on an adjacent tile. Each move advances one beat.\n\nPress Enter to leave an echo and return to the start. It retraces your steps, then fades on the beat after its last move.\n\nA plate opens its matching gate. Cross while the gate is open. Guide the solid dot into the outlined square to finish.\n\nZ undoes a step. R restarts the room and clears all echoes.", [["Got It", back]])
@@ -845,13 +884,13 @@ func show_pause() -> void:
 	content.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_theme_constant_override("separation", roundi(14 * ui_scale()))
 	modal_panel.add_child(content)
-	content.add_child(text_label("Room %s   /   %s" % [session.level.id, session.level.title], 16, MUTED))
+	content.add_child(text_label(tr("Room %s   /   %s") % [session.level.id, tr(session.level.title)], 16, MUTED))
 	content.add_child(text_label("Paused", 34))
-	var resume := action("Resume", _resume_game, 0, true)
-	content.add_child(resume)
 	var rows := VBoxContainer.new()
 	rows.add_theme_constant_override("separation", 2)
 	content.add_child(rows)
+	var resume := list_action("Resume", _resume_game)
+	rows.add_child(resume)
 	rows.add_child(list_action("Hint", func(): _close_modal(); next_hint()))
 	if not session.echoes.is_empty() or not session.edit_origin.is_empty():
 		var edit := "Cancel Edit" if not session.edit_origin.is_empty() else "Edit Last Echo"
@@ -873,9 +912,9 @@ func show_complete() -> void:
 	var progress := _chapter_progress(session.level.chapter)
 	var title := "Room Complete"
 	if at_boundary and progress.x == progress.y:
-		title = "%s Complete" % session.level.chapter
+		title = tr("%s Complete") % tr(session.level.chapter)
 	var next := "Next Room" if not at_boundary else ("Next Chapter" if has_next else "Chapters")
-	_dialog("complete", title, "Beats  %d    ·    Echoes  %d" % [session.tick(), session.echoes.size()], [[next, func():
+	_dialog("complete", title, tr("Beats  %d    ·    Echoes  %d") % [session.tick(), session.echoes.size()], [[next, func():
 		if has_next: open_level(level_index + 1, true)
 		else: show_chapters()], ["Undo", func(): _close_modal(); undo_move()]])
 

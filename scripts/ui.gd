@@ -48,7 +48,7 @@ func box(fill: Color, edge: Color, margin: float = 13) -> StyleBoxFlat:
 
 func text_label(value: String, px: int = 16, color: Color = INK, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
 	var node := Label.new()
-	node.text = value
+	node.text = tr(value)
 	node.horizontal_alignment = align
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	node.set_meta("base_px", px)
@@ -58,7 +58,7 @@ func text_label(value: String, px: int = 16, color: Color = INK, align: Horizont
 
 func action(value: String, callback: Callable, width: float = 0, primary: bool = false) -> Button:
 	var button := Button.new()
-	button.text = value
+	button.text = tr(value)
 	button.custom_minimum_size = Vector2(width, 40 * ui_scale())
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.pressed.connect(callback)

@@ -1,0 +1,453 @@
+# Simplified Chinese. English source strings remain the fallback.
+msgid ""
+msgstr "Project-Id-Version: ECHO 0.6.0\nLanguage: zh_CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "Language"
+msgstr "语言"
+
+msgid "Continue"
+msgstr "继续游戏"
+
+msgid "Start"
+msgstr "开始游戏"
+
+msgid "Chapters"
+msgstr "章节"
+
+msgid "Chapter %s"
+msgstr "第 %s 章"
+
+msgid "← Home"
+msgstr "← 主页"
+
+msgid "← Chapters"
+msgstr "← 章节"
+
+msgid "Afterimage"
+msgstr "残影"
+
+msgid "Resonance"
+msgstr "共鸣"
+
+msgid "Phase Shift"
+msgstr "相移"
+
+msgid "Penumbra"
+msgstr "半影"
+
+msgid "Complete"
+msgstr "已完成"
+
+msgid "Locked"
+msgstr "未解锁"
+
+msgid "Back"
+msgstr "返回"
+
+msgid "Pause"
+msgstr "暂停"
+
+msgid "Pause (Esc)"
+msgstr "暂停（Esc）"
+
+msgid "Leave an Echo"
+msgstr "留下回声"
+
+msgid "Undo"
+msgstr "撤销"
+
+msgid "%s   /   Room %s"
+msgstr "%s   /   关卡 %s"
+
+msgid "Beat %02d"
+msgstr "第 %02d 拍"
+
+msgid "  /  Echoes  %d / %d"
+msgstr "  /  回声  %d / %d"
+
+msgid "Take a step first."
+msgstr "先走一步，再留下回声。"
+
+msgid "All echo slots are full. You can edit your last echo."
+msgstr "回声数量已满，可以修改最后一段回声。"
+
+msgid "Press Z to return to the step you want to change."
+msgstr "按 Z 逐步撤销，回到想修改的那一步。"
+
+msgid "No move available."
+msgstr "暂时无法移动。"
+
+msgid "No tile there."
+msgstr "那里没有路。"
+
+msgid "This bridge is folded."
+msgstr "这座桥还未展开。"
+
+msgid "Follow the arrow."
+msgstr "请沿箭头方向通过。"
+
+msgid "Two selves must meet on L."
+msgstr "需要两个自己在 L 上相遇。"
+
+msgid "Gate requires %s"
+msgstr "需要同时踩住 %s。"
+
+msgid "Could not load the rooms."
+msgstr "无法载入关卡。"
+
+msgid "Could not write the save file."
+msgstr "无法写入存档。"
+
+msgid "Could not save your progress."
+msgstr "无法保存进度。"
+
+msgid "Audio"
+msgstr "声音"
+
+msgid "Display"
+msgstr "显示"
+
+msgid "Puzzle"
+msgstr "解谜"
+
+msgid "Selected"
+msgstr "已选中"
+
+msgid "Sound"
+msgstr "声音总开关"
+
+msgid "Effects"
+msgstr "音效"
+
+msgid "Music"
+msgstr "音乐"
+
+msgid "Footsteps"
+msgstr "脚步声"
+
+msgid "%s Volume"
+msgstr "%s音量"
+
+msgid "Fullscreen"
+msgstr "全屏"
+
+msgid "Motion"
+msgstr "动态效果"
+
+msgid "Move Animation"
+msgstr "移动动画"
+
+msgid "Room Titles"
+msgstr "关卡标题"
+
+msgid "Echo Paths"
+msgstr "回声轨迹"
+
+msgid "Path Contrast"
+msgstr "轨迹对比度"
+
+msgid "On"
+msgstr "开启"
+
+msgid "Off"
+msgstr "关闭"
+
+msgid "Gentle"
+msgstr "舒缓"
+
+msgid "Standard"
+msgstr "标准"
+
+msgid "Quick"
+msgstr "快速"
+
+msgid "Faint"
+msgstr "淡"
+
+msgid "Bold"
+msgstr "清晰"
+
+msgid "1 s"
+msgstr "1 秒"
+
+msgid "1.5 s"
+msgstr "1.5 秒"
+
+msgid "2 s"
+msgstr "2 秒"
+
+msgid "How to Play"
+msgstr "玩法说明"
+
+msgid "Got It"
+msgstr "明白了"
+
+msgid "Room %s   /   %s"
+msgstr "关卡 %s   /   %s"
+
+msgid "Paused"
+msgstr "已暂停"
+
+msgid "Resume"
+msgstr "继续"
+
+msgid "Hint"
+msgstr "提示"
+
+msgid "Cancel Edit"
+msgstr "取消修改"
+
+msgid "Edit Last Echo"
+msgstr "修改最后一段回声"
+
+msgid "Restart Room"
+msgstr "重开本关"
+
+msgid "Choose Room"
+msgstr "选择关卡"
+
+msgid "Room Complete"
+msgstr "关卡完成"
+
+msgid "%s Complete"
+msgstr "%s · 完成"
+
+msgid "Next Room"
+msgstr "下一关"
+
+msgid "Next Chapter"
+msgstr "下一章"
+
+msgid "Beats  %d    ·    Echoes  %d"
+msgstr "拍数  %d    ·    回声  %d"
+
+msgid "Move one tile per beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."
+msgstr "每走一格，时间前进一拍。按 Enter 留下回声，按 Z 撤销一拍，按 R 重开本关并清空所有回声。"
+
+msgid "L is a lens. Two selves on its tile open the L gate for the next move. Two echoes count, even when you are elsewhere."
+msgstr "L 是透镜。两个自己同时站在上面，下一步就能通过 L 门。即使你在别处，两个回声也能开启它。"
+
+msgid "Cross an arrow in its marked direction. It reverses after the crossing."
+msgstr "沿箭头标记的方向穿过门。通过后，箭头会反向。"
+
+msgid "Step onto a diamond to swap the raised and folded bridges. If the bridge beneath you folds, you can step off it."
+msgstr "踩上菱形开关，两组桥交替展开、收起。脚下的桥收起时，你仍然可以走出去。"
+
+msgid "Echoes follow their recorded routes and still trigger devices. If two actors trigger the same device on one beat, it changes once."
+msgstr "回声始终沿录制路线行动，并触发机关。同一拍有两人触发同一个机关，它只变化一次。"
+
+msgid "Move one tile with the arrow keys, WASD, or a click on an adjacent tile. Each move advances one beat.\n\nPress Enter to leave an echo and return to the start. It retraces your steps, then fades on the beat after its last move.\n\nA plate opens its matching gate. Cross while the gate is open. Guide the solid dot into the outlined square to finish.\n\nZ undoes a step. R restarts the room and clears all echoes."
+msgstr "用方向键、WASD，或点击相邻格来移动。每走一格，时间前进一拍。\n\n按 Enter 留下回声，并回到起点。回声会重走你的路线，在最后一步的下一拍消散。\n\n压板会开启对应的门，趁门开着时通过。让实心圆点走进方框出口，即可完成关卡。\n\n按 Z 撤销一步，按 R 重开本关并清空所有回声。"
+
+msgid "First Trace"
+msgstr "初迹"
+
+msgid "Walk to A and press Enter to leave an echo. Then take the path to the exit."
+msgstr "走到 A，按 Enter 留下回声。然后沿另一条路走向出口。"
+
+msgid "Your echo retraces one step each time you move."
+msgstr "你每走一步，回声也会沿着过去的路线走一步。"
+
+msgid "Step onto A and leave an echo. Take the other path in the next round."
+msgstr "站上 A 后留下回声，下一轮沿另一条路前进。"
+
+msgid "Record ↑ ↑, then leave the echo. Reach the exit with → → → →."
+msgstr "录制 ↑ ↑，然后留下回声。再用 → → → → 到达出口。"
+
+msgid "Scenic Route"
+msgstr "迂回"
+
+msgid "Your echo fades after its last move. Time its arrival at A to match yours at the gate."
+msgstr "回声走完路线后会消散。让它到达 A 的时刻，与你到达门前的时刻一致。"
+
+msgid "The short path reaches A in two moves. The gate is four moves from the start."
+msgstr "最短路线只需两步就能到 A，但你需要四步才能到门前。"
+
+msgid "Take the upper loop to reach A two beats later."
+msgstr "沿上方绕行一圈，让回声晚两拍到达 A。"
+
+msgid "Record ↑ → ↑ ←. Leave the echo, then take five steps right."
+msgstr "录制 ↑ → ↑ ←，留下回声，再向右走五步。"
+
+msgid "Refrain"
+msgstr "复奏"
+
+msgid "Both gates open when someone steps on A. Your echo can visit A twice."
+msgstr "有人踩住 A 时，两扇门都会打开。你的回声可以两次经过 A。"
+
+msgid "The gates close as soon as A is empty."
+msgstr "A 上一旦无人，门就会关闭。"
+
+msgid "After opening the first gate, have your echo step off A and back onto it."
+msgstr "打开第一扇门后，让回声离开 A，再走回 A。"
+
+msgid "Record ↑ ↑ ↓ ↑. Leave the echo, then take five steps right."
+msgstr "录制 ↑ ↑ ↓ ↑，留下回声，再向右走五步。"
+
+msgid "Relay Line"
+msgstr "接力"
+
+msgid "One echo can open both gates. Send it past A on the way to B."
+msgstr "一个回声也能打开两扇门。让它先经过 A，再走向 B。"
+
+msgid "Select a distant plate to see its gate. A opens the first gate and B opens the second."
+msgstr "点击远处的压板可查看对应的门。A 开启第一扇，B 开启第二扇。"
+
+msgid "The upper passage connects A to B."
+msgstr "上方的通道连着 A 和 B。"
+
+msgid "Record ↑ ↑ → → → →. Leave the echo, then take seven steps right."
+msgstr "录制 ↑ ↑ → → → →，留下回声，再向右走七步。"
+
+msgid "Two Voices"
+msgstr "双声"
+
+msgid "Use two echoes to reach A and B on the same beat."
+msgstr "让两个回声在同一拍分别到达 A 和 B。"
+
+msgid "One echo must be on A and one on B, with you at the gate."
+msgstr "一个回声站在 A，一个站在 B，而你要站在门前。"
+
+msgid "Both echoes reach their plates on beat four. Find a four-step path to the gate."
+msgstr "两个回声都在第四拍到达压板。你也需要一条四步到达门前的路线。"
+
+msgid "Echo 1  ← ← ↑ ↑     Echo 2  → → ↑ ↑     Exit  ← ↑ ↑ → ↑"
+msgstr "回声 1  ← ← ↑ ↑     回声 2  → → ↑ ↑     出口  ← ↑ ↑ → ↑"
+
+msgid "Interlace"
+msgstr "交织"
+
+msgid "Let the first echo open a path for the second. Then use both to reach the exit."
+msgstr "让第一个回声为第二个开路，再借助两者走向出口。"
+
+msgid "A opens the passage to B. The exit gate needs both B and C."
+msgstr "A 开启通往 B 的路。出口的门需要同时踩住 B 和 C。"
+
+msgid "Send the first echo through A to C. The second can then pass the gate and reach B."
+msgstr "让第一个回声经过 A 到达 C，第二个就能穿过门，到达 B。"
+
+msgid "Echo 1  ← ← ↑ ↑ ↑ ↑     Echo 2  → → ↑ ↑ ↑ ↑     Exit  ← ↑ → ↑ ↑ ↑ ↑"
+msgstr "回声 1  ← ← ↑ ↑ ↑ ↑     回声 2  → → ↑ ↑ ↑ ↑     出口  ← ↑ → ↑ ↑ ↑ ↑"
+
+msgid "Turnabout"
+msgstr "回转"
+
+msgid "Cross the arrow once to turn it around."
+msgstr "穿过箭头门一次，它就会反向。"
+
+msgid "The lower path needs A first and B second. The upper path reaches B first."
+msgstr "下方路线需要先踩 A，再踩 B，但上方路线先经过 B。"
+
+msgid "Record a trip past B to A, then come back through the reversed arrow."
+msgstr "录下经过 B 到达 A 的路线，再穿过已经反向的门返回。"
+
+msgid "Echo  ↑ ↑ → → → ← ←     Exit  eight steps right."
+msgstr "回声  ↑ ↑ → → → ← ←     出口  向右八步。"
+
+msgid "Tidal Shift"
+msgstr "潮汐"
+
+msgid "Step on the diamond to swap the two bridges. The change lasts until the next visit."
+msgstr "踩上菱形开关，两组桥就会交换状态，直到下次踩中开关。"
+
+msgid "Your first crossing needs the folded bridge. Your second crossing needs the other bank."
+msgstr "第一次过桥需要展开当前收起的桥，第二次需要另一组桥。"
+
+msgid "Return to the diamond as your other self reaches the stone between the bridges."
+msgstr "当另一个自己走到两座桥之间的石台时，让回声再次踩中菱形。"
+
+msgid "Echo  ↑ ↑ ↓ ↑     Exit  six steps right."
+msgstr "回声  ↑ ↑ ↓ ↑     出口  向右六步。"
+
+msgid "Crosscurrent"
+msgstr "错流"
+
+msgid "Two routes share one turnstile. A recorded echo always follows its original path."
+msgstr "两条路线共用一扇转向门。录下的回声始终沿原来的路线行动。"
+
+msgid "The lower lane takes two beats longer to reach the arrow. Give that lane to the echo."
+msgstr "下方路线到达箭头门需要多走两拍，把这条路留给回声。"
+
+msgid "Cross, step back, then cross again. When both of you land on the diamond together, it switches only once."
+msgstr "穿过门，退一步，再次穿过。你和回声同拍踏上菱形时，开关只切换一次。"
+
+msgid "Echo  ↓ → → ↑ ↑ ↓ ↑ ↑ ← ←     Exit  → → ↑ ↓ ↑ ↑ ← ← ← ↑ ↑."
+msgstr "回声  ↓ → → ↑ ↑ ↓ ↑ ↑ ← ←     出口  → → ↑ ↓ ↑ ↑ ← ← ← ↑ ↑"
+
+msgid "Counterpoint"
+msgstr "对位"
+
+msgid "One echo opens the bridge. The next swaps it back. Both must finish at the exit plates."
+msgstr "一个回声展开桥，另一个再把它切换回来。最后，两者都要到达出口所需的压板。"
+
+msgid "The left diamond opens both folded bridges. A lets the second echo reach the right diamond."
+msgstr "左侧菱形会展开两座收起的桥。A 让第二个回声到达右侧菱形。"
+
+msgid "Send echo one through the arrow, back to A, then to C. Send echo two over the right bridge and through the A gate to B."
+msgstr "第一个回声穿过箭头门，返回 A，再去 C。第二个穿过右侧桥和 A 门，走到 B。"
+
+msgid "Echo 1  ←←←↑↑↑↓→←↓↓←     Echo 2  →→→→↑↑↑↑↑←←↓     Exit  ←←←↑↑→→→↑↑↑←↑."
+msgstr "回声 1  ←←←↑↑↑↓→←↓↓←     回声 2  →→→→↑↑↑↑↑←←↓     出口  ←←←↑↑→→→↑↑↑←↑"
+
+msgid "First Contact"
+msgstr "初遇"
+
+msgid "Find L, the lens. Two selves on its tile open the marked gate."
+msgstr "找到透镜 L。两个自己同时站在上面，就能开启标有 L 的门。"
+
+msgid "The two arms take the same number of steps."
+msgstr "两侧的支路需要相同的步数。"
+
+msgid "End one recording on L. Come up the other arm and meet it there."
+msgstr "让一段录制停在 L，然后从另一侧走来，与它在此相遇。"
+
+msgid "Echo  ← ↑ ↑ →     Exit  → ↑ ↑ ← ↑ ↑"
+msgstr "回声  ← ↑ ↑ →     出口  → ↑ ↑ ← ↑ ↑"
+
+msgid "Borrowed Light"
+msgstr "借光"
+
+msgid "After you meet at L, the two bridges need opposite banks on consecutive beats."
+msgstr "在 L 相遇后，接连两拍需要不同组的桥展开。"
+
+msgid "The bridge touching L must be raised as you leave the lens."
+msgstr "离开透镜时，紧挨着 L 的桥必须展开。"
+
+msgid "Let your echo take one more step after the meeting. While you step onto the first bridge, it can reach the switch."
+msgstr "相遇后让回声再走一步。你踏上第一座桥时，它就能踩中开关。"
+
+msgid "Echo  → ↑ ↑ ← ←     Exit  → ↑ ↑ ← ↑ ↑ ↑"
+msgstr "回声  → ↑ ↑ ← ←     出口  → ↑ ↑ ← ↑ ↑ ↑"
+
+msgid "Confluence"
+msgstr "合流"
+
+msgid "The first gate needs two different places. The last needs the same place twice."
+msgstr "第一扇门需要两人分处两地，最后一扇需要两人同处一格。"
+
+msgid "At the elbow in the lower passage, look at where both echoes must be."
+msgstr "走到下方通道的拐角时，想想两个回声分别应该在哪里。"
+
+msgid "Send an echo to each plate. After that beat, have both paths turn inward to the lens."
+msgstr "让两个回声各去一块压板，随后都向内转弯，走向透镜。"
+
+msgid "Echo 1  ← ← ↑ ↑ → →     Echo 2  → → ↑ ↑ ← ←     Exit  ↓ ↓ → → → ↓ ↓"
+msgstr "回声 1  ← ← ↑ ↑ → →     回声 2  → → ↑ ↑ ← ←     出口  ↓ ↓ → → → ↓ ↓"
+
+msgid "Totality"
+msgstr "全食"
+
+msgid "A recorded crossing survives even when the bridge beneath it folds."
+msgstr "即使桥已经收起，录下的回声仍能沿原来的路线穿过。"
+
+msgid "Record on the original bank. Both echoes must reach L, then return to their separate plates."
+msgstr "在桥的初始状态下录制。两个回声都要到达 L，再各自回到压板。"
+
+msgid "In the last round, flip the bank on your way to the lens gate. Your echoes can cross the folded bridges on the way back."
+msgstr "最后一轮，在走向 L 门的途中切换桥。回声返回时，依然能穿过收起的桥。"
+
+msgid "Echo 1  ↑ ↑ ← ← ← ↓ ↓ ↑ ↑ → →     Echo 2  ↓ ↓ ← ← ← ↑ ↑ ↓ ↓ → →     Exit  → → ↓ ↓ ↓ → → ↑ ↑ ↑ → →"
+msgstr "回声 1  ↑ ↑ ← ← ← ↓ ↓ ↑ ↑ → →     回声 2  ↓ ↓ ← ← ← ↑ ↑ ↓ ↓ → →     出口  → → ↓ ↓ ↓ → → ↑ ↑ ↑ → →"

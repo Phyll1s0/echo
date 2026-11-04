@@ -37,13 +37,24 @@ func click(point: Vector2) -> void:
 		Input.parse_input_event(event)
 	await settle()
 
-func click_named(value: String) -> void:
+func button_named(value: String) -> Button:
 	var scope: Control = ui.modal if ui.modal != null else ui.page
 	for button in scope.find_children("*", "Button", true, false):
-		if (button.text == value or button.accessibility_name == value) and button.is_visible_in_tree():
-			await click(button.get_global_rect().get_center())
-			return
-	verify(false, "Missing button: " + value)
+		if (button.text == tr(value) or button.accessibility_name == tr(value)) and button.is_visible_in_tree():
+			return button
+	return null
+
+func click_named(value: String) -> void:
+	var button := button_named(value)
+	if button != null:
+		await click(button.get_global_rect().get_center())
+	else:
+		verify(false, "Missing button: " + value)
+
+func has_label(scope: Node, value: String) -> bool:
+	for label in scope.find_children("*", "Label", true, false):
+		if label.text == value: return true
+	return false
 
 func room_card(i: int) -> Button:
 	for item in ui.chapter_index.find_children("*", "Button", true, false):
@@ -137,11 +148,107 @@ func test_previous_save() -> void:
 	verify(puzzle.restore(old.data.session) and puzzle.echoes.size()==1 and puzzle.tick()==1, "The renamed room resumes an earlier version's tape and draft")
 	verify(old.data.completed.has("01") and not old.data.sound and not old.data.motion and not old.data.paths and not old.data.fullscreen, "Earlier progress and preferences survive the settings upgrade")
 	verify(old.data.room_titles==2 and old.data.volume==100 and old.data.music_volume==36 and old.data.move_speed==1, "Older saves receive the standard title, volume and motion speed")
+	verify(old.data.language=="en", "Existing saves keep English until a language is selected")
 	file = FileAccess.open(path+".legacy", FileAccess.WRITE)
-	file.store_string('{"version":1,"volume":0}')
+	file.store_string('{"version":1,"volume":0,"language":"unsupported"}')
 	file.close()
 	verify(Store.new(path+".legacy").data.music_volume==0, "An older zero-volume preference also keeps new music silent")
+	verify(Store.new(path+".legacy").data.language=="en", "Unknown saved languages fall back to English")
 	DirAccess.remove_absolute(path+".legacy")
+
+func test_languages() -> void:
+	root.size = Vector2i(1280, 820)
+	ui.store.data.motion = false
+	ui.show_rooms("Penumbra")
+	await settle()
+	await click(room_card(13).get_global_rect().get_center())
+	await walk(ui.session.level.recordings[0])
+	await key(KEY_ENTER)
+	await walk("RR")
+	var original: Dictionary = ui.session.snapshot()
+	await click_named("Pause")
+	await click_named("Edit Last Echo")
+	await key(KEY_Z)
+	await key(KEY_H)
+	var editing: Dictionary = ui.session.snapshot()
+	var live_session = ui.session
+	var live_music = ui.music
+	var music_beat: float = ui.music.get_playback_position()
+	await click_named("Pause")
+	await click_named("Settings")
+	var section: String = ui.settings_section
+	await click_named("中文")
+	verify(TranslationServer.get_locale()=="zh_CN" and Store.new(path).data.language=="zh_CN", "Chinese applies immediately and is saved")
+	verify(ui.modal_kind=="settings" and ui.settings_section==section and has_label(ui.modal, "语言"), "Language switching keeps the same settings page")
+	await click_named("中文")
+	verify(button_named("中文").button_pressed and not button_named("English").button_pressed, "The current language remains selected when clicked again")
+	verify(ui.session==live_session and ui.session.snapshot()==editing and not ui.session.edit_origin.is_empty(), "Language switching preserves the live puzzle and its edit backup")
+	verify(ui.message_label.text=="即使桥已经收起，录下的回声仍能沿原来的路线穿过。", "An existing hint changes language along with the interface")
+	verify(ui.music==live_music and (not ui.music.playing or ui.music.get_playback_position() >= music_beat), "Changing language does not restart the score")
+	for level in ui.levels:
+		for source in [level.chapter, level.title, level.intro] + level.hints:
+			verify(not tr(source).is_empty() and tr(source)!=source, "Chinese covers room text: "+level.id)
+	await capture("settings-zh")
+	await click_named("Display")
+	verify(button_named("Motion").text=="动态效果" and ui.setting_values.motion.text=="关闭", "Settings labels and values are both translated")
+	await click_named("How to Play")
+	verify(has_label(ui.modal, "玩法说明"), "Help uses Chinese")
+	await capture("help-zh")
+	await click_named("Got It")
+	await click_named("Back")
+	var resume := button_named("Resume")
+	var hint := button_named("Hint")
+	verify(resume.text=="继续" and resume.get_parent()==hint.get_parent() and resume.alignment==hint.alignment and resume.get_theme_font_size("font_size")==hint.get_theme_font_size("font_size"), "Resume shares the other pause actions' alignment and size")
+	await capture("pause-zh")
+	root.size = Vector2i(720, 600)
+	await settle()
+	var bounds := Rect2(Vector2.ZERO, Vector2(root.size))
+	for control in ui.modal.find_children("*", "Button", true, false):
+		verify(bounds.encloses(control.get_global_rect()), "Chinese pause actions fit the minimum window")
+	await click_named("Settings")
+	for control in ui.modal.find_children("*", "Button", true, false):
+		verify(bounds.encloses(control.get_global_rect()), "Chinese settings fit the minimum window")
+	await capture("settings-zh-small")
+	await click_named("Audio")
+	verify(bounds.encloses(ui.modal_panel.get_global_rect()), "The tallest settings tab fits with the language row")
+	await click_named("How to Play")
+	for label in ui.modal.find_children("*", "Label", true, false):
+		verify(bounds.encloses(label.get_global_rect()), "Chinese mechanism rules fit the minimum window")
+	await click_named("Got It")
+	await click_named("Back")
+	await click_named("Resume")
+	await key(KEY_Z)
+	verify(ui.session.tick()==9 and not ui.session.edit_origin.is_empty(), "Undo still works after changing language during an edit")
+	await click_named("Pause")
+	await click_named("Cancel Edit")
+	verify(ui.session.snapshot()==original, "Cancel Edit still restores the original plan after a language change")
+	await click_named("Back")
+	verify(ui.screen=="rooms" and room_card(13).text.contains("全食"), "Back retains the original chapter and translates its room names")
+	root.size = Vector2i(1280, 820)
+	await settle()
+	await capture("rooms-zh")
+	await click(room_card(10).get_global_rect().get_center())
+	verify(has_label(ui.title_card, "初遇"), "The room introduction uses the selected language")
+	await capture("room-intro-zh")
+	await walk("LUUR")
+	await key(KEY_ENTER)
+	await walk("RUUL")
+	verify(ui.beat_label.text=="第 04 拍" and ui.capacity_label.text.contains("回声"), "Puzzle counters use Chinese")
+	await capture("room-zh")
+	await walk("UU")
+	verify(ui.modal_kind=="complete" and has_label(ui.modal, "关卡完成") and button_named("Next Room").text=="下一关", "Completion and navigation actions use Chinese")
+	await capture("complete-zh")
+	await key(KEY_ESCAPE)
+	await click_named("← Chapters")
+	verify(button_named("Penumbra").accessibility_name=="半影" and has_label(ui.page, "第 IV 章"), "Chapter names and Roman numeral headings use Chinese")
+	await capture("chapters-zh")
+	await click_named("← Home")
+	await capture("home-zh")
+	await click_named("Settings")
+	await click_named("English")
+	verify(TranslationServer.get_locale()=="en" and Store.new(path).data.language=="en" and has_label(ui.modal, "Language"), "English can be restored and persisted from the same language row")
+	await click_named("Back")
+	verify(button_named("Chapters").text=="Chapters", "The underlying home page also refreshes back to English")
 
 func test_room_restart() -> void:
 	ui.open_level(9, false)
@@ -422,6 +529,7 @@ func _run() -> void:
 		await click(room_card(9).get_global_rect().get_center())
 		await key(KEY_ESCAPE)
 		verify(ui.modal_kind=="pause" and ui.music.playing and ui.music.get_playback_position() >= 41.0, "Opening a room and pausing keep the score on the same phrase")
+	await test_languages()
 	DirAccess.remove_absolute(path)
 	print("ECHO UI: %d checks; %d failures." % [checks, failures])
 	if DisplayServer.get_name() != "headless" and failures == 0:
