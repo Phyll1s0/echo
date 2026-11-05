@@ -4,7 +4,7 @@ Every step you take moves your past selves, too.
 
 **[Play in your browser](https://phyll1s0.com/echo/)** — on desktop or phone.
 
-ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through seventeen rooms across five chapters, plus three optional Extra challenges. There is no time pressure: the world advances only when you move.
+ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through seventeen rooms across five chapters, plus four optional Extra challenges. There is no time pressure: the world advances only when you move.
 
 Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. The interface defaults to English, with Simplified Chinese available in Settings.
 
@@ -114,7 +114,7 @@ Choose a chapter in **Chapters** to see its rooms. **07 Turnabout**, **11 First 
 
 ![Chapter V · Nocturne](docs/images/room-17.png)
 
-Open **Chapters → Extra** for three standalone challenges. *Escapement* uses one recording, *Understudy* uses two, and *Triptych* allows three. Each is available immediately and remembers its own unfinished route. Home → Continue resumes your campaign.
+Open **Chapters → Extra** for four standalone challenges. *Escapement* uses one recording, *Understudy* uses two, and *Triptych* allows three. In [*Switchyard*](https://phyll1s0.com/echo/?room=X04), two recordings can support three distinct approaches to a central exit. Each approach needs a different pair of plates. Each is available immediately and remembers its own unfinished route. Home → Continue resumes your campaign.
 
 Room data and example solutions live in `data/levels.json` and `data/extra.json`. These routes verify that each room is solvable; players can find their own solutions. To launch a specific room during development, use `godot --path . -- --level=6`.
 

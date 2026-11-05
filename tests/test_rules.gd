@@ -32,6 +32,15 @@ func _initialize() -> void:
 		verify(p.cleared() and not p.seal(), "Only the current player finishes")
 		var restored = Puzzle.new(level)
 		verify(restored.restore(JSON.parse_string(JSON.stringify(p.snapshot()))) and restored.snapshot()==p.snapshot(), "Snapshot replay: "+level.id)
+	var switchyard: Dictionary = extra.filter(func(level): return level.id == "X04")[0]
+	var alternatives: Array = JSON.parse_string(FileAccess.get_file_as_string("res://tests/switchyard_routes.json"))
+	for plan in alternatives:
+		var branch = Puzzle.new(switchyard)
+		for recording in plan.recordings:
+			walk(branch, recording)
+			verify(branch.seal(), "Record an alternate Switchyard route")
+		walk(branch, plan.final)
+		verify(branch.cleared(), "Alternate Switchyard entrance reaches the exit")
 	var p = Puzzle.new(catalog[0])
 	walk(p,"UU")
 	verify(p.seal(), "Can record two moves")

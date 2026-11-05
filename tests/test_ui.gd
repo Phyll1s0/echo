@@ -292,7 +292,7 @@ func test_extra() -> void:
 	await settle()
 	await click_named("Chapters")
 	await click_named("Extra")
-	verify(ui.levels.size() == 3 and ui.chapters.size() == 5, "Extra is a separate three-room collection")
+	verify(ui.levels.size() == 4 and ui.chapters.size() == 5, "Extra is a separate four-room collection")
 	for i in ui.levels.size():
 		verify(not room_card(i).disabled, "Each Extra room is open immediately")
 	await click(room_card(0).get_global_rect().get_center())
@@ -304,7 +304,8 @@ func test_extra() -> void:
 	await click_named("Back")
 	await click(room_card(0).get_global_rect().get_center())
 	verify(ui.session.snapshot() == first_draft, "Each Extra room remembers its own recording")
-	for i in 3:
+	var extra_count: int = ui.levels.size()
+	for i in extra_count:
 		await key(KEY_R)
 		var room: Dictionary = ui.levels[i]
 		for route in room.recordings:
@@ -312,11 +313,11 @@ func test_extra() -> void:
 			await key(KEY_ENTER)
 		await walk(room.final)
 		verify(ui.modal_kind == "complete", "Extra solution completes " + room.id)
-		if i < 2: await click_named("Next Room")
+		if i + 1 < extra_count: await click_named("Next Room")
 		else: await click_named("Extra")
 	verify(ui.screen == "rooms" and ui.ambient.chapter == "Extra", "The last challenge returns to Extra")
 	var saved = Store.new(path)
-	verify(saved.data.extra_completed.size() == 3 and saved.data.extra_sessions.is_empty(), "Extra clears persist separately")
+	verify(saved.data.extra_completed.size() == extra_count and saved.data.extra_sessions.is_empty(), "Extra clears persist separately")
 	verify(saved.data.session == saved_before.data.session and saved.data.completed == saved_before.data.completed, "Extra never overwrites campaign progress")
 	await click_named("← Chapters")
 	await click_named("← Home")

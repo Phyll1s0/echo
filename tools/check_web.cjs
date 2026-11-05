@@ -79,7 +79,25 @@ try{
  const afterExtra = await page.evaluate(() => readProgress());
  assert.deepEqual(afterExtra.session, before.session);
  assert.deepEqual(afterExtra.completed, before.completed);
- await page.reload();
+ // A shared room link should land on the challenge and preserve the campaign.
+ const sharedRoom = new URL(url);
+ sharedRoom.searchParams.set('room', 'X04');
+ await page.goto(sharedRoom.href);
+ await ready(page);
+ await saved(page, async () => (await readProgress())?.extra_sessions?.X04?.level_id === 'X04');
+ await page.waitForTimeout(1500);
+ await page.screenshot({path:`builds/web-${kind}-switchyard.png`,scale:'css'});
+ const north = JSON.parse(fs.readFileSync('tests/switchyard_routes.json', 'utf8'))[0];
+ for (const tape of north.recordings) {
+  for (const direction of tape) await tap(arrows[direction]);
+  await tap('echo');
+ }
+ for (const direction of north.final) await tap(arrows[direction]);
+ await saved(page, async () => (await readProgress())?.extra_completed?.X04?.echoes === 2);
+ const afterSwitchyard = await page.evaluate(() => readProgress());
+ assert.deepEqual(afterSwitchyard.session, before.session);
+ assert.deepEqual(afterSwitchyard.completed, before.completed);
+ await page.goto(url);
  await ready(page);
  await tap('start');
  await page.waitForTimeout(1700);

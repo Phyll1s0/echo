@@ -167,6 +167,7 @@ func _draw() -> void:
 	draw_rect(exit_rect, ink, false, maxf(1.3, unit * 0.019), true)
 	var start_center := center_of(puzzle.start)
 	draw_circle(start_center, unit * 0.065, Color(muted, 0.55), false, 1, true)
+	var exit_gates: Array = puzzle.gates.filter(func(gate): return gate.a == puzzle.goal or gate.b == puzzle.goal)
 	for i in puzzle.gates.size():
 		var gate: Dictionary = puzzle.gates[i]
 		var a := center_of(gate.a)
@@ -186,7 +187,14 @@ func _draw() -> void:
 			name += ("  " if not name.is_empty() else "") + "−" + id
 		name = name.replace(puzzle.LENS, "L")
 		var anchor := middle + Vector2(5.0, -unit * 0.49) if absf(a.y - b.y) < 1.0 else middle + Vector2(unit * 0.53, -3)
-		draw_string(font, anchor, name, HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(11, roundi(unit * 0.15)), active if open else muted)
+		var caption_size := maxi(11, roundi(unit * 0.15))
+		if exit_gates.size() > 1 and gate in exit_gates:
+			# Place each caption on its own approach instead of crowding the exit.
+			var outside: Vector2i = gate.a if gate.b == puzzle.goal else gate.b
+			var width_px := font.get_string_size(name, HORIZONTAL_ALIGNMENT_LEFT, -1, caption_size).x
+			var tile_center := center_of(outside)
+			anchor = tile_center + Vector2(-width_px / 2, -unit * 0.26)
+		draw_string(font, anchor, name, HORIZONTAL_ALIGNMENT_LEFT, -1, caption_size, active if open else muted)
 	if show_routes:
 		for i in puzzle.echoes.size():
 			var route: Array = puzzle.echoes[i]

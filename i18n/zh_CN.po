@@ -574,3 +574,18 @@ msgstr "第三段回声要两次抵达 C。中途折返回侧廊的开关，让�
 
 msgid "1: ←3 ↑2 →3 ←3 ↓2   /   2: →3 ↑2 ←3 →3 ↓2   /   3: ↓2 ←2 ↓2 ← ↓ ↑ → ↑ ↓ ← ↓   /   Exit: ↓2 →2 ↓2 →3 ↑5 →"
 msgstr "1: ←3 ↑2 →3 ←3 ↓2   /   2: →3 ↑2 ←3 →3 ↓2   /   3: ↓2 ←2 ↓2 ← ↓ ↑ → ↑ ↓ ← ↓   /   出口： ↓2 →2 ↓2 →3 ↑5 →"
+
+msgid "Switchyard"
+msgstr "道岔"
+
+msgid "Look around the exit square. Each of its three doors listens to a different pair of plates."
+msgstr "先绕着终点看一圈。三面各有一扇门，听的是三种不同的踏板组合。"
+
+msgid "A and C open the north door. The other two doors need B, down the shaft below the lens. Who will be with you when you record that crossing?"
+msgstr "北门听 A 和 C，另两扇门都要用到透镜下方的 B。录下穿过透镜门的那一步时，谁会和你一起站在 L 上？"
+
+msgid "For the west door, let both recordings meet on L. One goes down the shaft, the other returns to A. On your last trip, leave the west deck raised."
+msgstr "可以试试西门。让两段录制在 L 会合，一段下井，另一段回到 A。最后一趟，给自己留一座升起的西桥。"
+
+msgid "West door   /   1: ↑2 ←8 ↓4 →4 ←4 ↓   /   2: ↑2 ←8 ↓4 →4 ↓3 ↑ ↓   /   Exit: ↓4 ←2 ↑2 ←6 ↓2 ↑2 →2 ↑2 →2"
+msgstr "西门   /   1: ↑2 ←8 ↓4 →4 ←4 ↓   /   2: ↑2 ←8 ↓4 →4 ↓3 ↑ ↓   /   出口： ↓4 ←2 ↑2 ←6 ↓2 ↑2 →2 ↑2 →2"

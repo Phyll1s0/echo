@@ -104,22 +104,28 @@ class Room:
             path.append(dest)
         return path
 
-    def shortest_final(self, recordings):
+    def finish_options(self, recordings):
+        """Map each feasible last approach to its shortest clear with these tapes."""
         end = max((len(r) for r in recordings), default=0)
         frames = [self.tape_frame(recordings, t) for t in range(end+1)]
         q = deque([(self.start, 0, 0, 0)])
         seen = {(self.start, 0, 0)}
+        finishes = {}
         while q:
             player, t, state, moves = q.popleft()
-            if player == self.goal:
-                return moves
             occupied, events = frames[t]
             for _, dest, trigger in self.choices(player, occupied + [player], state):
+                if dest == self.goal:
+                    finishes.setdefault(player, moves + 1)
+                    continue
                 node = dest, min(t+1, end), state ^ (events | trigger)
                 if node not in seen:
                     seen.add(node)
                     q.append((*node, moves+1))
-        return None
+        return finishes
+
+    def shortest_final(self, recordings):
+        return min(self.finish_options(recordings).values(), default=None)
 
     def one_echo_solution(self):
         """Search *all* possible one-echo tapes. Its recording world has its own gates."""
@@ -178,12 +184,13 @@ class Room:
         shortest = self.shortest_final(records)
         assert shortest is not None and shortest <= len(self.level["final"])
         if len(records) == 2:
+            assert self.one_echo_solution() is None, "This room must require two recordings"
+        if len(records) == 2 and self.level["id"] != "X04":
             entrances = [n for n in self.floor if abs(n[0]-self.goal[0])+abs(n[1]-self.goal[1]) == 1]
             assert len(entrances) == 1
             pre = entrances[0]
             required = self.gates[frozenset((pre, self.goal))]
             assert pre not in required
-            assert self.one_echo_solution() is None, "This room must require two recordings"
             if self.turns and self.bridges:
                 # Counterpoint: with no bridge swaps, at least one final post is
                 # unreachable. With static arrows the first person who can change
@@ -226,6 +233,24 @@ def check_extra(level):
         # The exact one-echo searches in Room.check also freeze each device family.
         return
 
+    if level["id"] == "X04":
+        entrances = {dest for _, dest, *_ in room.links[room.goal]}
+        assert len(entrances) == 3
+        alternatives = json.loads((ROOT / "tests/switchyard_routes.json").read_text())
+        used = set()
+        for plan in [level, *alternatives]:
+            tapes = []
+            for letters in plan["recordings"]:
+                tapes.append(room.replay(letters, tapes))
+            path = room.replay(plan["final"], tapes)
+            assert path[-1] == room.goal
+            # A legal win at this entrance; even unlimited extra beats cannot
+            # make the other two entrances work with this exact recording pair.
+            assert room.finish_options(tapes) == {path[-2]: len(plan["final"])}
+            used.add(path[-2])
+        assert used == entrances
+        return
+
     def gate_cut(required, destination):
         # Even ignoring every device, cutting this gate disconnects its destination.
         edge, = (edge for edge, posts in room.gates.items()
@@ -261,6 +286,6 @@ if __name__ == "__main__":
     for level in levels:
         Room(level).check()
     extras = json.loads((ROOT / "data/extra.json").read_text())
-    assert [r["id"] for r in extras] == ["X01", "X02", "X03"]
+    assert [r["id"] for r in extras] == ["X01", "X02", "X03", "X04"]
     for level in extras:
         check_extra(level)

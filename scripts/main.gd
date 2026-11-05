@@ -96,7 +96,14 @@ func _ready() -> void:
 	resized.connect(_layout)
 	show_home()
 	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--level="):
+		if arg.begins_with("--extra-room="):
+			var requested := arg.trim_prefix("--extra-room=")
+			for index in extra_levels.size():
+				if extra_levels[index].id == requested:
+					show_rooms(EXTRA)
+					open_level(index, true)
+					return
+		elif arg.begins_with("--level="):
 			var number := arg.trim_prefix("--level=").to_int()
 			if number >= 1 and number <= levels.size():
 				open_level(number - 1, false)
