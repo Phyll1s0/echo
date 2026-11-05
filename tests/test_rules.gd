@@ -21,7 +21,8 @@ func walk(puzzle, letters: String) -> void:
 
 func _initialize() -> void:
 	var catalog: Array = JSON.parse_string(FileAccess.get_file_as_string("res://data/levels.json"))
-	for level in catalog:
+	var extra: Array = JSON.parse_string(FileAccess.get_file_as_string("res://data/extra.json"))
+	for level in catalog + extra:
 		var p = Puzzle.new(level)
 		verify(not p.move(Vector2i.ZERO) and not p.move(Vector2i(1,1)) and p.tick()==0, "No waiting or diagonals")
 		for route in level.recordings:

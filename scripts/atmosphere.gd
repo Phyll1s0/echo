@@ -6,6 +6,7 @@ const WORLDS := {
 	"Resonance": {"sky": Color("f0f5f8"), "far": Color("d8e6ee"), "near": Color("c1d7e3"), "ink": Color("567d92"), "tile": Color("deebf2"), "grid": Color("6b8697"), "light": Color("2d607a")},
 	"Phase Shift": {"sky": Color("faf5eb"), "far": Color("ecdfc5"), "near": Color("dfccaa"), "ink": Color("92764b"), "tile": Color("efe2c9"), "grid": Color("96805b"), "light": Color("7d572e")},
 	"Penumbra": {"sky": Color("f5f2f9"), "far": Color("e4ddef"), "near": Color("d5c9e2"), "ink": Color("806c9d"), "tile": Color("e8dff1"), "grid": Color("877599"), "light": Color("63477d")},
+	"Extra": {"sky": Color("f1f0ec"), "far": Color("dfded7"), "near": Color("d4d2c9"), "ink": Color("646864"), "tile": Color("e4e3da"), "grid": Color("7e8176"), "light": Color("595940")},
 	"Nocturne": {"dark": true, "sky": Color("08090a"), "far": Color("111315"), "near": Color("171a1c"), "ink": Color("899295"), "tile": Color("171a1c"), "grid": Color("748083"), "light": Color("e3e8e8")}
 }
 

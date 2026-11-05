@@ -280,6 +280,49 @@ func test_room_restart() -> void:
 	await click_named("Restart Room")
 	verify_fresh_room(initial, completed, "Pause button")
 
+func test_extra() -> void:
+	# A real campaign recording in progress must survive visits to every Extra.
+	ui.open_level(0, false, false)
+	await walk("UU")
+	await key(KEY_ENTER)
+	await walk("RR")
+	var campaign: Dictionary = ui.session.snapshot()
+	var saved_before = Store.new(path)
+	ui.show_home()
+	await settle()
+	await click_named("Chapters")
+	await click_named("Extra")
+	verify(ui.levels.size() == 3 and ui.chapters.size() == 5, "Extra is a separate three-room collection")
+	for i in ui.levels.size():
+		verify(not room_card(i).disabled, "Each Extra room is open immediately")
+	await click(room_card(0).get_global_rect().get_center())
+	await walk("UU")
+	var first_draft: Dictionary = ui.session.snapshot()
+	await click_named("Back")
+	await click(room_card(1).get_global_rect().get_center())
+	await walk("UU")
+	await click_named("Back")
+	await click(room_card(0).get_global_rect().get_center())
+	verify(ui.session.snapshot() == first_draft, "Each Extra room remembers its own recording")
+	for i in 3:
+		await key(KEY_R)
+		var room: Dictionary = ui.levels[i]
+		for route in room.recordings:
+			await walk(route)
+			await key(KEY_ENTER)
+		await walk(room.final)
+		verify(ui.modal_kind == "complete", "Extra solution completes " + room.id)
+		if i < 2: await click_named("Next Room")
+		else: await click_named("Extra")
+	verify(ui.screen == "rooms" and ui.ambient.chapter == "Extra", "The last challenge returns to Extra")
+	var saved = Store.new(path)
+	verify(saved.data.extra_completed.size() == 3 and saved.data.extra_sessions.is_empty(), "Extra clears persist separately")
+	verify(saved.data.session == saved_before.data.session and saved.data.completed == saved_before.data.completed, "Extra never overwrites campaign progress")
+	await click_named("← Chapters")
+	await click_named("← Home")
+	await click_named("Continue")
+	verify(ui.session.snapshot() == campaign, "Home continues the original campaign beat")
+
 func _run() -> void:
 	root.size = Vector2i(1280,820)
 	TranslationServer.set_locale("zh_CN")
@@ -551,6 +594,10 @@ func _run() -> void:
 		await key(KEY_ESCAPE)
 		verify(ui.modal_kind=="pause" and ui.music.playing and ui.music.get_playback_position() >= 41.0, "Opening a room and pausing keep the score on the same phrase")
 	await test_languages()
+	ui.store.data.motion = false
+	ui.store.data.room_titles = 0
+	TranslationServer.set_locale("en")
+	await test_extra()
 	DirAccess.remove_absolute(path)
 	print("ECHO UI: %d checks; %d failures." % [checks, failures])
 	if DisplayServer.get_name() != "headless" and failures == 0:

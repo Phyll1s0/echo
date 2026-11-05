@@ -62,6 +62,27 @@ try{
  await saved(page,async()=> (await readProgress())?.session?.draft?.length===3);
  // Reflow while the echo is opening a gate; preserve the exact round.
  const before=await page.evaluate(()=>readProgress());
+ await tap('back');
+ await tap('chapters');
+ await tap('extra');
+ await tap('X03');
+ await page.waitForTimeout(1700);
+ await page.screenshot({path:`builds/web-${kind}-triptych.png`,scale:'css'});
+ const finale = JSON.parse(fs.readFileSync('data/extra.json', 'utf8')).find(room => room.id === 'X03');
+ const arrows = {U: 'up', D: 'down', L: 'left', R: 'right'};
+ for (const tape of finale.recordings) {
+  for (const direction of tape) await tap(arrows[direction]);
+  await tap('echo');
+ }
+ for (const direction of finale.final) await tap(arrows[direction]);
+ await saved(page, async () => (await readProgress())?.extra_completed?.X03?.echoes === 3);
+ const afterExtra = await page.evaluate(() => readProgress());
+ assert.deepEqual(afterExtra.session, before.session);
+ assert.deepEqual(afterExtra.completed, before.completed);
+ await page.reload();
+ await ready(page);
+ await tap('start');
+ await page.waitForTimeout(1700);
  await page.setViewportSize({width:844,height:390});size='844x390';await page.waitForTimeout(800);
  assert.deepEqual((await page.evaluate(()=>readProgress())).session,before.session);
  await page.screenshot({path:`builds/web-${kind}-landscape.png`,scale:'css'});
@@ -105,6 +126,6 @@ try{
  assert.equal(await failure.locator('#retry').isVisible(),true);
  await failure.close();
  assert.deepEqual(errors,[]);
- console.log(`${kind}: phone/desktop input, one-step pad, echo completion, undo, rotation, safe areas, Chinese, persistent progress, loader recovery passed.`);
+ console.log(`${kind}: phone/desktop input, three-echo Extra completion, campaign resume, undo, rotation, safe areas, Chinese, persistent progress, loader recovery passed.`);
 }finally{await browser.close()}
 })().catch(error=>{console.error(error);process.exitCode=1});

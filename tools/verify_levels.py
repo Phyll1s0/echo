@@ -219,8 +219,48 @@ class Room:
               f'recordings {[len(r)-1 for r in records]}, final {shortest} beats for these recordings.')
 
 
+def check_extra(level):
+    room = Room(level)
+    room.check()
+    if level["id"] == "X01":
+        # The exact one-echo searches in Room.check also freeze each device family.
+        return
+
+    def gate_cut(required, destination):
+        # Even ignoring every device, cutting this gate disconnects its destination.
+        edge, = (edge for edge, posts in room.gates.items()
+                 if posts == {room.pads[name] for name in required}
+                 and destination not in room.relaxed_reach(room.start, blocked_edge=edge))
+        return edge
+
+    assert room.goal not in room.relaxed_reach(room.start, fixed_bank=0)
+    if level["id"] == "X02":
+        # The second recording cannot reach B alone. Both recordings are also
+        # required on the final trip, as exhaustively checked by Room.check.
+        gate_cut("@", room.pads["B"])
+        gate_cut("AB", room.goal)
+        return
+
+    # The third recording cannot visit C until two *other* actors hold A and B.
+    vault = gate_cut("AB", room.pads["C"])
+    assert not vault & {room.pads["A"], room.pads["B"]}
+    # A mandatory edge checks two actors on L plus a third on C. Neither
+    # endpoint holds any of them. This rules out every two-echo solution.
+    meeting = gate_cut("@C", room.goal)
+    assert not meeting & {room.pads["@"], room.pads["C"]}
+    # Later, both plate holders must leave the upper gallery. With the arrows
+    # frozen, the two actors at L cannot reach either plate, even in a recording.
+    split = gate_cut("AB", room.goal)
+    assert not split & room.relaxed_reach(room.start, blocked_edge=meeting)
+    assert not {room.pads["A"], room.pads["B"]} & room.relaxed_reach(room.pads["@"], fixed_arrows=True)
+
+
 if __name__ == "__main__":
     levels = json.loads((ROOT / "data/levels.json").read_text())
     assert [r["id"] for r in levels] == [f'{n:02d}' for n in range(1, len(levels)+1)]
     for level in levels:
         Room(level).check()
+    extras = json.loads((ROOT / "data/extra.json").read_text())
+    assert [r["id"] for r in extras] == ["X01", "X02", "X03"]
+    for level in extras:
+        check_extra(level)

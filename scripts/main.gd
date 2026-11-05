@@ -21,7 +21,10 @@ const CHOICES := {
 	"path_weight": ["Faint", "Standard", "Bold"]
 }
 const ROMAN := ["I", "II", "III", "IV", "V"]
+const EXTRA := "Extra"
 var chapters: Array[String] = []
+var campaign_levels: Array
+var extra_levels: Array
 var levels: Array
 var store
 var session
@@ -75,7 +78,9 @@ func _ready() -> void:
 		push_error("ECHO: level catalog missing")
 		add_child(text_label("Could not load the rooms."))
 		return
-	levels = catalog
+	campaign_levels = catalog
+	levels = campaign_levels
+	extra_levels = JSON.parse_string(FileAccess.get_file_as_string("res://data/extra.json"))
 	for info in levels:
 		if info.chapter not in chapters:
 			chapters.append(info.chapter)
@@ -184,6 +189,7 @@ func _next_unfinished() -> int:
 	return 0
 
 func show_home() -> void:
+	levels = campaign_levels
 	room_return = show_home
 	_fresh_page("home")
 	var body := _body()
@@ -223,6 +229,7 @@ func show_home() -> void:
 	_layout()
 
 func _chapter_label(chapter: String) -> String:
+	if chapter == EXTRA: return tr(EXTRA)
 	var order := chapters.find(chapter)
 	var numeral: String = ROMAN[order] if order >= 0 and order < ROMAN.size() else str(order + 1)
 	return tr("Chapter %s") % numeral
@@ -233,16 +240,20 @@ func _chapter_heading(chapter: String, alignment: HorizontalAlignment) -> VBoxCo
 	heading.add_theme_constant_override("separation", 0)
 	var chapter_color: Color = Atmosphere.WORLDS.get(chapter, {}).get("light", muted)
 	if chapter == "Nocturne" and not dark: chapter_color = muted
-	heading.add_child(text_label(_chapter_label(chapter), 17, chapter_color, alignment))
+	if chapter != EXTRA:
+		heading.add_child(text_label(_chapter_label(chapter), 17, chapter_color, alignment))
 	heading.add_child(text_label(chapter, 30 if compact_ui() else (36 if screen == "chapters" else 42), ink, alignment))
 	return heading
+
+func _completed_rooms(chapter: String) -> Dictionary:
+	return store.data.extra_completed if chapter == EXTRA else store.data.completed
 
 func _chapter_progress(chapter: String) -> Vector2i:
 	var progress := Vector2i.ZERO
 	for info in levels:
 		if info.chapter == chapter:
 			progress.y += 1
-			if store.data.completed.has(info.id):
+			if _completed_rooms(chapter).has(info.id):
 				progress.x += 1
 	return progress
 
@@ -252,6 +263,9 @@ func _selection_page(screen_name: String, back_label: String, on_back: Callable,
 	var header := HBoxContainer.new()
 	body.add_child(header)
 	header.add_child(action(back_label, on_back))
+	if screen_name == "chapters":
+		header.add_child(spacer())
+		header.add_child(action(EXTRA, show_rooms.bind(EXTRA)))
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -266,6 +280,7 @@ func _selection_page(screen_name: String, back_label: String, on_back: Callable,
 	return chapter_index
 
 func show_chapters() -> void:
+	levels = campaign_levels
 	room_return = show_chapters
 	var index := _selection_page("chapters", "← Home", show_home)
 	for chapter in chapters:
@@ -279,6 +294,7 @@ func show_chapters() -> void:
 	_layout()
 
 func show_rooms(chapter: String) -> void:
+	levels = extra_levels if chapter == EXTRA else campaign_levels
 	room_return = show_rooms.bind(chapter)
 	var index := _selection_page("rooms", "← Chapters", show_chapters, chapter)
 	var heading := HBoxContainer.new()
@@ -291,8 +307,8 @@ func show_rooms(chapter: String) -> void:
 		var info: Dictionary = levels[i]
 		if info.chapter != chapter:
 			continue
-		var done: bool = store.data.completed.has(info.id)
-		var unlocked: bool = done or i == 0 or info.get("chapter_entry", false) or store.data.completed.has(levels[i-1].id)
+		var done: bool = _completed_rooms(chapter).has(info.id)
+		var unlocked: bool = chapter == EXTRA or done or i == 0 or info.get("chapter_entry", false) or store.data.completed.has(levels[i-1].id)
 		var room := list_action("%s    %s" % [info.id, tr(info.title)], open_level.bind(i, true))
 		room.set_meta("base_px", 18 if compact_ui() else 21)
 		room.disabled = not unlocked
@@ -317,8 +333,11 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 		return
 	level_index = index
 	session = Puzzle.new(levels[index])
-	if resume and _session_index() == index:
-		session.restore(store.data.session)
+	var saved: Variant = store.data.session
+	if session.level.chapter == EXTRA:
+		saved = store.data.extra_sessions.get(session.level.id, {})
+	if resume and saved is Dictionary and saved.get("level_id") == session.level.id:
+		session.restore(saved)
 	hint_index = -1
 	status_text = ""
 	_save_session()
@@ -340,7 +359,7 @@ func _show_game(introduce: bool = false) -> void:
 	room_title.add_theme_constant_override("separation", 0)
 	room_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(room_title)
-	var chapter_text := _chapter_label(session.level.chapter) if compact_ui() else "%s   /   %s" % [_chapter_label(session.level.chapter), tr(session.level.chapter)]
+	var chapter_text := _chapter_label(session.level.chapter) if compact_ui() or session.level.chapter == EXTRA else "%s   /   %s" % [_chapter_label(session.level.chapter), tr(session.level.chapter)]
 	room_title.add_child(text_label(chapter_text, 13 if compact_ui() else 17, muted))
 	var name_label := text_label("%s   %s" % [session.level.id, tr(session.level.title)], 18 if compact_ui() else 26)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -539,9 +558,14 @@ func _play(id: String) -> void:
 		audio.play()
 
 func _save_session() -> void:
+	var is_extra: bool = session.level.chapter == EXTRA
 	if session.cleared():
-		store.data.completed[session.level.id] = {"echoes": session.echoes.size(), "beats": session.tick()}
-		store.data.session = {}
+		var completed := _completed_rooms(session.level.chapter)
+		completed[session.level.id] = {"echoes": session.echoes.size(), "beats": session.tick()}
+		if is_extra: store.data.extra_sessions.erase(session.level.id)
+		else: store.data.session = {}
+	elif is_extra:
+		store.data.extra_sessions[session.level.id] = session.snapshot()
 	else:
 		store.data.session = session.snapshot()
 	if not store.flush():
@@ -1029,10 +1053,19 @@ func show_complete() -> void:
 	var title := "Room Complete"
 	if at_boundary and progress.x == progress.y:
 		title = tr("%s Complete") % tr(session.level.chapter)
-	var next := "Next Room" if not at_boundary else ("Next Chapter" if has_next else "Chapters")
-	_dialog("complete", title, tr("Beats  %d    ·    Echoes  %d") % [session.tick(), session.echoes.size()], [[next, func():
-		if has_next: open_level(level_index + 1, true)
-		else: show_chapters()], ["Undo", func(): _close_modal(); undo_move()]])
+	var next_label := "Next Room"
+	var advance := open_level.bind(level_index + 1, true)
+	if not has_next:
+		if session.level.chapter == EXTRA:
+			next_label = EXTRA
+			advance = show_rooms.bind(EXTRA)
+		else:
+			next_label = "Chapters"
+			advance = show_chapters
+	elif at_boundary:
+		next_label = "Next Chapter"
+	_dialog("complete", title, tr("Beats  %d    ·    Echoes  %d") % [session.tick(), session.echoes.size()], [[next_label, advance], ["Undo", func(): _close_modal(); undo_move()]])
+
 
 func _input(event: InputEvent) -> void:
 	if title_card != null and ((event is InputEventKey and event.pressed and not event.echo) or (event is InputEventMouseButton and event.pressed) or (event is InputEventScreenTouch and event.pressed)):

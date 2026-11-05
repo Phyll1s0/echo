@@ -526,3 +526,51 @@ msgstr "点方向盘，每步移动一格。点“留下回声”记录路线；
 
 msgid "Tap a direction on the pad, or an adjacent tile, to move one step. Each move advances one beat.\n\nTap Leave an Echo to record your route and return to the start. Your echo retraces your steps, then fades after its last move.\n\nA plate opens its matching gate. Guide the solid dot into the outlined square to finish.\n\nUndo takes back a step. Open Pause for hints or Restart Room."
 msgstr "点方向盘或相邻格子，每次移动一步。世界只在你移动时前进一步。\n\n点“留下回声”记录路线并回到起点。回声会重走这条路线，并在最后一步之后消散。\n\n踏板可以开启对应的门。让实心棋子走到空心方框中即可过关。\n\n“撤销”退回一步。暂停菜单中可以查看提示或重开关卡。"
+
+msgid "Extra"
+msgstr "额外挑战"
+
+msgid "Escapement"
+msgstr "擒纵"
+
+msgid "The bridges read like a score. Decide what the switch must do before you leave the lens."
+msgstr "沿出口方向看三座桥。离开透镜之前，开关应该处在哪个状态？"
+
+msgid "Read the three decks from L to the exit. The first and third rise together; the middle one needs the opposite bank."
+msgstr "从 L 往出口数，第一座桥和第三座桥同时升起，中间那座恰好相反。"
+
+msgid "Send the recording to the switch before the meeting. After you meet, it must tap the switch twice more and finish on A."
+msgstr "让回声先踩一次开关，再回来和你会合。分开以后，它还要踩两次开关，最后抵达 A。"
+
+msgid "1: ↑2 ←2 →2 ←2 → ← ↑2   /   Exit: ↑2 ←2 →4 ↑2 →2 ↓"
+msgstr "1: ↑2 ←2 →2 ←2 → ← ↑2   /   出口： ↑2 ←2 →4 ↑2 →2 ↓"
+
+msgid "Understudy"
+msgstr "替身"
+
+msgid "Someone must reach B in a recording. Start by working out who could let them through the lens gate."
+msgstr "得有人在录制时抵达 B。先想想，谁能替它打开透镜门？"
+
+msgid "During the second recording, meet the first echo on L. As you enter the raised deck, that echo can change the bank for the next step."
+msgstr "录第二段时，和第一段回声在 L 上会合。你踏上第一座桥的同时，让它切换桥面，接上下一步。"
+
+msgid "The exit passage needs two visits to the switch, then quiet. Let the first echo end on A while the second is still able to return to B."
+msgstr "出口这一路需要切换两次桥面。让第一段回声停录在 A，给第二段留出再次回到 B 的时间。"
+
+msgid "1: ↑2 ←2 → ←   /   2: ↑4 →2 ← →   /   Exit: →4 ↑5"
+msgstr "1: ↑2 ←2 → ←   /   2: ↑4 →2 ← →   /   出口： →4 ↑5"
+
+msgid "Triptych"
+msgstr "三联画"
+
+msgid "Three recordings share the last crossing. Look for the room that can only be recorded after two others exist."
+msgstr "第三段回声要去哪里？找找那条必须先有两段录制才能走进的侧廊。"
+
+msgid "Trace both outside paths from their plates to L and back. Record those return trips while the upper bridges are raised."
+msgstr "从两块踏板沿外侧走到 L，再原路折返。趁上方的桥还升着，把两个来回都录下来。"
+
+msgid "The third echo must visit C twice. Between visits, send it back to the vault switch to raise the final bridge while the other two return to their plates."
+msgstr "第三段回声要两次抵达 C。中途折返回侧廊的开关，让最后一座桥升起来。此时，前两段回声也该踏上各自的踏板了。"
+
+msgid "1: ←3 ↑2 →3 ←3 ↓2   /   2: →3 ↑2 ←3 →3 ↓2   /   3: ↓2 ←2 ↓2 ← ↓ ↑ → ↑ ↓ ← ↓   /   Exit: ↓2 →2 ↓2 →3 ↑5 →"
+msgstr "1: ←3 ↑2 →3 ←3 ↓2   /   2: →3 ↑2 ←3 →3 ↓2   /   3: ↓2 ←2 ↓2 ← ↓ ↑ → ↑ ↓ ← ↓   /   出口： ↓2 →2 ↓2 →3 ↑5 →"

@@ -209,7 +209,7 @@ func _draw() -> void:
 			draw_arc(center, radius, 0, TAU, 64, piece_edge, maxf(1.6, unit * 0.024), true)
 		else:
 			var alpha := 1.0 - eased if target == null else 1.0
-			var radius := unit * (0.18 if n == 1 else 0.245)
+			var radius := unit * (0.18 + (n - 1) * 0.065)
 			var width := maxf(2.0, unit * 0.036)
 			# Separate the echo ring from a plate or bridge underneath it.
 			draw_arc(center, radius, 0, TAU, 64, Color(piece_shadow, alpha), width + 2.0, true)

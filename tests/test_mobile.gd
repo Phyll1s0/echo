@@ -51,6 +51,22 @@ func _run() -> void:
 				geometry[key_]["chinese"] = point(button_named("中文"))
 				geometry[key_]["settings_back"] = point(button_named("Back"))
 				ui._close_modal()
+		ui.show_chapters()
+		await settle()
+		geometry[key_]["extra"] = point(button_named("Extra"))
+		await click_named("Extra")
+		for i in ui.levels.size():
+			geometry[key_][ui.levels[i].id] = point(room_card(i))
+		geometry[key_]["chapters_back"] = point(button_named("← Chapters"))
+
+		for i in ui.levels.size():
+			ui.open_level(i, false, false)
+			await settle()
+			verify(bounds.encloses(ui.board.get_global_rect()) and ui.board.cell_size() >= 12, "Extra board fits " + key_)
+			for button in ui.page.find_children("*", "Button", true, false):
+				verify(bounds.encloses(button.get_global_rect()), "Extra controls fit " + key_)
+		if dimensions == Vector2i(390,664): await capture("extra-triptych-phone")
+		ui.show_home()
 		ui.open_level(16,false,false)
 		await settle()
 		await capture("mobile-"+key_)
