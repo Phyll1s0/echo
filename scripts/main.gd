@@ -41,6 +41,8 @@ var modal_panel: PanelContainer
 var modal_width := 570.0
 var board
 var chapter_index: VBoxContainer
+var chapter_picker
+var chapter_focus := 0
 var mark
 var audio: AudioStreamPlayer
 var footfalls: AudioStreamPlayer
@@ -152,7 +154,7 @@ func _layout() -> void:
 		theme.default_font_size = roundi(15 * ui_scale())
 	if is_instance_valid(page):
 		rescale_text(page)
-	if is_instance_valid(chapter_index):
+	if is_instance_valid(chapter_index) and screen != "chapters":
 		var gap := (24 if size.y >= 720 else 14) if screen == "chapters" else 17
 		chapter_index.add_theme_constant_override("separation", roundi(gap * ui_scale()))
 		chapter_index.custom_minimum_size.x = minf(480 * ui_scale(), size.x - (40 if compact_ui() else 110 * ui_scale()))
@@ -175,6 +177,7 @@ func _fresh_page(name_: String, landscape: String = "") -> void:
 	board = null
 	direction_pad = null
 	chapter_index = null
+	chapter_picker = null
 	mark = null
 	apply_palette(Atmosphere.WORLDS.get(landscape, {}).get("dark", false))
 	screen = name_
@@ -307,18 +310,23 @@ func _selection_page(screen_name: String, back_label: String, on_back: Callable,
 func show_chapters() -> void:
 	levels = campaign_levels
 	room_return = show_chapters
-	var index := _selection_page("chapters", "← Home", show_home)
-	for chapter in chapters:
-		var item := MarginContainer.new()
-		index.add_child(item)
-		var entry := action("", show_rooms.bind(chapter))
-		entry.accessibility_name = tr(chapter)
-		entry.accessibility_description = _chapter_label(chapter)
-		item.add_child(entry)
-		item.add_child(_chapter_heading(chapter, HORIZONTAL_ALIGNMENT_CENTER))
+	_fresh_page("chapters")
+	var body := _body()
+	var header := HBoxContainer.new()
+	body.add_child(header)
+	header.add_child(action("← Home", show_home))
+	header.add_child(spacer())
+	header.add_child(action(EXTRA, show_rooms.bind(EXTRA)))
+	chapter_picker = preload("res://scripts/chapter_picker.gd").new()
+	body.add_child(chapter_picker)
+	chapter_picker.build(self, chapters, chapter_focus)
+	chapter_index = chapter_picker.index
+	chapter_picker.selected_changed.connect(func(which): chapter_focus = which)
+	chapter_picker.chapter_opened.connect(func(which): show_rooms(chapters[which]))
 	_layout()
 
 func show_rooms(chapter: String) -> void:
+	if chapter in chapters: chapter_focus = chapters.find(chapter)
 	levels = extra_levels if chapter == EXTRA else campaign_levels
 	room_return = show_rooms.bind(chapter)
 	var index := _selection_page("rooms", "← Chapters", show_chapters, chapter)

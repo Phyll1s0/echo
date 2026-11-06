@@ -92,7 +92,7 @@ Click a distant plate or hover over it to highlight its linked gates. Hints prog
 
 ## Chapters and rooms
 
-Choose a chapter in **Chapters** to see its rooms. **07 Turnabout**, **11 First Contact**, and **15 Hush** are available as direct chapter entries. Subsequent rooms unlock in order. Wonderland and Inferno rooms are directly accessible.
+In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to browse. The centred chapter stays large while its neighbours fade into the surrounding space. Tap a chapter or press Enter to see its rooms; returning restores the same selection. **07 Turnabout**, **11 First Contact**, and **15 Hush** are available as direct chapter entries. Subsequent rooms unlock in order. Wonderland and Inferno rooms are directly accessible.
 
 ![The chapter index](docs/images/chapters.png)
 

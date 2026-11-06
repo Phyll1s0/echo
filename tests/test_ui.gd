@@ -45,6 +45,11 @@ func button_named(value: String) -> Button:
 	return null
 
 func click_named(value: String) -> void:
+	if ui.modal == null and ui.screen == "chapters" and is_instance_valid(ui.chapter_picker):
+		for i in ui.chapters.size():
+			if tr(ui.chapters[i]) == tr(value):
+				ui.chapter_picker.center_on(i, false)
+				await settle()
 	var button := button_named(value)
 	if button != null:
 		await click(button.get_global_rect().get_center())
@@ -528,10 +533,10 @@ func _run() -> void:
 	root.size = Vector2i(720,600)
 	await settle()
 	var viewport_rect := Rect2(Vector2.ZERO, Vector2(root.size))
-	for button in ui.chapter_index.get_children():
-		ui.chapter_index.get_parent().get_parent().ensure_control_visible(button)
+	for i in ui.chapters.size():
+		ui.chapter_picker.center_on(i, false)
 		await settle()
-		verify(viewport_rect.encloses(button.get_global_rect()), "Each chapter stays reachable in the small window")
+		verify(viewport_rect.encloses(ui.chapter_picker.entries[i].get_global_rect()), "Each chapter stays reachable in the small window")
 	await capture("chapters-small")
 	await click_named("Phase Shift")
 	verify(viewport_rect.encloses(room_card(6).get_global_rect()) and viewport_rect.encloses(room_card(9).get_global_rect()), "All four rooms fit the small window")
