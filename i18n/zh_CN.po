@@ -904,3 +904,6 @@ msgstr "每扇出口都需要两块踏板有人，另一块空着。让回声在
 
 msgid "West / 1: L3 D U D U D U3 R3 L3 D3 U D / 2: R2 L R2 D U2 L2 U L R L R D2 R L R2 D / 3: D2 U D U D3 R L2 R L R / Exit: D2 R4 L D L U R D U R2 U2 R2 L2 D R"
 msgstr "西门 / 1：左3 下 上 下 上 下 上3 右3 左3 下3 上 下 / 2：右2 左 右2 下 上2 左2 上 左 右 左 右 下2 右 左 右2 下 / 3：下2 上 下 上 下3 右 左2 右 左 右 / 出口：下2 右4 左 下 左 上 右 下 上 右2 上2 右2 左2 下 右"
+
+msgid "Open the ECHO repository"
+msgstr "打开 ECHO 的 GitHub 仓库"

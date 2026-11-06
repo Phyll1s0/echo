@@ -22,7 +22,7 @@ func _run() -> void:
 		await settle()
 		var key_ := "%dx%d" % [dimensions.x,dimensions.y]
 		var bounds := Rect2(Vector2.ZERO,Vector2(dimensions))
-		geometry[key_] = {"start": point(button_named("Start") if button_named("Start") != null else button_named("Continue")), "settings": point(button_named("Settings")), "chapters": point(button_named("Chapters"))}
+		geometry[key_] = {"start": point(button_named("Start") if button_named("Start") != null else button_named("Continue")), "settings": point(button_named("Settings")), "github": point(button_named("GitHub")), "chapters": point(button_named("Chapters"))}
 		for i in ui.levels.size():
 			ui.open_level(i,false,false)
 			for frame in 5: await process_frame

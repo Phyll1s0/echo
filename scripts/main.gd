@@ -5,6 +5,7 @@ const Store = preload("res://scripts/save_store.gd")
 const Board = preload("res://scripts/board.gd")
 const Atmosphere = preload("res://scripts/atmosphere.gd")
 const Mark = preload("res://scripts/mark.gd")
+const REPOSITORY_URL := "https://github.com/Phyll1s0/echo"
 const ChapterGuide = preload("res://scripts/chapter_guide.gd")
 const MUSIC := preload("res://assets/audio/stillwater.ogg")
 const STEPS := [preload("res://assets/audio/step.wav"), preload("res://assets/audio/step_b.wav"), preload("res://assets/audio/step_c.wav")]
@@ -232,6 +233,20 @@ func show_home() -> void:
 	settings.accessibility_name = tr("Settings")
 	settings.tooltip_text = tr("Settings")
 	top.add_child(settings)
+	var github := Button.new()
+	github.icon = preload("res://assets/github.svg")
+	github.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	github.expand_icon = true
+	github.set_meta("icon_px", 21)
+	github.custom_minimum_size = Vector2(46, 44) * ui_scale()
+	github.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	github.accessibility_name = "GitHub"
+	github.accessibility_description = tr("Open the ECHO repository")
+	github.tooltip_text = tr("Open the ECHO repository")
+	github.draw.connect(_draw_action_line.bind(github))
+	# Keep browser activation synchronous; this callback does not replace UI nodes.
+	github.pressed.connect(_open_repository)
+	top.add_child(github)
 	body.add_child(spacer(false))
 	mark = Mark.new()
 	mark.ink = ink
@@ -254,6 +269,12 @@ func show_home() -> void:
 	buttons.add_child(home_action("Chapters", show_chapters))
 	body.add_child(spacer(false))
 	_layout()
+
+func _open_repository() -> void:
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.open('%s', '_blank', 'noopener,noreferrer')" % REPOSITORY_URL, true)
+	else:
+		OS.shell_open(REPOSITORY_URL)
 
 func _chapter_label(chapter: String) -> String:
 	if chapter == EXTRA: return tr(EXTRA)

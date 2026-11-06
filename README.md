@@ -60,7 +60,7 @@ The release is deployed at `/echo/` through the existing [personal-site reposito
 | Pause / toggle fullscreen | Esc / F11 |
 | Return to the page you entered from | The **←** in the upper-left corner; your current progress is saved |
 
-The small gear in the upper-right corner of the home screen opens Settings. During play, use the pause icon or press Esc to open the sidebar. Settings has **Audio**, **Display**, and **Puzzle** tabs for music and effects levels, footsteps, fullscreen, motion, movement animation speed, room title duration, echo paths, and path contrast. Preferences save automatically. **How to Play** is available in Settings; room hints are available with H or **Hint** in the pause sidebar.
+The small GitHub mark in the upper-right corner of the home screen opens this repository in your browser. The gear beside it opens Settings. During play, use the pause icon or press Esc to open the sidebar. Settings has **Audio**, **Display**, and **Puzzle** tabs for music and effects levels, footsteps, fullscreen, motion, movement animation speed, room title duration, echo paths, and path contrast. Preferences save automatically. **How to Play** is available in Settings; room hints are available with H or **Hint** in the pause sidebar.
 
 Choose **English** or **Simplified Chinese** in the language row at the top of Settings. Changes apply immediately and persist after restarting. Menus, chapter and room names, hints, instructions, and completion messages all follow the selected language. Switching languages preserves the current puzzle, pending echo edits, and undo history.
 

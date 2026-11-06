@@ -68,7 +68,7 @@ func room_card(i: int) -> Button:
 	return null
 
 func test_home_settings() -> void:
-	verify(ui.page.find_children("*", "Button", true, false).size()==3, "Home shows three actions")
+	verify(ui.page.find_children("*", "Button", true, false).size()==4, "Home includes its GitHub link")
 	await click_named("Settings")
 	verify(ui.modal_kind=="settings", "Settings open from the home screen")
 	await click_named("Sound")
