@@ -292,7 +292,7 @@ func test_extra() -> void:
 	await settle()
 	await click_named("Chapters")
 	await click_named("Extra")
-	verify(ui.levels.size() == 1 and ui.chapters.size() == 6, "Switchyard remains in Extra outside the six chapters")
+	verify(ui.levels.size() == 1 and ui.chapters.size() == 7, "Switchyard remains in Extra outside the seven chapters")
 	for i in ui.levels.size():
 		verify(not room_card(i).disabled, "Each Extra room is open immediately")
 	await click(room_card(0).get_global_rect().get_center())
@@ -336,7 +336,7 @@ func _run() -> void:
 	await capture("home-start")
 	await test_home_settings()
 	await click_named("Chapters")
-	verify(ui.screen=="chapters" and ui.chapter_index.get_child_count()==6 and room_card(0)==null, "The index only offers six chapter names")
+	verify(ui.screen=="chapters" and ui.chapter_index.get_child_count()==7 and room_card(0)==null, "The index only offers seven chapter names")
 	await capture("chapters")
 	await click_named("Nocturne")
 	verify(not room_card(14).disabled and room_card(15).disabled and ui.dark, "The black chapter can be entered directly, with later rooms locked")
@@ -529,7 +529,9 @@ func _run() -> void:
 	await settle()
 	var viewport_rect := Rect2(Vector2.ZERO, Vector2(root.size))
 	for button in ui.chapter_index.get_children():
-		verify(viewport_rect.encloses(button.get_global_rect()), "Chapter selection fits the small window")
+		ui.chapter_index.get_parent().get_parent().ensure_control_visible(button)
+		await settle()
+		verify(viewport_rect.encloses(button.get_global_rect()), "Each chapter stays reachable in the small window")
 	await capture("chapters-small")
 	await click_named("Phase Shift")
 	verify(viewport_rect.encloses(room_card(6).get_global_rect()) and viewport_rect.encloses(room_card(9).get_global_rect()), "All four rooms fit the small window")

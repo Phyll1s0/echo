@@ -8,11 +8,14 @@ DIR = {"U": (0, -1), "D": (0, 1), "L": (-1, 0), "R": (1, 0)}
 
 
 class Room:
-    def __init__(self, level, *, freeze_turns=False, freeze_bridges=False):
+    def __init__(self, level, *, freeze_turns=False, freeze_bridges=False, freeze_lava=False):
         self.level = level
         rows = level["rows"]
         assert rows and len({len(row) for row in rows}) == 1
         self.floor, self.switches, self.bridges, marks = set(), set(), {}, {}
+        self.lava = {}
+        self.lava_groups = level.get("lava_groups", 0)
+        self.freeze_lava = freeze_lava
         for y, row in enumerate(rows):
             for x, ch in enumerate(row):
                 if ch == "#":
@@ -23,6 +26,9 @@ class Room:
                     self.switches.add(cell)
                 elif ch in "ab":
                     self.bridges[cell] = int(ch == "b")
+                elif ch in "1234":
+                    assert 0 < int(ch) <= self.lava_groups <= 4
+                    self.lava[cell] = int(ch) - 1
                 elif ch not in ".!":
                     assert ch in "SXABC@" and ch not in marks
                     marks[ch] = cell
@@ -71,6 +77,9 @@ class Room:
 
     def choices(self, player, occupied, state):
         for letter, dest, trigger, bank, bit, reverse, pads, vacant in self.links[player]:
+            next_phase = (0 if self.freeze_lava else ((state >> 6) + 1) % self.lava_groups) if self.lava_groups else -1
+            if self.lava.get(dest, -2) == next_phase:
+                continue
             if bank is not None and bank != (state & 1):
                 continue
             if bit and bool(state & bit) != reverse:
@@ -82,6 +91,11 @@ class Room:
             lens = self.pads.get('@')
             if lens not in pads or occupied.count(lens) >= 2:
                 yield letter, dest, trigger
+
+    def advance(self, state, events):
+        devices = (state ^ events) & 63
+        phase = ((state >> 6) + 1) % self.lava_groups if self.lava_groups and not self.freeze_lava else 0
+        return devices | (phase << 6)
 
     def tape_frame(self, recordings, t):
         occupied = [r[t] for r in recordings if t < len(r)]
@@ -103,7 +117,7 @@ class Room:
             move = next((m for m in self.choices(player, occupied + [player], state) if m[0] == letter), None)
             assert move, (self.level["id"], letters, t+1, player, state)
             _, dest, trigger = move
-            state ^= events | trigger
+            state = self.advance(state, events | trigger)
             assert (sum(dest)-sum(self.start)) % 2 == (t+1) % 2
             path.append(dest)
         return path
@@ -122,7 +136,7 @@ class Room:
                 if dest == self.goal:
                     finishes.setdefault(player, moves + 1)
                     continue
-                node = dest, min(t+1, end), state ^ (events | trigger)
+                node = dest, min(t+1, end), self.advance(state, events | trigger)
                 if node not in seen:
                     seen.add(node)
                     q.append((*node, moves+1))
@@ -155,7 +169,7 @@ class Room:
                 if g == self.goal:
                     continue
                 for new_step, p, b in current_moves:
-                    child = g, p, old_state ^ a if g is not None else 0, live_state ^ (a | b)
+                    child = g, p, self.advance(old_state, a) if g is not None else 0, self.advance(live_state, a | b)
                     if child not in parent:
                         parent[child] = (node, old_step, new_step)
                         q.append(child)
@@ -189,7 +203,7 @@ class Room:
         assert shortest is not None and shortest <= len(self.level["final"])
         if len(records) == 2:
             assert self.one_echo_solution() is None, "This room must require two recordings"
-        if len(records) == 2 and self.level["id"] not in ["X04", "21"]:
+        if len(records) == 2 and self.level["id"] not in ["X04", "21", "24"]:
             entrances = [n for n in self.floor if abs(n[0]-self.goal[0])+abs(n[1]-self.goal[1]) == 1]
             assert len(entrances) == 1
             pre = entrances[0]
@@ -304,6 +318,12 @@ if __name__ == "__main__":
             # Complementary doors enclose the ride. No control exists inside;
             # the outer echo must flip the direction again after entry.
             assert room.controlled == 6 and set(room.direction_switches) == {(0, 0)}
+    for plan in json.loads((ROOT / "tests/inferno_routes.json").read_text()):
+        room = Room(levels[int(plan["id"]) - 1])
+        tapes = []
+        for route in plan["recordings"]:
+            tapes.append(room.replay(route, tapes))
+        assert room.replay(plan["final"], tapes)[-1] == room.goal
     extras = json.loads((ROOT / "data/extra.json").read_text())
     assert [r["id"] for r in extras] == ["X04"]
     for level in extras:

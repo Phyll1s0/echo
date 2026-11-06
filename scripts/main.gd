@@ -21,7 +21,7 @@ const CHOICES := {
 	"room_titles": ["Off", "1 s", "1.5 s", "2 s"],
 	"path_weight": ["Faint", "Standard", "Bold"]
 }
-const ROMAN := ["I", "II", "III", "IV", "V", "VI"]
+const ROMAN := ["I", "II", "III", "IV", "V", "VI", "VII"]
 const EXTRA := "Extra"
 var chapters: Array[String] = []
 var campaign_levels: Array
@@ -176,7 +176,7 @@ func _fresh_page(name_: String, landscape: String = "") -> void:
 	direction_pad = null
 	chapter_index = null
 	mark = null
-	apply_palette(landscape == "Nocturne")
+	apply_palette(Atmosphere.WORLDS.get(landscape, {}).get("dark", false))
 	screen = name_
 	layout_profile = _profile()
 	page = Control.new()
@@ -264,6 +264,7 @@ func _chapter_heading(chapter: String, alignment: HorizontalAlignment) -> VBoxCo
 	heading.add_theme_constant_override("separation", 0)
 	var chapter_color: Color = Atmosphere.WORLDS.get(chapter, {}).get("light", muted)
 	if chapter == "Nocturne" and not dark: chapter_color = muted
+	if chapter == "Inferno" and not dark: chapter_color = Color("a34c35")
 	if chapter != EXTRA:
 		heading.add_child(text_label(_chapter_label(chapter), 17, chapter_color, alignment))
 	heading.add_child(text_label(chapter, 30 if compact_ui() else (36 if screen == "chapters" else 42), ink, alignment))
@@ -1070,8 +1071,10 @@ func _close_chapter_guide() -> void:
 func show_help() -> void:
 	var back: Callable = show_settings
 	var silence: bool = screen == "game" and session.gates.any(func(gate): return not gate.vacant.is_empty())
-	if screen == "game" and (silence or not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS)):
+	if screen == "game" and (silence or session.lava_groups > 0 or not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS)):
 		var rules := PackedStringArray(["Tap a direction to move one tile per beat. Tap Leave an Echo to record your route. Undo takes back a beat; Pause offers hints and Restart Room." if touch_controls else "Move one tile per beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."])
+		if session.lava_groups > 0:
+			rules.append("Lava advances one group per move. Match the dots on tiles to the cycle above the board. The triangle marks the group sinking next; choose a tile that is safe when you land. Invalid moves cost no beat.")
 		if silence:
 			rules.append("A gate marked −A needs A empty before you move. −L needs an empty lens; even one echo keeps it shut. A fading echo can open the way.")
 		if session.plates.has(Puzzle.LENS):

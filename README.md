@@ -4,9 +4,9 @@ Every step you take moves your past selves, too.
 
 **[Play in your browser](https://phyll1s0.com/echo/)** — on desktop or phone.
 
-ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through twenty-one rooms across six chapters, plus the optional Extra challenge, Switchyard. There is no time pressure: the world advances only when you move.
+ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through twenty-five rooms across seven chapters, plus the optional Extra challenge, Switchyard. There is no time pressure: the world advances only when you move.
 
-Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. Chapter VI, **Wonderland**, adds coral-pink paper, a quiet Ferris wheel, and a carousel controlled from another branch. The interface defaults to English, with Simplified Chinese available in Settings.
+Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. Chapter VI, **Wonderland**, adds coral-pink paper, a quiet Ferris wheel, and a carousel controlled from another branch. Chapter VII, **Inferno**, pairs charcoal and ember orange with four groups of sinking lava tiles. The interface defaults to English, with Simplified Chinese available in Settings.
 
 ![The paper-white home screen](docs/images/home.png)
 
@@ -83,6 +83,7 @@ Click a distant plate or hover over it to highlight its linked gates. Hints prog
 - In Nocturne, a minus sign marks an empty-plate condition. **−A** needs A empty before the move. **−L** needs a completely empty lens; even one echo keeps it shut. **B −A** requires B occupied and A empty at the same time. An echo can satisfy an empty-plate condition by leaving or fading, and undo restores the previous occupancy.
 - Gates with multiple plate requirements need all of them active at once. Only the current player can finish a room by entering the outlined square.
 - Arrow gates allow passage only in the indicated direction, then reverse when crossed. Multiple actors crossing the same gate on one beat reverse it only once.
+- In Inferno, lava rotates through four groups, one per successful move. Dot counts identify each tile’s group, and the cycle above the board marks the current group and the next one to sink. A move must land on a tile that is safe **after** the rotation. A submerged tile can rise as you enter it. Invalid input costs no beat; undo, recordings, and saves restore the exact phase.
 - Round arrow switches reverse their linked one-way doors. These doors keep their direction when crossed; only a switch visit changes them. Echoes can operate a switch remotely, and simultaneous visits flip it once. Inspect a switch to see which doors it controls.
 - Stepping onto a diamond swaps the raised and folded bridge banks. You can enter a raised bridge and leave a folded bridge beneath you. Movement uses the bank state at the start of the beat. Multiple actors triggering the shared switch bank on one beat swap it only once.
 - Echoes follow their original recorded routes even after gates or bridges change, and still trigger devices. Each round starts with the initial device state. Undo restores the arrow directions and bridge banks for that beat.
@@ -91,7 +92,7 @@ Click a distant plate or hover over it to highlight its linked gates. Hints prog
 
 ## Chapters and rooms
 
-Choose a chapter in **Chapters** to see its rooms. **07 Turnabout**, **11 First Contact**, and **15 Hush** are available as direct chapter entries. Subsequent rooms unlock in order. All four Wonderland rooms are directly accessible.
+Choose a chapter in **Chapters** to see its rooms. **07 Turnabout**, **11 First Contact**, and **15 Hush** are available as direct chapter entries. Subsequent rooms unlock in order. Wonderland and Inferno rooms are directly accessible.
 
 ![The chapter index](docs/images/chapters.png)
 
@@ -118,10 +119,16 @@ Choose a chapter in **Chapters** to see its rooms. **07 Turnabout**, **11 First 
 | | 19 Understudy | Let one echo fade while the other returns to a plate |
 | | 20 Triptych | Coordinate three recordings across the upper gallery and a remote switch |
 | | 21 Carousel | Enter a ring, then let an outside echo reverse its exit door |
+| VII · Inferno | 22 Cinder Walk | Read the next sinking group and choose between crossings |
+| | 23 Afterburn | Meet on a lens, then time a safe echo return to A |
+| | 24 Furnace | Coordinate a remote switch, four exit doors, two plates, and the lava cycle |
+| | 25 Damnation | Occupy both plates to enter, then let A fade while B returns |
 
 ![Chapter V · Nocturne](docs/images/room-17.png)
 
 The former Extra rooms X01–X03 are now **18 Escapement**, **19 Understudy**, and **20 Triptych** in Wonderland. Existing completion records transfer automatically, and opening a moved room resumes its old unfinished draft. [**21 Carousel**](https://phyll1s0.com/echo/?room=21) adds a remote direction switch and two routes around its central ring. An echo must change the doors after you enter, then both recordings must reach the exit plates.
+
+[**Chapter VII · Inferno**](https://phyll1s0.com/echo/?room=22) adds four standalone entries. Furnace has four playable approaches to its central exit. Damnation offers a shorter upper crossing and a longer lower ring, with different recording plans. Its first room includes an animated lava guide.
 
 Open **Chapters → Extra** for [**X04 Switchyard**](https://phyll1s0.com/echo/?room=X04). Two recordings can support three distinct approaches to a central exit, each requiring a different pair of plates. It is available immediately and remembers its own unfinished route. Home → Continue resumes your campaign.
 

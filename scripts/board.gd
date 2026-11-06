@@ -73,10 +73,13 @@ func _process(delta: float) -> void:
 func cell_size() -> float:
 	if puzzle == null:
 		return 1.0
-	return maxf(1.0, minf(size.x / (puzzle.columns + 0.85), size.y / (puzzle.rows + 0.8)))
+	return maxf(1.0, minf(size.x / (puzzle.columns + 0.85), (size.y - _lava_header()) / (puzzle.rows + 0.8)))
+
+func _lava_header() -> float:
+	return minf(32.0, size.y * 0.16) if puzzle != null and puzzle.lava_groups > 0 else 0.0
 
 func origin() -> Vector2:
-	return (size - Vector2(puzzle.columns, puzzle.rows) * cell_size()) * 0.5
+	return (size - Vector2(0, _lava_header()) - Vector2(puzzle.columns, puzzle.rows) * cell_size()) * 0.5 + Vector2(0, _lava_header())
 
 func center_of(cell: Vector2i) -> Vector2:
 	return origin() + (Vector2(cell) + Vector2(0.5, 0.5)) * cell_size()
@@ -119,8 +122,12 @@ func _draw() -> void:
 	var text_size := maxi(11, roundi(unit * 0.18))
 	var player: Vector2i = puzzle.player()
 	var state: int = puzzle.mechanism_state()
+	if puzzle.lava_groups > 0: _draw_lava_cycle()
 	for cell in puzzle.floor_cells:
 		var rect := Rect2(center_of(cell) - Vector2.ONE * (unit - gap) * 0.5, Vector2.ONE * (unit - gap))
+		if puzzle.lava.has(cell):
+			_draw_lava(cell, rect)
+			continue
 		if puzzle.bridges.has(cell):
 			_draw_bridge(cell, rect, state)
 			continue
@@ -230,6 +237,44 @@ func _draw() -> void:
 			# Separate the echo ring from a plate or bridge underneath it.
 			draw_arc(center, radius, 0, TAU, 64, Color(piece_shadow, alpha), width + 2.0, true)
 			draw_arc(center, radius, 0, TAU, 64, Color(piece_edge if n == 1 else second_echo_edge, alpha), width, true)
+
+func _draw_lava_cycle() -> void:
+	var count: int = puzzle.lava_groups
+	var y := _lava_header() * 0.5
+	var radius := minf(10.0, y * 0.65)
+	for group in count:
+		var centre := Vector2(size.x * 0.5 + (group - (count - 1) * 0.5) * 34, y)
+		var current: bool = group == puzzle.lava_phase()
+		var next: bool = group == puzzle.lava_phase(puzzle.tick() + 1)
+		if current: draw_circle(centre, radius, Color("ff8155"), true, -1, true)
+		else: draw_arc(centre, radius, 0, TAU, 40, Color("ffc18a") if next else grid_color, 1.3, true)
+		draw_string(font, centre + Vector2(-3.5, 4), str(group + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("251216") if current else ink)
+		if next:
+			var tip := centre + Vector2(0, radius + 2)
+			draw_colored_polygon(PackedVector2Array([tip, tip + Vector2(-3, 4), tip + Vector2(3, 4)]), Color("ffc18a"))
+
+func _draw_lava(cell: Vector2i, rect: Rect2) -> void:
+	var unit := cell_size()
+	var group: int = puzzle.lava[cell]
+	var hot: bool = group == puzzle.lava_phase()
+	var warning: bool = group == puzzle.lava_phase(puzzle.tick() + 1)
+	var heat := 1.0 if hot else 0.0
+	if phase < 1.0:
+		var old_hot: bool = group == puzzle.lava_phase(puzzle.tick() - 1)
+		heat = lerpf(1.0 if old_hot else 0.0, heat, smoothstep(0.0, 1.0, phase))
+	draw_rect(rect, floor_color.lerp(Color("79291f"), heat))
+	draw_rect(rect, Color("ffc18a") if warning else grid_color.lerp(Color("ff8155"), heat), false, maxf(1.3, unit * (0.035 if warning else 0.018)), true)
+	if heat > 0:
+		var crack := PackedVector2Array()
+		for point in [Vector2(-0.32,-0.13), Vector2(-0.12,0.04), Vector2(0.08,-0.11), Vector2(0.30,0.06)]:
+			crack.append(rect.get_center() + point * unit)
+		draw_polyline(crack, Color(Color("ff9b64"), heat), maxf(1.3, unit * 0.025), true)
+	if warning:
+		var corner := rect.position + Vector2(rect.size.x - unit * 0.09, unit * 0.09)
+		draw_colored_polygon(PackedVector2Array([corner, corner + Vector2(-0.14, 0) * unit, corner + Vector2(0, 0.14) * unit]), Color("ffc18a"))
+	for n in group + 1:
+		var point := rect.position + Vector2(unit * (0.12 + n * 0.12), rect.size.y - unit * 0.12)
+		draw_circle(point, maxf(1.0, unit * 0.022), Color("ffc18a") if warning else ink, true, -1, true)
 
 func _draw_direction_switch(center: Vector2, unit: float) -> void:
 	var r := unit * 0.31

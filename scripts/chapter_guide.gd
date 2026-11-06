@@ -66,6 +66,17 @@ const PAGES := {
 			["R", "Only another switch visit can reverse it."],
 			["R", "Plan when your echo should change the doors."]]
 	}],
+	"Inferno": [{
+		"title": "Lava Cycle",
+		"body": "Four groups take turns sinking. Match the dots on tiles to the numbered cycle.\nThe triangle marks the group sinking next. Land on a safe tile; a group can rise as you step onto it.",
+		"rows": ["S2.X", "1.34"], "gates": [], "lava_groups": 4,
+		"steps": [["", "Group 2 sinks next. Take the lower route."],
+			["D", "Group 1 rises as group 2 sinks."],
+			["R", "A detour advances the cycle, too."],
+			["U", "Group 2 is safe again. You can step onto it."],
+			["R", "The cycle repeats every four beats."],
+			["R", "Take your time. Only your moves change the lava."]]
+	}],
 	"Nocturne": [{
 		"title": "Leave a Space",
 		"body": "A gate marked −A needs A empty before you move. An echo can step away or fade to open it.\n−L needs a completely empty lens; even one self keeps it shut.",

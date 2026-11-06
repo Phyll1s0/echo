@@ -85,8 +85,47 @@ func _initialize() -> void:
 	_test_lens(catalog)
 	_test_silence(catalog)
 	_test_direction_switches(catalog[20])
+	_test_lava(catalog)
 	print("ECHO rules: %d checks; %d failures." % [checks, failures])
 	quit(1 if failures else 0)
+
+func _test_lava(catalog: Array) -> void:
+	var fixture := {"id": "lava", "rows": ["S2143X", "......"], "gates": [], "max_echoes": 1, "lava_groups": 4}
+	var cycle = Puzzle.new(fixture)
+	var initial: Dictionary = cycle.snapshot()
+	verify(cycle.lava_phase() == 0 and not cycle.move(Vector2i.RIGHT), "The next sinking group blocks landing")
+	verify(cycle.snapshot() == initial and cycle.tick() == 0, "Unsafe input costs no beat or device change")
+	walk(cycle, "DRU")
+	verify(cycle.lava_phase() == 3 and cycle.player() == Vector2i(1,0), "A recovered group can be entered at a later phase")
+	verify(not cycle.move(Vector2i.RIGHT) and cycle.tick() == 3, "A currently solid group can be unsafe on arrival")
+	verify(cycle.undo() and cycle.lava_phase() == 2, "Undo restores the lava cycle")
+	walk(cycle, "RL")
+	verify(cycle.tick() == 4 and cycle.lava_phase() == 0, "The four-phase cycle wraps")
+	verify(cycle.seal() and cycle.tick() == 0 and cycle.lava_phase() == 0, "Leaving an echo resets the cycle")
+	var rising = Puzzle.new({"id": "rising", "rows": ["S1.X"], "gates": [], "max_echoes": 1, "lava_groups": 4})
+	verify(not rising.lava_safe(Vector2i(1,0),0) and rising.move(Vector2i.RIGHT), "A currently submerged group rises as the player lands")
+	var forged := initial.duplicate(true)
+	forged.draft.append([1,0])
+	verify(not Puzzle.new(fixture).restore(forged), "Saves reject routes landing on lava")
+	for plan in JSON.parse_string(FileAccess.get_file_as_string("res://tests/inferno_routes.json")):
+		var branch = Puzzle.new(catalog[int(plan.id) - 1])
+		for route in plan.recordings:
+			walk(branch, route)
+			verify(branch.seal(), "Alternate Inferno recording is legal")
+		walk(branch, plan.final)
+		verify(branch.cleared(), "Alternate Inferno approach clears the room")
+	for index in range(21,25):
+		var room = Puzzle.new(catalog[index])
+		for route in room.level.recordings:
+			walk(room, route)
+			room.seal()
+		for letter in room.level.final:
+			room.move(Puzzle.DIRECTIONS[letter])
+			for actor in room.occupied():
+				verify(room.lava_safe(actor, room.tick()), "Player and validated echoes occupy safe tiles")
+		verify(room.undo() and room.lava_phase() == (room.tick() % 4), "Undo remains exact after an Inferno clear")
+		var restored = Puzzle.new(room.level)
+		verify(restored.restore(room.snapshot()) and restored.lava_phase() == room.lava_phase(), "Saved Inferno routes restore their phase")
 
 func _test_direction_switches(level: Dictionary) -> void:
 	var ride = Puzzle.new(level)

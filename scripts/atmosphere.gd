@@ -8,6 +8,7 @@ const WORLDS := {
 	"Penumbra": {"sky": Color("f5f2f9"), "far": Color("e4ddef"), "near": Color("d5c9e2"), "ink": Color("806c9d"), "tile": Color("e8dff1"), "grid": Color("877599"), "light": Color("63477d")},
 	"Extra": {"sky": Color("f1f0ec"), "far": Color("dfded7"), "near": Color("d4d2c9"), "ink": Color("646864"), "tile": Color("e4e3da"), "grid": Color("7e8176"), "light": Color("595940")},
 	"Wonderland": {"sky": Color("fff4f3"), "far": Color("f5dce0"), "near": Color("ecc3cd"), "ink": Color("b66b80"), "tile": Color("f2d5dc"), "grid": Color("a5687b"), "light": Color("923c56")},
+	"Inferno": {"dark": true, "sky": Color("180d12"), "far": Color("2b141b"), "near": Color("402020"), "ink": Color("ca725c"), "tile": Color("321e24"), "grid": Color("ac796d"), "light": Color("ffb07b")},
 	"Nocturne": {"dark": true, "sky": Color("08090a"), "far": Color("111315"), "near": Color("171a1c"), "ink": Color("899295"), "tile": Color("171a1c"), "grid": Color("748083"), "light": Color("e3e8e8")}
 }
 
@@ -44,6 +45,7 @@ func _draw() -> void:
 			"Penumbra": _eclipse(colors)
 			"Nocturne": _nocturne(colors)
 			"Wonderland": _wonderland(colors)
+			"Inferno": _inferno(colors)
 		return
 	draw_rect(Rect2(Vector2.ZERO, size), Color("fcfcfb"))
 	# Sparse dots suggest the echo rings, leaving a clean centre for the title.
@@ -55,6 +57,22 @@ func _draw() -> void:
 			var quiet := smoothstep(0.18, 0.48, point.distance_to(size * 0.5) / span)
 			var wave := 0.5 + 0.5 * sin(point.distance_to(size * Vector2(0.16, 0.86)) * 0.023 - clock * 0.05)
 			draw_circle(point, 0.8, Color(0.35, 0.42, 0.42, quiet * (0.025 + wave * 0.045)), true, -1, true)
+
+func _inferno(c: Dictionary) -> void:
+	var sun := Vector2(0.88, 0.23) * size
+	var r := minf(size.x * 0.08, size.y * 0.055)
+	draw_arc(sun, r, 0.2, TAU - 0.4, 64, Color(c.light, 0.42), 1.4, true)
+	draw_line(sun + Vector2(-r * 0.18,-r), sun + Vector2(r * 0.13, r), Color(c.ink, 0.36), 1.2, true)
+	for layer in 2:
+		var ridge := PackedVector2Array()
+		for n in 31:
+			var x := n / 30.0
+			var y := 0.91 + layer * 0.085 - 0.045 * absf(sin(n * 2.3 + layer))
+			ridge.append(Vector2(x, y) * size)
+		_bank(ridge, c.far if layer == 0 else c.near, Color(c.ink, 0.30))
+	for n in 9:
+		var point := Vector2(fmod(0.08 + n * 0.371, 1.0), 0.72 + fmod(n * 0.071, 0.22)) * size
+		draw_line(point, point + Vector2(2, -5), Color(c.light, 0.32), 1.2, true)
 
 func _wonderland(c: Dictionary) -> void:
 	# A still Ferris wheel and low scalloped canopies, outside the playing field.

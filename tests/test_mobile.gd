@@ -30,11 +30,11 @@ func _run() -> void:
 			verify(ui.board.cell_size() >= 12, "Tiles stay legible "+key_+" / "+str(i))
 			for button in ui.page.find_children("*", "Button", true, false):
 				verify(bounds.encloses(button.get_global_rect()), "Phone button fits "+key_+" / "+button.text)
-			if i == 20:
-				geometry[key_]["guide21"] = point(button_named("Chapter Guide"))
+			if i in [20,21]:
+				geometry[key_]["guide"+str(i+1)] = point(button_named("Chapter Guide"))
 				ui.show_chapter_guide()
 				await settle()
-				geometry[key_]["guide21_close"] = point(button_named("Close Guide"))
+				geometry[key_]["guide"+str(i+1)+"_close"] = point(button_named("Close Guide"))
 				ui._close_modal()
 			if i == 0:
 				geometry[key_]["guide"] = point(button_named("Chapter Guide"))

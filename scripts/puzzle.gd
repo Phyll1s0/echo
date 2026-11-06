@@ -14,6 +14,8 @@ var direction_switches: Dictionary = {}
 var controlled_turnstiles: Array[int] = []
 var switches: Array[Vector2i] = []
 var bridges: Dictionary = {}
+var lava: Dictionary = {}
+var lava_groups := 0
 # Bit 0 selects the bridge bank. The remaining bits reverse individual arrows.
 # Keep one state per beat so undo is exact even after every echo has faded.
 var mechanism_history: Array[int] = [0]
@@ -40,6 +42,8 @@ func configure(data: Dictionary) -> void:
 	for index in level.get("controlled_turnstiles", []): controlled_turnstiles.append(int(index))
 	switches.clear()
 	bridges.clear()
+	lava.clear()
+	lava_groups = int(level.get("lava_groups", 0))
 	rows = level.rows.size()
 	columns = 0
 	for y in rows:
@@ -59,6 +63,8 @@ func configure(data: Dictionary) -> void:
 				switches.append(cell)
 			elif mark == "!":
 				pass # Direction switches are linked explicitly below.
+			elif mark in ["1", "2", "3", "4"]:
+				lava[cell] = mark.to_int() - 1
 			elif mark == "a" or mark == "b":
 				bridges[cell] = 0 if mark == "a" else 1
 			elif mark != ".":
@@ -125,6 +131,12 @@ func mechanism_state() -> int:
 func bridge_active(cell: Vector2i, state: int) -> bool:
 	return not bridges.has(cell) or bridges[cell] == (state & 1)
 
+func lava_phase(at_tick: int = -1) -> int:
+	return posmod(tick() if at_tick < 0 else at_tick, lava_groups) if lava_groups > 0 else -1
+
+func lava_safe(cell: Vector2i, at_tick: int) -> bool:
+	return not lava.has(cell) or int(lava[cell]) != lava_phase(at_tick)
+
 func turn_direction(index: int, state: int) -> Vector2i:
 	var edge: Array = turnstiles[index]
 	var direction: Vector2i = edge[1] - edge[0]
@@ -158,6 +170,10 @@ func blocked_reason(delta: Vector2i) -> String:
 	var destination := player() + delta
 	if destination not in floor_cells:
 		return "No tile there."
+	# The whole board changes on arrival. Never accept a move that leaves the
+	# live player on the group sinking this beat. Rejected input costs no beat.
+	if not lava_safe(destination, tick() + 1):
+		return "That group sinks on the next beat."
 	if not bridge_active(destination, mechanism_state()):
 		return "This bridge is folded."
 	var turn := _turn_index(player(), destination)

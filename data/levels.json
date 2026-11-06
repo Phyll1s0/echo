@@ -1169,5 +1169,355 @@
     ],
     "chapter_entry": true,
     "guide": true
+  },
+  {
+    "id": "22",
+    "chapter": "Inferno",
+    "title": "Cinder Walk",
+    "max_echoes": 1,
+    "lava_groups": 4,
+    "rows": [
+      ".A.22",
+      "1#.#.",
+      "S431X"
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          2
+        ],
+        "b": [
+          4,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          4,
+          1
+        ],
+        "b": [
+          4,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "recordings": [
+      "UUDUDUDURL"
+    ],
+    "final": "UUDURRDDRR",
+    "chapter_entry": true,
+    "intro": "Watch the triangle. It marks the group that will sink when you take your next step.",
+    "hints": [
+      "A tile can rise as you step onto it. Plan for the next group, rather than avoiding every tile that is submerged now.",
+      "The lower crossing and the upper loop reach the exit on different beats. Let your echo visit A at the beat before you cross a gate.",
+      "Record UUDUDUDURL. Finally walk UUDURRDDRR."
+    ]
+  },
+  {
+    "id": "23",
+    "chapter": "Inferno",
+    "title": "Afterburn",
+    "max_echoes": 1,
+    "lava_groups": 4,
+    "rows": [
+      "3A4####",
+      "1#.####",
+      "S24@34X",
+      ".#.#1#3",
+      "1.2#2.."
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          2
+        ],
+        "b": [
+          4,
+          2
+        ],
+        "requires": [
+          "@"
+        ]
+      },
+      {
+        "a": [
+          5,
+          2
+        ],
+        "b": [
+          6,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          6,
+          3
+        ],
+        "b": [
+          6,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "recordings": [
+      "UDRRUDRLUUDULR"
+    ],
+    "final": "UDRRUDRRDDUURR",
+    "chapter_entry": true,
+    "intro": "The lens meeting and the return to A must both fit the lava cycle.",
+    "hints": [
+      "After meeting on L, the echo still needs a safe route back to A.",
+      "The loop beyond L buys time for your echo. Choose the upper or lower exit gate to match its arrival at A.",
+      "Record UDRRUDRLUUDULR. Finally walk UDRRUDRRDDUURR."
+    ]
+  },
+  {
+    "id": "24",
+    "chapter": "Inferno",
+    "title": "Furnace",
+    "max_echoes": 2,
+    "lava_groups": 4,
+    "rows": [
+      "...####",
+      "A#1####",
+      "...#...",
+      "S24@2X4",
+      "4.3#.12",
+      "!#B####",
+      "313####"
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          3
+        ],
+        "b": [
+          4,
+          3
+        ],
+        "requires": [
+          "@"
+        ]
+      },
+      {
+        "a": [
+          4,
+          3
+        ],
+        "b": [
+          5,
+          3
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          6,
+          3
+        ],
+        "b": [
+          5,
+          3
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          5,
+          2
+        ],
+        "b": [
+          5,
+          3
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          5,
+          4
+        ],
+        "b": [
+          5,
+          3
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      }
+    ],
+    "turnstiles": [
+      [
+        [
+          4,
+          3
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      [
+        [
+          4,
+          3
+        ],
+        [
+          5,
+          3
+        ]
+      ],
+      [
+        [
+          6,
+          3
+        ],
+        [
+          5,
+          3
+        ]
+      ],
+      [
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ]
+      ],
+      [
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          3
+        ]
+      ]
+    ],
+    "controlled_turnstiles": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "direction_switches": [
+      {
+        "at": [
+          0,
+          5
+        ],
+        "turnstiles": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    ],
+    "recordings": [
+      "UUDDDDDUUUUU",
+      "UUDRRDRLUDDD"
+    ],
+    "final": "UUDRRDRRUDUDR",
+    "chapter_entry": true,
+    "intro": "One switch controls the entrance and all four exit doors. The lava cycle controls which approach is safe.",
+    "hints": [
+      "The exit doors close when the entrance opens. Arrange another switch visit after you enter.",
+      "Let the two echoes meet on L, then send them to A and B. One of them must operate the arrow switch along the way.",
+      "Record UUDDDDDUUUUU, then UUDRRDRLUDDD. Finally walk UUDRRDRRUDUDR."
+    ]
+  },
+  {
+    "id": "25",
+    "chapter": "Inferno",
+    "title": "Damnation",
+    "max_echoes": 2,
+    "lava_groups": 4,
+    "rows": [
+      ".A.######",
+      "1#4######",
+      "3.3..12.X",
+      "4#2#.##.#",
+      ".11#...4#",
+      ".#B######",
+      "S23######"
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          2
+        ],
+        "b": [
+          4,
+          2
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          7,
+          2
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "requires": [
+          "B"
+        ],
+        "vacant": [
+          "A"
+        ]
+      }
+    ],
+    "recordings": [
+      "UUDUUDDUDDRRUUDDU",
+      "UUDURRUUUULLRLDUD"
+    ],
+    "final": "UUDUUDDURRUURRRRRR",
+    "intro": "First occupy A and B together. Later, keep B occupied while A is empty.",
+    "hints": [
+      "The A echo can end its route after the entrance opens. The B echo needs a later return.",
+      "The inner ring offers two routes. Count the lava phases as well as the beats until A fades and B returns.",
+      "Record UUDUUDDUDDRRUUDDU, then UUDURRUUUULLRLDUD. Finally walk UUDUUDDURRUURRRRRR."
+    ],
+    "chapter_entry": true
   }
 ]

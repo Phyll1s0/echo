@@ -141,6 +141,19 @@ try{
  for(const tape of ride.recordings){for(const direction of tape)await tap(arrows[direction]);await tap('echo')}
  for(const direction of ride.final)await tap(arrows[direction]);
  await saved(page,async()=> (await readProgress())?.completed?.['21']?.echoes===2);
+ // Lava, meetings, remote doors and empty plates must work through real touch input.
+ const catalog=JSON.parse(fs.readFileSync('data/levels.json','utf8'));
+ for(const room of catalog.filter(room=>room.chapter==='Inferno')){
+  const address=new URL(url);address.searchParams.set('room',room.id);
+  await page.goto(address.href);await ready(page);await page.waitForTimeout(1700);
+  await page.screenshot({path:`builds/web-${kind}-inferno-${room.id}.png`,scale:'css'});
+  for(const tape of room.recordings){for(const direction of tape)await tap(arrows[direction]);await tap('echo')}
+  for(const direction of room.final)await tap(arrows[direction]);
+  await page.waitForFunction(async id=>(await readProgress())?.completed?.[id]!=null,room.id,{timeout:10000});
+  const progress=await page.evaluate(()=>readProgress());
+  assert.equal(progress.completed[room.id]?.echoes,room.max_echoes);
+ }
+
  await page.close();
  // Separate browser profile, real desktop input, no pad, and same puzzle rules.
  const desktop=await browser.newPage({viewport:{width:1280,height:820},deviceScaleFactor:1});observe(desktop);
@@ -159,6 +172,6 @@ try{
  assert.equal(await failure.locator('#retry').isVisible(),true);
  await failure.close();
  assert.deepEqual(errors,[]);
- console.log(`${kind}: phone/desktop input, Extra and Wonderland completion, campaign resume, undo, rotation, safe areas, Chinese, persistent progress, loader recovery passed.`);
+ console.log(`${kind}: phone/desktop input, Extra, Wonderland and Inferno completion, campaign resume, undo, rotation, safe areas, Chinese, persistent progress, loader recovery passed.`);
 }finally{await browser.close()}
 })().catch(error=>{console.error(error);process.exitCode=1});

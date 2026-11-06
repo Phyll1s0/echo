@@ -784,3 +784,105 @@ msgstr "让两个回声在 L 相遇，帮你进入。再让其中一个回到箭
 
 msgid "Record UUUDDRRUUDDDD, then UUUDDRRUULLRR. Finally walk UUDDRRRRURRDRR."
 msgstr "先录下 上上上下下右右上上下下下下，再录下 上上上下下右右上上左左右右。最后走 上上下下右右右右上右右下右右。"
+
+msgid "Inferno"
+msgstr "地狱"
+
+msgid "Cinder Walk"
+msgstr "踏烬"
+
+msgid "Afterburn"
+msgstr "余焰"
+
+msgid "Furnace"
+msgstr "熔炉"
+
+msgid "Damnation"
+msgstr "炼狱"
+
+msgid "That group sinks on the next beat."
+msgstr "这一组会在下一拍沉入岩浆。"
+
+msgid "Lava Cycle"
+msgstr "岩浆轮转"
+
+msgid "Four groups take turns sinking. Match the dots on tiles to the numbered cycle.\nThe triangle marks the group sinking next. Land on a safe tile; a group can rise as you step onto it."
+msgstr "四组地面轮流沉没，格子上的圆点数量对应上方的组号。\n三角形标出下一拍沉没的一组。选择落脚时安全的格子，刚才沉没的地面也可能在你踏上时升起。"
+
+msgid "Group 2 sinks next. Take the lower route."
+msgstr "下一拍第 2 组沉没，先走下面的路。"
+
+msgid "Group 1 rises as group 2 sinks."
+msgstr "第 1 组恢复，第 2 组同时沉没。"
+
+msgid "A detour advances the cycle, too."
+msgstr "绕路也会让岩浆前进一拍。"
+
+msgid "Group 2 is safe again. You can step onto it."
+msgstr "第 2 组已经恢复，现在可以踏上去。"
+
+msgid "The cycle repeats every four beats."
+msgstr "每四拍，轮转回到同一组。"
+
+msgid "Take your time. Only your moves change the lava."
+msgstr "慢慢规划，只有移动才会改变岩浆。"
+
+msgid "Lava advances one group per move. Match the dots on tiles to the cycle above the board. The triangle marks the group sinking next; choose a tile that is safe when you land. Invalid moves cost no beat."
+msgstr "每走一步，岩浆轮换一组。格子上的圆点数量对应棋盘上方的组号，三角形标出下一拍沉没的一组。选择落脚时安全的格子，无效移动不会消耗步数。"
+
+msgid "Watch the triangle. It marks the group that will sink when you take your next step."
+msgstr "留意三角形，它标出你下一步移动时会沉没的一组。"
+
+msgid "A tile can rise as you step onto it. Plan for the next group, rather than avoiding every tile that is submerged now."
+msgstr "格子可以在你踏上时恢复。看下一拍的预告，当前沉没的地面也可能成为下一步的落脚点。"
+
+msgid "The lower crossing and the upper loop reach the exit on different beats. Let your echo visit A at the beat before you cross a gate."
+msgstr "下方通道和上方环路的到达时间不同，让回声在你穿门前一拍踩到 A。"
+
+msgid "The lens meeting and the return to A must both fit the lava cycle."
+msgstr "在透镜相遇和随后返回 A，都需要配合岩浆的轮转。"
+
+msgid "After meeting on L, the echo still needs a safe route back to A."
+msgstr "在 L 相遇后，回声还需要一条能安全返回 A 的路线。"
+
+msgid "The loop beyond L buys time for your echo. Choose the upper or lower exit gate to match its arrival at A."
+msgstr "L 后面的环路可以为回声争取时间，选择从上方或下方的门到达终点，配合它回到 A。"
+
+msgid "One switch controls the entrance and all four exit doors. The lava cycle controls which approach is safe."
+msgstr "一个开关同时控制入口和四扇出口门，岩浆的轮转决定哪条路此时安全。"
+
+msgid "The exit doors close when the entrance opens. Arrange another switch visit after you enter."
+msgstr "入口打开时，出口门会关闭。安排在你进入之后，再踩一次开关。"
+
+msgid "Let the two echoes meet on L, then send them to A and B. One of them must operate the arrow switch along the way."
+msgstr "让两个回声在 L 相遇，再分别走向 A 和 B。其中一个需要途中操作箭头开关。"
+
+msgid "First occupy A and B together. Later, keep B occupied while A is empty."
+msgstr "先同时占据 A 和 B，随后需要 A 空着，而 B 仍有人。"
+
+msgid "The A echo can end its route after the entrance opens. The B echo needs a later return."
+msgstr "A 上的回声可以在入口打开后结束路线，B 上的回声则需要稍后再次返回。"
+
+msgid "The inner ring offers two routes. Count the lava phases as well as the beats until A fades and B returns."
+msgstr "内环有两条走法，除了岩浆轮转，还要算好 A 上回声消失和 B 上回声返回的时间。"
+
+msgid "Record UUDUDUDURL. Finally walk UUDURRRRDD."
+msgstr "先录下 上上下上下上下上右左。最后走 上上下上右右右右下下。"
+
+msgid "Record UDRRRLDUUULLRL. Finally walk UDRRRRDDUDRRUU."
+msgstr "先录下 上下右右右左下上上上左左右左。最后走 上下右右右右下下上下右右上上。"
+
+msgid "Record UUDDDDDUUUUU, then UUDRRDRLUDDD. Finally walk UUDRRDRRUDUDR."
+msgstr "先录下 上上下下下下下上上上上上，再录下 上上下右右下右左上下下下。最后走 上上下右右下右右上下上下右。"
+
+msgid "Record UUUUDUUURLRLRLDURLDU, then UUUUDUDDRRDDUUDDUUDDU. Finally walk UUUUDURRUDRRDDUDRRRUUR."
+msgstr "先录下 上上上上下上上上右左右左右左下上右左下上，再录下 上上上上下上下下右右下下上上下下上上下下上。最后走 上上上上下上右右上下右右下下上下右右右上上右。"
+
+msgid "Record UUDUUDDUDDRRUUDDU, then UUDURRUUUULLRLDUD. Finally walk UUDUUDDURRUURRRRRR."
+msgstr "先录下 上上下上上下下上下下右右上上下下上，再录下 上上下上右右上上上上左左右左下上下。最后走 上上下上上下下上右右上上右右右右右右。"
+
+msgid "Record UUDUDUDURL. Finally walk UUDURRDDRR."
+msgstr "先录下 上上下上下上下上右左。最后走 上上下上右右下下右右。"
+
+msgid "Record UDRRUDRLUUDULR. Finally walk UDRRUDRRDDUURR."
+msgstr "先录下 上下右右上下右左上上下上左右。最后走 上下右右上下右右下下上上右右。"
