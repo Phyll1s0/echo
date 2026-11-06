@@ -297,7 +297,7 @@ func test_extra() -> void:
 	await settle()
 	await click_named("Chapters")
 	await click_named("Extra")
-	verify(ui.levels.size() == 1 and ui.chapters.size() == 7, "Switchyard remains in Extra outside the seven chapters")
+	verify(ui.levels.size() == 2 and ui.chapters.size() == 7, "Two independent challenges remain in Extra outside the seven chapters")
 	for i in ui.levels.size():
 		verify(not room_card(i).disabled, "Each Extra room is open immediately")
 	await click(room_card(0).get_global_rect().get_center())

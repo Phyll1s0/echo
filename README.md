@@ -4,7 +4,7 @@ Every step you take moves your past selves, too.
 
 **[Play in your browser](https://phyll1s0.com/echo/)** — on desktop or phone.
 
-ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through twenty-five rooms across seven chapters, plus the optional Extra challenge, Switchyard. There is no time pressure: the world advances only when you move.
+ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through twenty-five rooms across seven chapters, plus two optional Extra challenges, Switchyard and Paradox. There is no time pressure: the world advances only when you move.
 
 Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. Chapter VI, **Wonderland**, adds coral-pink paper, a quiet Ferris wheel, and a carousel controlled from another branch. Chapter VII, **Inferno**, pairs charcoal and ember orange with four groups of sinking lava tiles. The interface defaults to English, with Simplified Chinese available in Settings.
 
@@ -92,7 +92,7 @@ Click a distant plate or hover over it to highlight its linked gates. Hints prog
 
 ## Chapters and rooms
 
-In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to browse. The centred chapter stays large while its neighbours fade into the surrounding space. Tap a chapter or press Enter to see its rooms; returning restores the same selection. **07 Turnabout**, **11 First Contact**, and **15 Hush** are available as direct chapter entries. Subsequent rooms unlock in order. Wonderland and Inferno rooms are directly accessible.
+In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to browse. Dragging has gentle resistance and advances at most one chapter per gesture; continuous trackpad wheel events are grouped to prevent skipping chapters. The centred chapter stays large while its neighbours fade into the surrounding space. Tap a chapter or press Enter to see its rooms; returning restores the same selection. **07 Turnabout**, **11 First Contact**, and **15 Hush** are available as direct chapter entries. Subsequent rooms unlock in order. Wonderland and Inferno rooms are directly accessible.
 
 ![The chapter index](docs/images/chapters.png)
 
@@ -130,7 +130,9 @@ The former Extra rooms X01–X03 are now **18 Escapement**, **19 Understudy**, a
 
 [**Chapter VII · Inferno**](https://phyll1s0.com/echo/?room=22) adds four standalone entries. Furnace has four playable approaches to its central exit. Damnation offers a shorter upper crossing and a longer lower ring, with different recording plans. Its first room includes an animated lava guide.
 
-Open **Chapters → Extra** for [**X04 Switchyard**](https://phyll1s0.com/echo/?room=X04). Two recordings can support three distinct approaches to a central exit, each requiring a different pair of plates. It is available immediately and remembers its own unfinished route. Home → Continue resumes your campaign.
+Open **Chapters → Extra** for [**X04 Switchyard**](https://phyll1s0.com/echo/?room=X04) and [**X05 Paradox**](https://phyll1s0.com/echo/?room=X05). In Switchyard, two recordings can support three distinct approaches to a central exit, each requiring a different pair of plates. Both challenges are available immediately and remember their own unfinished routes. Home → Continue resumes your campaign.
+
+**Paradox** is a harder follow-up built around three causal recordings. A opens the route to B; A and B together open the C chamber; two older echoes meet on L while the third visits C to admit the live player. Changing the bridge bank lets the recordings cross folded gallery bridges. Three exit doors each need two plates occupied and the remaining plate empty. Three verified plans use different recording endings, and each plan enables only its own exit, even with unlimited extra moves.
 
 Room data and example solutions live in `data/levels.json` and `data/extra.json`. These routes verify that each room is solvable; players can find their own solutions. To launch a specific room during development, use `godot --path . -- --level=6`.
 

@@ -103,6 +103,15 @@ try{
  const afterSwitchyard = await page.evaluate(() => readProgress());
  assert.deepEqual(afterSwitchyard.session, before.session);
  assert.deepEqual(afterSwitchyard.completed, before.completed);
+ // The harder challenge must replay all three causal recordings on the Web export.
+ const paradoxLink=new URL(url);paradoxLink.searchParams.set('room','X05');
+ await page.goto(paradoxLink.href);await ready(page);await page.waitForTimeout(1700);
+ const paradox=JSON.parse(fs.readFileSync('data/extra.json','utf8')).find(room=>room.id==='X05');
+ for(const tape of paradox.recordings){for(const direction of tape)await tap(arrows[direction]);await tap('echo')}
+ for(const direction of paradox.final)await tap(arrows[direction]);
+ await saved(page,async()=> (await readProgress())?.extra_completed?.X05?.echoes===3);
+ const afterParadox=await page.evaluate(()=>readProgress());
+ assert.deepEqual(afterParadox.session,before.session);assert.deepEqual(afterParadox.completed,before.completed);
  await page.goto(url);
  await ready(page);
  await tap('start');

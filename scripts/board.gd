@@ -198,6 +198,9 @@ func _draw() -> void:
 		for id in gate.vacant:
 			name += ("  " if not name.is_empty() else "") + "−" + id
 		name = name.replace(puzzle.LENS, "L")
+		if exit_gates.size() > 1 and gate in exit_gates and not gate.vacant.is_empty():
+			# Keep mixed occupied/empty conditions inside their approach tile.
+			name = name.replace("+", "").replace(" ", "")
 		var anchor := middle + Vector2(5.0, -unit * 0.49) if absf(a.y - b.y) < 1.0 else middle + Vector2(unit * 0.53, -3)
 		var caption_size := maxi(11, roundi(unit * 0.15))
 		if exit_gates.size() > 1 and gate in exit_gates:

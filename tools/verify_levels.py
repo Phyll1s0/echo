@@ -270,6 +270,47 @@ def check_extra(level):
         assert used == entrances
         return
 
+    if level["id"] == "X05":
+        # Recording B needs A; recording C needs two older actors on A and B.
+        # The final cut needs two on L, one on C, plus a live traveller at
+        # neither location. This rules out every two-echo solution.
+        def without(edges):
+            seen, q = {room.start}, deque([room.start])
+            while q:
+                p = q.popleft()
+                for _, dest, *_ in room.links[p]:
+                    if frozenset((p, dest)) not in edges and dest not in seen:
+                        seen.add(dest)
+                        q.append(dest)
+            return seen
+
+        a_doors = {e for e, pads in room.gates.items() if pads == {room.pads['A']}}
+        assert room.pads['B'] not in without(a_doors)
+        chamber, = (e for e, pads in room.gates.items() if pads == {room.pads['A'], room.pads['B']} and not room.vacancies[e])
+        assert room.pads['C'] not in without({chamber})
+        assert not chamber & {room.pads['A'], room.pads['B']}
+        meeting, = (e for e, pads in room.gates.items() if pads == {room.pads['@'], room.pads['C']})
+        assert room.goal not in without({meeting})
+        assert not meeting & {room.pads['@'], room.pads['C']}
+        # Leaving the lens requires crossing bank a. The only entrance to
+        # the exit region is bank b, so a live traveller could not make the
+        # recorded gallery departures on that same beat.
+        assert all(room.bridges.get(p) == 0 for _, p, *_ in room.links[room.pads['@']])
+        assert any(room.bridges.get(p) == 1 for p in meeting)
+        plans = [level, *json.loads((ROOT / 'tests/paradox_routes.json').read_text())]
+        used = set()
+        for plan in plans:
+            tapes = []
+            for letters in plan['recordings']:
+                tapes.append(room.replay(letters, tapes))
+            path = room.replay(plan['final'], tapes)
+            assert path[-1] == room.goal
+            assert room.finish_options(tapes) == {path[-2]: len(plan['final'])}
+            assert Room(level, freeze_bridges=True).shortest_final(tapes) is None
+            used.add(path[-2])
+        assert used == {p for _, p, *_ in room.links[room.goal]}
+        return
+
     def gate_cut(required, destination):
         # Even ignoring every device, cutting this gate disconnects its destination.
         edge, = (edge for edge, posts in room.gates.items()
@@ -325,6 +366,6 @@ if __name__ == "__main__":
             tapes.append(room.replay(route, tapes))
         assert room.replay(plan["final"], tapes)[-1] == room.goal
     extras = json.loads((ROOT / "data/extra.json").read_text())
-    assert [r["id"] for r in extras] == ["X04"]
+    assert [r["id"] for r in extras] == ["X04", "X05"]
     for level in extras:
         check_extra(level)

@@ -35,8 +35,9 @@ func _run() -> void:
 			wheel.button_index = MOUSE_BUTTON_WHEEL_DOWN
 			wheel.pressed = true
 			Input.parse_input_event(wheel)
+			for burst in 8: Input.parse_input_event(wheel.duplicate())
 			await settle()
-			verify(ui.chapter_picker.selected == 1, "The mouse wheel selects one chapter")
+			verify(ui.chapter_picker.selected == 1, "A rapid wheel burst selects exactly one chapter")
 			var centre: Vector2 = ui.chapter_picker.get_global_rect().get_center()
 			var begin := InputEventScreenTouch.new()
 			begin.index = 17
@@ -53,6 +54,14 @@ func _run() -> void:
 			Input.parse_input_event(end)
 			await settle()
 			verify(ui.screen == "chapters" and ui.chapter_picker.selected == 2, "A real swipe settles without opening a chapter")
+			begin.position = centre
+			Input.parse_input_event(begin)
+			drag.position = centre - Vector2(0, ui.chapter_picker.stride * 4)
+			Input.parse_input_event(drag)
+			end.position = drag.position
+			Input.parse_input_event(end)
+			await settle()
+			verify(ui.screen == "chapters" and ui.chapter_picker.selected == 3, "A long swipe advances at most one chapter")
 			if dimensions.x in [390,1280]: await capture("chapter-reel-%s-%d" % [locale,dimensions.x])
 	ui.store.data.motion = true
 	root.size = Vector2i(390,664)

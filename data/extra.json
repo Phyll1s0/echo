@@ -92,7 +92,155 @@
     "hints": [
       "A and C open the north door. The other two doors need B, down the shaft below the lens. Who will be with you when you record that crossing?",
       "For the west door, let both recordings meet on L. One goes down the shaft, the other returns to A. On your last trip, leave the west deck raised.",
-      "West door   /   1: ↑2 ←8 ↓4 →4 ←4 ↓   /   2: ↑2 ←8 ↓4 →4 ↓3 ↑ ↓   /   Exit: ↓4 ←2 ↑2 ←6 ↓2 ↑2 →2 ↑2 →2"
+      "West door   /   1: \u21912 \u21908 \u21934 \u21924 \u21904 \u2193   /   2: \u21912 \u21908 \u21934 \u21924 \u21933 \u2191 \u2193   /   Exit: \u21934 \u21902 \u21912 \u21906 \u21932 \u21912 \u21922 \u21912 \u21922"
+    ]
+  },
+  {
+    "id": "X05",
+    "chapter": "Extra",
+    "title": "Paradox",
+    "max_echoes": 3,
+    "rows": [
+      "..a@a.#####",
+      ".#.#...####",
+      "...S...#...",
+      "A##.##B#.X.",
+      "###.....b#.",
+      "##..#..#...",
+      "##.C*###..."
+    ],
+    "gates": [
+      {
+        "a": [
+          5,
+          2
+        ],
+        "b": [
+          6,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          6,
+          1
+        ],
+        "b": [
+          5,
+          1
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          3,
+          4
+        ],
+        "b": [
+          3,
+          5
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          7,
+          4
+        ],
+        "b": [
+          8,
+          4
+        ],
+        "requires": [
+          "@",
+          "C"
+        ]
+      },
+      {
+        "a": [
+          8,
+          3
+        ],
+        "b": [
+          9,
+          3
+        ],
+        "requires": [
+          "A",
+          "B"
+        ],
+        "vacant": [
+          "C"
+        ]
+      },
+      {
+        "a": [
+          9,
+          2
+        ],
+        "b": [
+          9,
+          3
+        ],
+        "requires": [
+          "A",
+          "C"
+        ],
+        "vacant": [
+          "B"
+        ]
+      },
+      {
+        "a": [
+          10,
+          3
+        ],
+        "b": [
+          9,
+          3
+        ],
+        "requires": [
+          "B",
+          "C"
+        ],
+        "vacant": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          6,
+          3
+        ],
+        "b": [
+          6,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "recordings": [
+      "LLLDUDUDUUURRRLLLDDDUD",
+      "RRLRRDUULLULRLRDDRLRRD",
+      "DDUDUDDDRLLRLR"
+    ],
+    "final": "DDRRRRLDLURDURRUURRLLDR",
+    "intro": "Three recordings, three endings. Which self will you leave behind?",
+    "hints": [
+      "B listens to A. The lower chamber listens to both. Your first recording must make the next two recordings possible.",
+      "Meet the two older echoes on L while the third visits C. Record the gallery crossings before changing the bridge bank.",
+      "Each exit wants two occupied plates and one empty plate. An echo ending at L can be as useful as one returning to a plate.",
+      "West / 1: L3 D U D U D U3 R3 L3 D3 U D / 2: R2 L R2 D U2 L2 U L R L R D2 R L R2 D / 3: D2 U D U D3 R L2 R L R / Exit: D2 R4 L D L U R D U R2 U2 R2 L2 D R"
     ]
   }
 ]

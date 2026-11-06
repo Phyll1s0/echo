@@ -886,3 +886,21 @@ msgstr "先录下 上上下上下上下上右左。最后走 上上下上右右�
 
 msgid "Record UDRRUDRLUUDULR. Finally walk UDRRUDRRDDUURR."
 msgstr "先录下 上下右右上下右左上上下上左右。最后走 上下右右上下右右下下上上右右。"
+
+msgid "Paradox"
+msgstr "悖论"
+
+msgid "Three recordings, three endings. Which self will you leave behind?"
+msgstr "三段回声，三种结局。你会让哪一个自己退场？"
+
+msgid "B listens to A. The lower chamber listens to both. Your first recording must make the next two recordings possible."
+msgstr "B 的门听从 A，下方房间的门需要 A 和 B。第一段回声需要为之后两段录制创造条件。"
+
+msgid "Meet the two older echoes on L while the third visits C. Record the gallery crossings before changing the bridge bank."
+msgstr "让前两个回声在 L 相遇，同时让第三个到达 C。先录下高台上的过桥路线，再改变两组桥的状态。"
+
+msgid "Each exit wants two occupied plates and one empty plate. An echo ending at L can be as useful as one returning to a plate."
+msgstr "每扇出口都需要两块踏板有人，另一块空着。让回声在 L 结束，有时和让它返回踏板一样有用。"
+
+msgid "West / 1: L3 D U D U D U3 R3 L3 D3 U D / 2: R2 L R2 D U2 L2 U L R L R D2 R L R2 D / 3: D2 U D U D3 R L2 R L R / Exit: D2 R4 L D L U R D U R2 U2 R2 L2 D R"
+msgstr "西门 / 1：左3 下 上 下 上 下 上3 右3 左3 下3 上 下 / 2：右2 左 右2 下 上2 左2 上 左 右 左 右 下2 右 左 右2 下 / 3：下2 上 下 上 下3 右 左2 右 左 右 / 出口：下2 右4 左 下 左 上 右 下 上 右2 上2 右2 左2 下 右"

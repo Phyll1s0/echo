@@ -3,6 +3,8 @@ extends ScrollContainer
 ## reader navigation available; pointer gestures cancel taps during a swipe.
 signal selected_changed(index: int)
 signal chapter_opened(index: int)
+const DRAG_GAIN := 0.62
+const WHEEL_GAP_MS := 220
 
 var index: VBoxContainer
 var margin: MarginContainer
@@ -21,6 +23,9 @@ var pointer_id := -1
 var pointer_start := Vector2.ZERO
 var pointer_scroll := 0
 var pointer_distance := 0.0
+var pointer_chapter := 0
+var wheel_last_ms := -1000
+var wheel_direction := 0
 
 func _ready() -> void:
 	clip_contents = true
@@ -123,7 +128,12 @@ func _input(event: InputEvent) -> void:
 				_end_pointer(event.position)
 			get_viewport().set_input_as_handled()
 		if event.pressed and get_global_rect().has_point(event.position) and event.button_index in [MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_UP]:
-			center_on(selected + (1 if event.button_index == MOUSE_BUTTON_WHEEL_DOWN else -1), true)
+			var direction := 1 if event.button_index == MOUSE_BUTTON_WHEEL_DOWN else -1
+			var now := Time.get_ticks_msec()
+			if now - wheel_last_ms >= WHEEL_GAP_MS or direction != wheel_direction:
+				center_on(selected + direction, true)
+			wheel_last_ms = now
+			wheel_direction = direction
 			get_viewport().set_input_as_handled()
 	if event is InputEventKey and event.pressed and not event.echo:
 		var code: Key = event.physical_keycode if event.physical_keycode else event.keycode
@@ -141,12 +151,15 @@ func _begin_pointer(point: Vector2) -> void:
 	touching = true
 	pointer_start = point
 	pointer_scroll = scroll_vertical
+	pointer_chapter = selected
 	pointer_distance = 0
 	if sliding != null: sliding.kill()
 
 func _drag_pointer(point: Vector2) -> void:
 	pointer_distance = maxf(pointer_distance, point.distance_to(pointer_start))
-	scroll_vertical = clampi(roundi(pointer_scroll + pointer_start.y - point.y), 0, roundi(stride * (entries.size() - 1)))
+	var lower := maxi(0, pointer_chapter - 1)
+	var upper := mini(entries.size() - 1, pointer_chapter + 1)
+	scroll_vertical = clampi(roundi(pointer_scroll + (pointer_start.y - point.y) * DRAG_GAIN), roundi(lower * stride), roundi(upper * stride))
 
 func _end_pointer(point: Vector2, canceled: bool = false) -> void:
 	_drag_pointer(point)

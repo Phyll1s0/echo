@@ -86,8 +86,32 @@ func _initialize() -> void:
 	_test_silence(catalog)
 	_test_direction_switches(catalog[20])
 	_test_lava(catalog)
+	_test_paradox(extra[1])
 	print("ECHO rules: %d checks; %d failures." % [checks, failures])
 	quit(1 if failures else 0)
+
+func _test_paradox(level: Dictionary) -> void:
+	var p = Puzzle.new(level)
+	for route in level.recordings:
+		walk(p, route)
+		verify(p.seal(), "Paradox recordings validate against older recordings")
+	walk(p, level.final.left(14))
+	verify(p.plate_on("@") and p.plate_on("C") and p.gate_open(p.gates[3]), "Three echoes open the remote lens-and-C gate")
+	verify(p.mechanism_state() == 1 and not p.bridge_active(Vector2i(2,0),1), "The recording in C folds the gallery bridges")
+	walk(p, level.final.substr(14,1))
+	verify(p.echo_position(2) == null and p.echo_position(0) == Vector2i(2,0) and p.echo_position(1) == Vector2i(4,0), "The C echo fades as both older echoes cross folded bridges")
+	verify(p.undo() and p.plate_on("@") and p.plate_on("C"), "Undo restores the meeting and the fading echo")
+	walk(p, level.final.substr(14))
+	verify(p.cleared(), "West plan finishes after undoing the coordinated crossing")
+	for plan in JSON.parse_string(FileAccess.get_file_as_string("res://tests/paradox_routes.json")):
+		var alternate = Puzzle.new(level)
+		for route in plan.recordings:
+			walk(alternate, route)
+			verify(alternate.seal(), "Record an alternate Paradox ending")
+		walk(alternate, plan.final)
+		verify(alternate.cleared(), "Each Paradox exit is playable")
+		var restored = Puzzle.new(level)
+		verify(restored.restore(alternate.snapshot()), "Paradox saves replay all three causal recordings")
 
 func _test_lava(catalog: Array) -> void:
 	var fixture := {"id": "lava", "rows": ["S2143X", "......"], "gates": [], "max_echoes": 1, "lava_groups": 4}
