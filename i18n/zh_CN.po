@@ -589,3 +589,198 @@ msgstr "可以试试西门。让两段录制在 L 会合，一段下井，另一
 
 msgid "West door   /   1: ↑2 ←8 ↓4 →4 ←4 ↓   /   2: ↑2 ←8 ↓4 →4 ↓3 ↑ ↓   /   Exit: ↓4 ←2 ↑2 ←6 ↓2 ↑2 →2 ↑2 →2"
 msgstr "西门   /   1: ↑2 ←8 ↓4 →4 ←4 ↓   /   2: ↑2 ←8 ↓4 →4 ↓3 ↑ ↓   /   出口： ↓4 ←2 ↑2 ←6 ↓2 ↑2 →2 ↑2 →2"
+
+msgid "Chapter Guide"
+msgstr "章节指引"
+
+msgid "Close Guide"
+msgstr "关闭指引"
+
+msgid "Next Step"
+msgstr "下一步"
+
+msgid "Pause Demo"
+msgstr "暂停演示"
+
+msgid "Play Demo"
+msgstr "播放演示"
+
+msgid "Each move advances one beat. Choose Leave an Echo to save your route and return to the start.\nThe hollow ring replays your steps, then fades one beat after its route ends."
+msgstr "每走一步，时间前进一拍。选择「留下回声」，录下路线并回到起点。\n空心圆环会重走这条路线，在最后一步的下一拍消失。"
+
+msgid "Move with the arrow keys or WASD. There is no time limit."
+msgstr "用方向键或 WASD 移动。没有时间限制。"
+
+msgid "Tap a direction on the pad. There is no time limit."
+msgstr "点击方向盘上的方向移动。没有时间限制。"
+
+msgid "Walk a route to the plate."
+msgstr "先走到踏板上。"
+
+msgid "Now save this route with Leave an Echo."
+msgstr "选择「留下回声」，录下刚才的路线。"
+
+msgid "Back at the start. Your hollow echo remembers the route."
+msgstr "回到起点，空心回声记住了刚才的路线。"
+
+msgid "Your move also advances the echo one step."
+msgstr "你走一步，回声也沿原路走一步。"
+
+msgid "The echo reaches A. The A gate opens."
+msgstr "回声到达 A，A 门打开。"
+
+msgid "Enter the outlined square to finish."
+msgstr "走进空心方框，即可完成关卡。"
+
+msgid "Move Together"
+msgstr "一起行动"
+
+msgid "Record each route separately. Each new recording resets the beat; all echoes then move together.\nA + B opens only when both plates are occupied before your move."
+msgstr "分别录下每条路线。每次留下回声都会重置时间，随后所有回声一起行动。\n移动前，A 和 B 都有人占据，A + B 门才会打开。"
+
+msgid "Two routes recorded. Both begin at the same starting tile."
+msgstr "已录好两条路线，都从同一起点出发。"
+
+msgid "Both echoes advance with you."
+msgstr "两个回声跟随你的步伐一起前进。"
+
+msgid "Backtracking takes a beat, too."
+msgstr "往回走，也会消耗一拍。"
+
+msgid "One echo takes the left branch; the other takes the right."
+msgstr "一个回声走左边，另一个走右边。"
+
+msgid "A and B are occupied together. The gate opens."
+msgstr "A 和 B 同时有人，门打开了。"
+
+msgid "Cross on your next move."
+msgstr "下一步就可以穿过。"
+
+msgid "Arrow Gates"
+msgstr "变向门"
+
+msgid "Cross an arrow gate in its marked direction. It reverses after the crossing.\nEchoes follow their recorded routes and can reverse arrows, too."
+msgstr "沿箭头方向穿过门，穿过后箭头会反转。\n回声按录下的路线行动，也能让箭头反转。"
+
+msgid "The arrow points to the right."
+msgstr "箭头现在指向右边。"
+
+msgid "Approach from the tail of the arrow."
+msgstr "从箭头尾端靠近。"
+
+msgid "Crossing turns the arrow to the left."
+msgstr "穿过后，箭头转向左边。"
+
+msgid "You can now cross back to the left."
+msgstr "现在可以向左穿回去了。"
+
+msgid "Each crossing reverses it again."
+msgstr "每次穿过，箭头都会再次反转。"
+
+msgid "Plan which direction you will need next."
+msgstr "想想下次经过时，需要哪个方向。"
+
+msgid "Bridges"
+msgstr "升降桥"
+
+msgid "Step onto a diamond to swap the raised and folded bridges.\nEchoes trigger diamonds, too. Their recorded routes still cross bridges that have folded."
+msgstr "踩上菱形开关，两组桥会交换升起和收起的状态。\n回声也会触发开关，而且能沿录下的路线穿过已经收起的桥。"
+
+msgid "The bridge ahead is folded."
+msgstr "前方的桥处于收起状态。"
+
+msgid "The diamond raises one bank and folds the other."
+msgstr "菱形开关让一组桥升起，另一组收起。"
+
+msgid "You can enter the raised bridge."
+msgstr "现在可以踏上升起的桥。"
+
+msgid "Another visit to a diamond would swap the banks again."
+msgstr "再次踩上菱形开关，两组桥会再次交换。"
+
+msgid "Watch both bridge banks when planning a route."
+msgstr "规划路线时，留意两组桥的状态。"
+
+msgid "Meet on the Lens"
+msgstr "在透镜相遇"
+
+msgid "L is a lens, marked by two overlapping circles. Two selves must share its tile to open an L gate.\nYou and an echo count, or two echoes while you move elsewhere."
+msgstr "两个重叠的圆圈代表透镜 L。两个自己站在同一块透镜上，L 门才会打开。\n可以是你和一个回声，也可以是两个回声，而你走在别处。"
+
+msgid "Look for the overlapping circles."
+msgstr "找到两个重叠的圆圈。"
+
+msgid "One self on L leaves the gate closed."
+msgstr "只有一个自己站在 L 上，门不会打开。"
+
+msgid "Record that visit, then return to the lens."
+msgstr "录下这次到访，再走回透镜。"
+
+msgid "Two selves meet on L. The gate opens."
+msgstr "两个自己在 L 上相遇，门打开了。"
+
+msgid "Cross on the next move, while L is active."
+msgstr "趁 L 已激活，在下一步穿过门。"
+
+msgid "The meeting only needs to last for the crossing."
+msgstr "只需在穿门前的那一拍相遇。"
+
+msgid "Leave a Space"
+msgstr "留出空位"
+
+msgid "A gate marked −A needs A empty before you move. An echo can step away or fade to open it.\n−L needs a completely empty lens; even one self keeps it shut."
+msgstr "标记 −A 的门，需要移动前 A 上没有人。让回声离开或消失，就能打开它。\n−L 需要透镜完全空着，哪怕只剩一个自己，门也不会打开。"
+
+msgid "This echo has a one-step route to A."
+msgstr "这个回声的路线只有一步，终点在 A。"
+
+msgid "A is occupied. A opens; −A stays closed."
+msgstr "A 上有人，A 门打开，−A 门关闭。"
+
+msgid "Cross A. On this beat, the echo fades and −A opens."
+msgstr "穿过 A 门。这一拍回声消失，−A 门打开。"
+
+msgid "With A empty, you can cross −A."
+msgstr "A 已空出，可以穿过 −A 门。"
+
+msgid "Wonderland"
+msgstr "乐园"
+
+msgid "Carousel"
+msgstr "旋转木马"
+
+msgid "Direction Switches"
+msgstr "方向开关"
+
+msgid "A round arrow switch flips its linked one-way doors. Crossing a door does not turn it.\nSend an echo to the switch while you take another branch."
+msgstr "踩上圆形箭头开关，会反转它连接的单向门。穿过门不会改变方向。\n让回声去操作开关，你就可以走另一条路。"
+
+msgid "The door faces left. An echo will visit the switch."
+msgstr "门朝向左边，回声即将去操作开关。"
+
+msgid "The echo steps on the switch. The door turns right."
+msgstr "回声踩上开关，门转向右边。"
+
+msgid "Crossing leaves the arrow pointing right."
+msgstr "穿过之后，箭头仍然朝右。"
+
+msgid "Only another switch visit can reverse it."
+msgstr "只有再次踩下开关，方向才会反转。"
+
+msgid "Plan when your echo should change the doors."
+msgstr "安排好让回声切换门方向的时机。"
+
+msgid "A round arrow switch flips its linked one-way doors. Crossing a door does not turn it. Echoes can operate the switch from another branch."
+msgstr "圆形箭头开关控制相连的单向门。穿过门不会改变方向，回声可以在远处的分支上操作开关。"
+
+msgid "The arrow switches control both doors. Passing through a door does not change its direction."
+msgstr "箭头开关同时控制两扇门，穿过门不会改变它的方向。"
+
+msgid "The two doors face opposite ways. Someone outside the carousel must change them after you enter."
+msgstr "两扇门的朝向相反。你进入旋转木马之后，需要外面的自己再切换一次方向。"
+
+msgid "Meet both echoes on L to enter. Then send one back to the arrow switch before they reach A and B. You can loop inside while they travel."
+msgstr "让两个回声在 L 相遇，帮你进入。再让其中一个回到箭头开关，最后分别到达 A 和 B。你可以在内部环道上绕行配合。"
+
+msgid "Record UUUDDRRUUDDDD, then UUUDDRRUULLRR. Finally walk UUDDRRRRURRDRR."
+msgstr "先录下 上上上下下右右上上下下下下，再录下 上上上下下右右上上左左右右。最后走 上上下下右右右右上右右下右右。"

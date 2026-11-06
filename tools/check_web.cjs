@@ -46,6 +46,12 @@ try{
  await page.screenshot({path:`builds/web-${kind}-home.png`,scale:'css'});
  await tap('start');await page.waitForTimeout(1700);
  await page.screenshot({path:`builds/web-${kind}-phone.png`,scale:'css'});
+ const beforeGuide=await page.evaluate(()=>readProgress());
+ await tap('guide');await page.waitForTimeout(4400);
+ await page.screenshot({path:`builds/web-${kind}-guide.png`,scale:'css'});
+ await page.keyboard.press('r');
+ assert.deepEqual(await page.evaluate(()=>readProgress()),beforeGuide);
+ await tap('guide_close');
  // Holding a direction must never repeat; arbitrary browser finger IDs work.
  if(kind==='chromium'){
   const cdp=await page.context().newCDPSession(page); const p=geometry[size].up;
@@ -65,17 +71,17 @@ try{
  await tap('back');
  await tap('chapters');
  await tap('extra');
- await tap('X03');
+ await tap('X04');
  await page.waitForTimeout(1700);
- await page.screenshot({path:`builds/web-${kind}-triptych.png`,scale:'css'});
- const finale = JSON.parse(fs.readFileSync('data/extra.json', 'utf8')).find(room => room.id === 'X03');
+ await page.screenshot({path:`builds/web-${kind}-extra.png`,scale:'css'});
+ const finale = JSON.parse(fs.readFileSync('data/extra.json', 'utf8')).find(room => room.id === 'X04');
  const arrows = {U: 'up', D: 'down', L: 'left', R: 'right'};
  for (const tape of finale.recordings) {
   for (const direction of tape) await tap(arrows[direction]);
   await tap('echo');
  }
  for (const direction of finale.final) await tap(arrows[direction]);
- await saved(page, async () => (await readProgress())?.extra_completed?.X03?.echoes === 3);
+ await saved(page, async () => (await readProgress())?.extra_completed?.X04?.echoes === 2);
  const afterExtra = await page.evaluate(() => readProgress());
  assert.deepEqual(afterExtra.session, before.session);
  assert.deepEqual(afterExtra.completed, before.completed);
@@ -126,6 +132,15 @@ try{
  await page.evaluate(()=>{document.getElementById('game').style.inset=''});await page.waitForTimeout(700);
  await page.reload();await ready(page);
  assert.equal((await page.evaluate(()=>readProgress())).language,'zh_CN');
+ // Share the new chapter finale directly and solve it through touch controls.
+ await page.setViewportSize({width:390,height:664});size='390x664';
+ const carnival = new URL(url);carnival.searchParams.set('room','21');
+ await page.goto(carnival.href);await ready(page);await page.waitForTimeout(1700);
+ await page.screenshot({path:`builds/web-${kind}-wonderland.png`,scale:'css'});
+ const ride=JSON.parse(fs.readFileSync('data/levels.json','utf8')).find(room=>room.id==='21');
+ for(const tape of ride.recordings){for(const direction of tape)await tap(arrows[direction]);await tap('echo')}
+ for(const direction of ride.final)await tap(arrows[direction]);
+ await saved(page,async()=> (await readProgress())?.completed?.['21']?.echoes===2);
  await page.close();
  // Separate browser profile, real desktop input, no pad, and same puzzle rules.
  const desktop=await browser.newPage({viewport:{width:1280,height:820},deviceScaleFactor:1});observe(desktop);
@@ -144,6 +159,6 @@ try{
  assert.equal(await failure.locator('#retry').isVisible(),true);
  await failure.close();
  assert.deepEqual(errors,[]);
- console.log(`${kind}: phone/desktop input, three-echo Extra completion, campaign resume, undo, rotation, safe areas, Chinese, persistent progress, loader recovery passed.`);
+ console.log(`${kind}: phone/desktop input, Extra and Wonderland completion, campaign resume, undo, rotation, safe areas, Chinese, persistent progress, loader recovery passed.`);
 }finally{await browser.close()}
 })().catch(error=>{console.error(error);process.exitCode=1});

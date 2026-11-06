@@ -23,7 +23,7 @@ class Room:
                     self.switches.add(cell)
                 elif ch in "ab":
                     self.bridges[cell] = int(ch == "b")
-                elif ch != ".":
+                elif ch not in ".!":
                     assert ch in "SXABC@" and ch not in marks
                     marks[ch] = cell
         self.start, self.goal = marks.pop("S"), marks.pop("X")
@@ -41,6 +41,9 @@ class Room:
             edge = self.edge(*a, *b)
             assert edge not in self.turns
             self.turns[edge] = (tuple(a), 2 << i)
+        self.controlled = sum(2 << i for i in level.get("controlled_turnstiles", []))
+        self.direction_switches = {tuple(c["at"]): sum(2 << i for i in c["turnstiles"])
+                                   for c in level.get("direction_switches", [])}
         assert bool(self.switches) == bool(self.bridges)
         self.live_bits = 0 if freeze_bridges else 1
         if not freeze_turns:
@@ -55,7 +58,8 @@ class Room:
                 edge = frozenset((p, dest))
                 turn = self.turns.get(edge)
                 bit = turn[1] if turn else 0
-                trigger = (bit | int(dest in self.switches)) & self.live_bits
+                trigger = ((bit & ~self.controlled) | self.direction_switches.get(dest, 0)
+                           | int(dest in self.switches)) & self.live_bits
                 self.links[p].append((letter, dest, trigger, self.bridges.get(dest),
                                       bit, bool(turn and turn[0] != p), self.gates.get(edge, set()),
                                       self.vacancies.get(edge, set())))
@@ -185,7 +189,7 @@ class Room:
         assert shortest is not None and shortest <= len(self.level["final"])
         if len(records) == 2:
             assert self.one_echo_solution() is None, "This room must require two recordings"
-        if len(records) == 2 and self.level["id"] != "X04":
+        if len(records) == 2 and self.level["id"] not in ["X04", "21"]:
             entrances = [n for n in self.floor if abs(n[0]-self.goal[0])+abs(n[1]-self.goal[1]) == 1]
             assert len(entrances) == 1
             pre = entrances[0]
@@ -229,7 +233,8 @@ class Room:
 def check_extra(level):
     room = Room(level)
     room.check()
-    if level["id"] == "X01":
+    legacy_id = level.get("legacy_id", level["id"])
+    if legacy_id == "X01":
         # The exact one-echo searches in Room.check also freeze each device family.
         return
 
@@ -259,7 +264,7 @@ def check_extra(level):
         return edge
 
     assert room.goal not in room.relaxed_reach(room.start, fixed_bank=0)
-    if level["id"] == "X02":
+    if legacy_id == "X02":
         # The second recording cannot reach B alone. Both recordings are also
         # required on the final trip, as exhaustively checked by Room.check.
         gate_cut("@", room.pads["B"])
@@ -284,8 +289,22 @@ if __name__ == "__main__":
     levels = json.loads((ROOT / "data/levels.json").read_text())
     assert [r["id"] for r in levels] == [f'{n:02d}' for n in range(1, len(levels)+1)]
     for level in levels:
-        Room(level).check()
+        if level.get("legacy_id"):
+            check_extra(level)
+        else:
+            Room(level).check()
+        if level["id"] == "21":
+            room = Room(level)
+            tapes = []
+            for tape in level["recordings"]:
+                tapes.append(room.replay(tape, tapes))
+            assert Room(level, freeze_turns=True).shortest_final(tapes) is None
+            for final in [level["final"], "UUDDRRRRDRRURR"]:
+                assert room.replay(final, tapes)[-1] == room.goal
+            # Complementary doors enclose the ride. No control exists inside;
+            # the outer echo must flip the direction again after entry.
+            assert room.controlled == 6 and set(room.direction_switches) == {(0, 0)}
     extras = json.loads((ROOT / "data/extra.json").read_text())
-    assert [r["id"] for r in extras] == ["X01", "X02", "X03", "X04"]
+    assert [r["id"] for r in extras] == ["X04"]
     for level in extras:
         check_extra(level)

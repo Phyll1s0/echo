@@ -32,4 +32,5 @@ ui_args = ([godot] if args.visual else [godot, "--headless"]) + [
 if args.visual:
     ui_args += ["--", "--capture"]
 run(ui_args, "0 failures.")
+run([godot, "--headless", "--path", ".", "--script", "tests/test_guides.gd"], "0 failures.")
 print("All ECHO checks passed.")

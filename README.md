@@ -4,9 +4,9 @@ Every step you take moves your past selves, too.
 
 **[Play in your browser](https://phyll1s0.com/echo/)** — on desktop or phone.
 
-ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through seventeen rooms across five chapters, plus four optional Extra challenges. There is no time pressure: the world advances only when you move.
+ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through twenty-one rooms across six chapters, plus the optional Extra challenge, Switchyard. There is no time pressure: the world advances only when you move.
 
-Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. The interface defaults to English, with Simplified Chinese available in Settings.
+Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. Chapter VI, **Wonderland**, adds coral-pink paper, a quiet Ferris wheel, and a carousel controlled from another branch. The interface defaults to English, with Simplified Chinese available in Settings.
 
 ![The paper-white home screen](docs/images/home.png)
 
@@ -66,6 +66,8 @@ Choose **English** or **Simplified Chinese** in the language row at the top of S
 
 ![Settings with language, audio, display, and puzzle controls](docs/images/settings.png)
 
+A small, unframed **?** in each chapter’s opening room explains its mechanics with short text and a looping miniature board. The guides follow your language setting, can be paused or advanced one step at a time, and start paused when Motion is off. Carousel also offers the new direction-switch guide.
+
 Each room opens with its chapter and title, fading into the board over 1.5 seconds by default. Moving dismisses the title and takes your first step immediately.
 
 Click a distant plate or hover over it to highlight its linked gates. Hints progress from a nudge to a complete example route.
@@ -81,6 +83,7 @@ Click a distant plate or hover over it to highlight its linked gates. Hints prog
 - In Nocturne, a minus sign marks an empty-plate condition. **−A** needs A empty before the move. **−L** needs a completely empty lens; even one echo keeps it shut. **B −A** requires B occupied and A empty at the same time. An echo can satisfy an empty-plate condition by leaving or fading, and undo restores the previous occupancy.
 - Gates with multiple plate requirements need all of them active at once. Only the current player can finish a room by entering the outlined square.
 - Arrow gates allow passage only in the indicated direction, then reverse when crossed. Multiple actors crossing the same gate on one beat reverse it only once.
+- Round arrow switches reverse their linked one-way doors. These doors keep their direction when crossed; only a switch visit changes them. Echoes can operate a switch remotely, and simultaneous visits flip it once. Inspect a switch to see which doors it controls.
 - Stepping onto a diamond swaps the raised and folded bridge banks. You can enter a raised bridge and leave a folded bridge beneath you. Movement uses the bank state at the start of the beat. Multiple actors triggering the shared switch bank on one beat swap it only once.
 - Echoes follow their original recorded routes even after gates or bridges change, and still trigger devices. Each round starts with the initial device state. Undo restores the arrow directions and bridge banks for that beat.
 - Undo restores actors, echoes, and gates. At the start of a round, it takes back the latest recording. To revise earlier recordings, undo them from newest to oldest. Before sealing an edited route, **Cancel Edit** restores the previous plan.
@@ -88,7 +91,7 @@ Click a distant plate or hover over it to highlight its linked gates. Hints prog
 
 ## Chapters and rooms
 
-Choose a chapter in **Chapters** to see its rooms. **07 Turnabout**, **11 First Contact**, and **15 Hush** are available as direct chapter entries. Subsequent rooms unlock in order.
+Choose a chapter in **Chapters** to see its rooms. **07 Turnabout**, **11 First Contact**, and **15 Hush** are available as direct chapter entries. Subsequent rooms unlock in order. All four Wonderland rooms are directly accessible.
 
 ![The chapter index](docs/images/chapters.png)
 
@@ -111,10 +114,16 @@ Choose a chapter in **Chapters** to see its rooms. **07 Turnabout**, **11 First 
 | V · Nocturne | 15 Hush | Open one gate with an echo, then let it fade before an empty-plate gate |
 | | 16 Negative Space | Activate two plates together, then end one recording while the other returns |
 | | 17 Coda | Separate, meet, and disappear to satisfy three gates in sequence |
+| VI · Wonderland | 18 Escapement | Combine a lens meeting, arrow reversal, and bridge swaps |
+| | 19 Understudy | Let one echo fade while the other returns to a plate |
+| | 20 Triptych | Coordinate three recordings across the upper gallery and a remote switch |
+| | 21 Carousel | Enter a ring, then let an outside echo reverse its exit door |
 
 ![Chapter V · Nocturne](docs/images/room-17.png)
 
-Open **Chapters → Extra** for four standalone challenges. *Escapement* uses one recording, *Understudy* uses two, and *Triptych* allows three. In [*Switchyard*](https://phyll1s0.com/echo/?room=X04), two recordings can support three distinct approaches to a central exit. Each approach needs a different pair of plates. Each is available immediately and remembers its own unfinished route. Home → Continue resumes your campaign.
+The former Extra rooms X01–X03 are now **18 Escapement**, **19 Understudy**, and **20 Triptych** in Wonderland. Existing completion records transfer automatically, and opening a moved room resumes its old unfinished draft. [**21 Carousel**](https://phyll1s0.com/echo/?room=21) adds a remote direction switch and two routes around its central ring. An echo must change the doors after you enter, then both recordings must reach the exit plates.
+
+Open **Chapters → Extra** for [**X04 Switchyard**](https://phyll1s0.com/echo/?room=X04). Two recordings can support three distinct approaches to a central exit, each requiring a different pair of plates. It is available immediately and remembers its own unfinished route. Home → Continue resumes your campaign.
 
 Room data and example solutions live in `data/levels.json` and `data/extra.json`. These routes verify that each room is solvable; players can find their own solutions. To launch a specific room during development, use `godot --path . -- --level=6`.
 
@@ -129,7 +138,7 @@ python3 tools/check.py
 python3 tools/check.py --visual
 ```
 
-An independent Python model checks maps and example solutions, then searches for the shortest final route with the supplied recordings. It verifies that every room requires an echo and that every two-echo room has no one-echo solution. Godot tests replay all solutions through both the rules model and actual keyboard and pointer input, covering fading, simultaneous crossings, empty-plate gates, missed timing, undo, editing, pause, saves, and window layouts. Empty-plate checks include delayed departures, a lens with one remaining occupant, and gates closing again after undo. Visual captures are written to `builds/`; test saves are isolated from player progress.
+An independent Python model checks maps and example solutions, then searches for the shortest final route with the supplied recordings. It verifies that every room requires an echo and that every two-echo room has no one-echo solution. Godot tests check chapter guides, remote direction switches, migrated Extra saves, and replay all solutions through both the rules model and actual keyboard and pointer input, covering fading, simultaneous crossings, empty-plate gates, missed timing, undo, editing, pause, saves, and window layouts. Empty-plate checks include delayed departures, a lens with one remaining occupant, and gates closing again after undo. Visual captures are written to `builds/`; test saves are isolated from player progress.
 
 Phone checks exercise every room at 320×568, 390×664, 844×390, 844×300, 750×279 (landscape safe area), and 768×1024. Browser tests use real touch and keyboard events, verify echo completion and undo, rotate during a round, switch languages, reload saved progress, and check loading failure handling.
 
@@ -154,6 +163,6 @@ For rooms with devices, search states include arrow directions and bridge banks.
 
 Godot draws the geometric marks and landscapes. Short effects are synthesized by `tools/make_assets.py`, with three subtle movement sounds played in rotation. The score is bundled with the game and can be regenerated from its notation with `uv run tools/make_music.py`.
 
-Poppins is distributed under the SIL Open Font License in `assets/fonts/poppins-OFL.txt`. Chinese text uses system font fallback.
+Poppins is distributed under the SIL Open Font License in `assets/fonts/poppins-OFL.txt`. The bundled Chinese subset is preferred, with a system fallback on native platforms.
 
 The bundled Noto Sans SC subset provides Chinese text in browsers, where system fonts are unavailable. It is licensed under the SIL Open Font License in `assets/fonts/noto-OFL.txt`. After adding translations, run `uv run tools/subset_font.py` to refresh its glyphs.

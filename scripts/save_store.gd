@@ -2,6 +2,7 @@ extends RefCounted
 
 var path := "user://progress.json"
 const DEFAULT_MUSIC_VOLUME := 36
+const LEGACY_ROOMS := {"X01": "18", "X02": "19", "X03": "20"}
 const OPTION_MAX := {"volume": 100, "music_volume": 100, "move_speed": 2, "room_titles": 3, "path_weight": 2}
 var data := {"version": 1, "language": "en", "completed": {}, "session": {}, "extra_completed": {}, "extra_sessions": {}, "sound": true, "motion": true, "paths": false, "fullscreen": false,
 	"volume": 100, "music_volume": DEFAULT_MUSIC_VOLUME, "step_sounds": true, "move_speed": 1, "room_titles": 2, "path_weight": 1}
@@ -32,6 +33,12 @@ func _init(custom_path: String = "") -> void:
 					data[key] = roundi(clampf(value, 0, OPTION_MAX[key]))
 			if not parsed.has("music_volume"):
 				data.music_volume = roundi(DEFAULT_MUSIC_VOLUME * data.volume / 100.0)
+	# Keep unopened drafts under their old keys until that room is resumed.
+	for old_id in LEGACY_ROOMS:
+		if data.extra_completed.has(old_id):
+			var new_id: String = LEGACY_ROOMS[old_id]
+			if not data.completed.has(new_id): data.completed[new_id] = data.extra_completed[old_id]
+			data.extra_completed.erase(old_id)
 
 func flush() -> bool:
 	last_error = ""

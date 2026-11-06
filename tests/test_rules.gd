@@ -84,8 +84,30 @@ func _initialize() -> void:
 	_test_devices(catalog)
 	_test_lens(catalog)
 	_test_silence(catalog)
+	_test_direction_switches(catalog[20])
 	print("ECHO rules: %d checks; %d failures." % [checks, failures])
 	quit(1 if failures else 0)
+
+func _test_direction_switches(level: Dictionary) -> void:
+	var ride = Puzzle.new(level)
+	for tape in level.recordings:
+		walk(ride, tape)
+		verify(ride.seal(), "Carousel recordings are legal")
+	walk(ride, level.final.left(3))
+	verify(ride.mechanism_state() == 6, "Two echoes on one switch flip its linked doors only once")
+	walk(ride, level.final.substr(3, 5))
+	verify(ride.player() == Vector2i(4,3) and ride.mechanism_state() == 6, "Entering the ride does not reverse the controlled door")
+	walk(ride, level.final.substr(8, 3))
+	verify(ride.mechanism_state() == 0 and ride.player() == Vector2i(6,2), "Remote echo changes the exit while the player is inside")
+	verify(ride.undo() and ride.mechanism_state() == 6, "Undo restores the remote switch and doors")
+	walk(ride, level.final.substr(10))
+	verify(ride.cleared(), "Carousel completes after undoing a switch visit")
+	ride.reset_all()
+	for tape in level.recordings:
+		walk(ride, tape)
+		ride.seal()
+	walk(ride, "UUDDRRRRDRRURR")
+	verify(ride.cleared(), "The lower ring is also a playable route")
 
 func _test_devices(catalog: Array) -> void:
 	var turn = Puzzle.new(catalog[6])

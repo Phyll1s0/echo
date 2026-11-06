@@ -5,6 +5,7 @@ const Store = preload("res://scripts/save_store.gd")
 const Board = preload("res://scripts/board.gd")
 const Atmosphere = preload("res://scripts/atmosphere.gd")
 const Mark = preload("res://scripts/mark.gd")
+const ChapterGuide = preload("res://scripts/chapter_guide.gd")
 const MUSIC := preload("res://assets/audio/stillwater.ogg")
 const STEPS := [preload("res://assets/audio/step.wav"), preload("res://assets/audio/step_b.wav"), preload("res://assets/audio/step_c.wav")]
 const SOUNDS := {
@@ -20,7 +21,7 @@ const CHOICES := {
 	"room_titles": ["Off", "1 s", "1.5 s", "2 s"],
 	"path_weight": ["Faint", "Standard", "Bold"]
 }
-const ROMAN := ["I", "II", "III", "IV", "V"]
+const ROMAN := ["I", "II", "III", "IV", "V", "VI"]
 const EXTRA := "Extra"
 var chapters: Array[String] = []
 var campaign_levels: Array
@@ -63,6 +64,8 @@ var title_tween: Tween
 var layout_profile := ""
 var modal_scroll: ScrollContainer
 var direction_pad: Control
+var guide_demo
+var guide_page := 0
 
 func _ready() -> void:
 	if OS.has_feature("web"):
@@ -103,10 +106,16 @@ func _ready() -> void:
 					show_rooms(EXTRA)
 					open_level(index, true)
 					return
+			for index in campaign_levels.size():
+				if campaign_levels[index].get("legacy_id", "") == requested:
+					show_rooms(campaign_levels[index].chapter)
+					open_level(index, true)
+					return
 		elif arg.begins_with("--level="):
 			var number := arg.trim_prefix("--level=").to_int()
 			if number >= 1 and number <= levels.size():
-				open_level(number - 1, false)
+				show_rooms(levels[number - 1].chapter)
+				open_level(number - 1, true)
 
 func _profile() -> String:
 	return "%s:%s:%s:%s:%s:%s" % [compact_ui(), touch_controls, touch_landscape(), size.x < 360, size.y < 500, size.y < 360]
@@ -114,6 +123,9 @@ func _profile() -> String:
 func _adapt_layout() -> void:
 	if not is_instance_valid(page) or layout_profile == _profile(): return
 	var previous_modal := modal_kind
+	var previous_guide_page := guide_page
+	var previous_guide_step: int = guide_demo.step_index if is_instance_valid(guide_demo) else 0
+	var previous_guide_playing: bool = guide_demo.playing if is_instance_valid(guide_demo) else false
 	var return_page := room_return
 	match screen:
 		"home": show_home()
@@ -125,6 +137,11 @@ func _adapt_layout() -> void:
 		"settings": show_settings()
 		"pause": show_pause()
 		"help": show_help()
+		"guide":
+			show_chapter_guide(previous_guide_page)
+			for i in previous_guide_step: guide_demo.advance()
+			guide_demo.playing = previous_guide_playing
+			guide_demo.playback_changed.emit()
 		"complete":
 			if modal == null: show_complete()
 
@@ -343,6 +360,12 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 	var saved: Variant = store.data.session
 	if session.level.chapter == EXTRA:
 		saved = store.data.extra_sessions.get(session.level.id, {})
+	elif saved.get("level_id") != session.level.id and session.level.has("legacy_id"):
+		saved = store.data.extra_sessions.get(session.level.legacy_id, {}).duplicate(true)
+		if not saved.is_empty():
+			saved.level_id = session.level.id
+			if saved.get("edit_origin") is Dictionary and not saved.edit_origin.is_empty():
+				saved.edit_origin.level_id = session.level.id
 	if resume and saved is Dictionary and saved.get("level_id") == session.level.id:
 		session.restore(saved)
 	hint_index = -1
@@ -371,6 +394,14 @@ func _show_game(introduce: bool = false) -> void:
 	var name_label := text_label("%s   %s" % [session.level.id, tr(session.level.title)], 18 if compact_ui() else 26)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	room_title.add_child(name_label)
+	if _has_chapter_guide():
+		var guide := action("?", show_chapter_guide)
+		guide.custom_minimum_size = Vector2(44, 44) * ui_scale()
+		guide.set_meta("base_px", 24)
+		guide.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		guide.accessibility_name = tr("Chapter Guide")
+		guide.tooltip_text = tr("Chapter Guide")
+		top.add_child(guide)
 	var pause := action("", show_pause)
 	pause.icon = preload("res://assets/pause.svg")
 	pause.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -565,6 +596,8 @@ func _play(id: String) -> void:
 		audio.play()
 
 func _save_session() -> void:
+	if session.level.has("legacy_id"):
+		store.data.extra_sessions.erase(session.level.legacy_id)
 	var is_extra: bool = session.level.chapter == EXTRA
 	if session.cleared():
 		var completed := _completed_rooms(session.level.chapter)
@@ -681,6 +714,7 @@ func _close_modal() -> void:
 	modal_kind = ""
 	modal_panel = null
 	modal_scroll = null
+	guide_demo = null
 	setting_values.clear()
 	if is_instance_valid(page):
 		page.process_mode = Node.PROCESS_MODE_INHERIT
@@ -968,6 +1002,71 @@ func _leave_settings() -> void:
 	if screen == "game": show_pause()
 	else: _close_modal()
 
+func _has_chapter_guide() -> bool:
+	return session != null and ChapterGuide.PAGES.has(session.level.chapter) and (session.level.get("guide", false) or level_index == 0 or levels[level_index - 1].chapter != session.level.chapter)
+
+func show_chapter_guide(index: int = 0) -> void:
+	if screen != "game" or not _has_chapter_guide(): return
+	guide_page = clampi(index, 0, ChapterGuide.PAGES[session.level.chapter].size() - 1)
+	var info: Dictionary = ChapterGuide.PAGES[session.level.chapter][guide_page]
+	var content := _panel("guide", "", 620)
+	# An unframed sheet, with the same quiet text controls as the rest of ECHO.
+	var style := box(surface, Color.TRANSPARENT, 18 if compact_ui() else 32)
+	style.set_border_width_all(0)
+	modal_panel.add_theme_stylebox_override("panel", style)
+	var placeholder := content.get_child(1)
+	content.remove_child(placeholder)
+	placeholder.queue_free()
+	var header := HBoxContainer.new()
+	content.add_child(header)
+	header.add_child(text_label(_chapter_label(session.level.chapter), 14, muted))
+	header.add_child(spacer())
+	var close := action("×", _close_chapter_guide)
+	close.custom_minimum_size = Vector2(44, 44)
+	close.set_meta("base_px", 25)
+	close.accessibility_name = tr("Close Guide")
+	close.tooltip_text = tr("Close Guide")
+	header.add_child(close)
+	var heading := text_label(info.title, 25 if compact_ui() else 32)
+	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(heading)
+	var explanation := text_label(info.body, 16 if compact_ui() else 18, muted)
+	explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(explanation)
+	if ChapterGuide.PAGES[session.level.chapter].size() > 1:
+		var tabs := HBoxContainer.new()
+		content.add_child(tabs)
+		for i in ChapterGuide.PAGES[session.level.chapter].size():
+			var tab := action(ChapterGuide.PAGES[session.level.chapter][i].title, show_chapter_guide.bind(i))
+			tab.toggle_mode = true
+			tab.set_pressed_no_signal(i == guide_page)
+			tab.add_theme_color_override("font_color", muted)
+			tabs.add_child(tab)
+	guide_demo = ChapterGuide.new()
+	content.add_child(guide_demo)
+	guide_demo.configure(info, regular, Atmosphere.WORLDS[session.level.chapter], store.data.motion, touch_controls)
+	guide_demo.board.custom_minimum_size.y = (150 if size.x < 360 else 180) * ui_scale()
+	guide_demo.caption.add_theme_color_override("font_color", ink)
+	var controls := HBoxContainer.new()
+	content.add_child(controls)
+	var playback := action("", guide_demo.toggle_playback)
+	controls.add_child(playback)
+	controls.add_child(spacer())
+	controls.add_child(action("Next Step", guide_demo.next_step))
+	guide_demo.playback_changed.connect(func():
+		playback.text = tr("Pause Demo" if guide_demo.playing else "Play Demo"))
+	guide_demo.playback_changed.emit()
+	content.add_child(Control.new())
+	_focus_dialog(close)
+	_layout()
+
+func _close_chapter_guide() -> void:
+	_close_modal()
+	for button in page.find_children("*", "Button", true, false):
+		if button.accessibility_name == tr("Chapter Guide"):
+			button.grab_focus()
+	_refresh()
+
 func show_help() -> void:
 	var back: Callable = show_settings
 	var silence: bool = screen == "game" and session.gates.any(func(gate): return not gate.vacant.is_empty())
@@ -977,8 +1076,10 @@ func show_help() -> void:
 			rules.append("A gate marked −A needs A empty before you move. −L needs an empty lens; even one echo keeps it shut. A fading echo can open the way.")
 		if session.plates.has(Puzzle.LENS):
 			rules.append("L is a lens. Two selves on its tile open the L gate for the next move. Two echoes count, even when you are elsewhere.")
-		if not session.turnstiles.is_empty():
+		if session.turnstiles.size() > session.controlled_turnstiles.size():
 			rules.append("Cross an arrow in its marked direction. It reverses after the crossing.")
+		if not session.direction_switches.is_empty():
+			rules.append("A round arrow switch flips its linked one-way doors. Crossing a door does not turn it. Echoes can operate the switch from another branch.")
 		if not session.switches.is_empty():
 			rules.append("Step onto a diamond to swap the raised and folded bridges. If the bridge beneath you folds, you can step off it.")
 		rules.append("Echoes follow their recorded routes and still trigger devices. If two actors trigger the same device on one beat, it changes once.")
@@ -1088,6 +1189,7 @@ func _input(event: InputEvent) -> void:
 			elif modal_kind == "help": show_settings()
 			elif modal_kind == "settings": _leave_settings()
 			elif modal_kind == "pause": _resume_game()
+			elif modal_kind == "guide": _close_chapter_guide()
 			else: _close_modal()
 		elif code == KEY_Z and modal_kind == "complete":
 			_close_modal()

@@ -1,12 +1,13 @@
 extends Control
 
-# Four quiet pigments on paper, followed by an ink-black final chapter.
+# Quiet landscapes on paper, an ink-black chapter, and a coral-pink fairground.
 const WORLDS := {
 	"Afterimage": {"sky": Color("f2f6ef"), "far": Color("dce7d8"), "near": Color("c9dac6"), "ink": Color("617f63"), "tile": Color("e0eadb"), "grid": Color("6f866f"), "light": Color("335f40")},
 	"Resonance": {"sky": Color("f0f5f8"), "far": Color("d8e6ee"), "near": Color("c1d7e3"), "ink": Color("567d92"), "tile": Color("deebf2"), "grid": Color("6b8697"), "light": Color("2d607a")},
 	"Phase Shift": {"sky": Color("faf5eb"), "far": Color("ecdfc5"), "near": Color("dfccaa"), "ink": Color("92764b"), "tile": Color("efe2c9"), "grid": Color("96805b"), "light": Color("7d572e")},
 	"Penumbra": {"sky": Color("f5f2f9"), "far": Color("e4ddef"), "near": Color("d5c9e2"), "ink": Color("806c9d"), "tile": Color("e8dff1"), "grid": Color("877599"), "light": Color("63477d")},
 	"Extra": {"sky": Color("f1f0ec"), "far": Color("dfded7"), "near": Color("d4d2c9"), "ink": Color("646864"), "tile": Color("e4e3da"), "grid": Color("7e8176"), "light": Color("595940")},
+	"Wonderland": {"sky": Color("fff4f3"), "far": Color("f5dce0"), "near": Color("ecc3cd"), "ink": Color("b66b80"), "tile": Color("f2d5dc"), "grid": Color("a5687b"), "light": Color("923c56")},
 	"Nocturne": {"dark": true, "sky": Color("08090a"), "far": Color("111315"), "near": Color("171a1c"), "ink": Color("899295"), "tile": Color("171a1c"), "grid": Color("748083"), "light": Color("e3e8e8")}
 }
 
@@ -42,6 +43,7 @@ func _draw() -> void:
 			"Phase Shift": _desert(colors)
 			"Penumbra": _eclipse(colors)
 			"Nocturne": _nocturne(colors)
+			"Wonderland": _wonderland(colors)
 		return
 	draw_rect(Rect2(Vector2.ZERO, size), Color("fcfcfb"))
 	# Sparse dots suggest the echo rings, leaving a clean centre for the title.
@@ -53,6 +55,26 @@ func _draw() -> void:
 			var quiet := smoothstep(0.18, 0.48, point.distance_to(size * 0.5) / span)
 			var wave := 0.5 + 0.5 * sin(point.distance_to(size * Vector2(0.16, 0.86)) * 0.023 - clock * 0.05)
 			draw_circle(point, 0.8, Color(0.35, 0.42, 0.42, quiet * (0.025 + wave * 0.045)), true, -1, true)
+
+func _wonderland(c: Dictionary) -> void:
+	# A still Ferris wheel and low scalloped canopies, outside the playing field.
+	var centre := Vector2(0.88, 0.23) * size
+	var radius := minf(size.x * 0.075, size.y * 0.085)
+	draw_arc(centre, radius, 0, TAU, 72, Color(c.ink, 0.30), 1.2, true)
+	for i in 8:
+		var tip := centre + Vector2.from_angle(i * TAU / 8) * radius
+		draw_line(centre, tip, Color(c.ink, 0.20), 1, true)
+		draw_circle(tip, radius * 0.085, c.far, true, -1, true)
+		draw_arc(tip, radius * 0.085, 0, TAU, 20, Color(c.ink, 0.38), 1, true)
+	for side in [-1, 1]:
+		draw_line(centre, centre + Vector2(side * radius * 0.55, radius * 1.6), Color(c.ink, 0.25), 1.2, true)
+	for layer in 2:
+		var ridge := PackedVector2Array()
+		for n in 121:
+			var x := n / 120.0
+			var y := 0.91 + layer * 0.065 - 0.026 * cos(x * TAU * 3 + layer)
+			ridge.append(Vector2(x, y) * size)
+		_bank(ridge, c.far if layer == 0 else c.near, Color(c.ink, 0.24))
 
 func _nocturne(c: Dictionary) -> void:
 	var centre := Vector2(0.13, 0.25) * size

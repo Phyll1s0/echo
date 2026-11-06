@@ -102,7 +102,7 @@ func _gui_input(event: InputEvent) -> void:
 			var id: String = puzzle.plates.find_key(cell)
 			selected_plate = "" if selected_plate == id else id
 			selected_switch = VOID_CELL
-		elif cell in puzzle.switches:
+		elif cell in puzzle.switches or cell in puzzle.direction_switches:
 			selected_switch = VOID_CELL if selected_switch == cell else cell
 			selected_plate = ""
 		else:
@@ -131,14 +131,19 @@ func _draw() -> void:
 			edge = muted
 		draw_rect(rect, fill)
 		draw_rect(rect, edge, false, maxf(1.0, unit * 0.012), true)
-	var linked_switch: Vector2i = hover if hover in puzzle.switches else selected_switch
-	if linked_switch != VOID_CELL:
+	var linked_switch: Vector2i = hover if hover in puzzle.switches or hover in puzzle.direction_switches else selected_switch
+	if linked_switch in puzzle.switches:
 		for cell in puzzle.bridges:
 			draw_dashed_line(center_of(linked_switch), center_of(cell), Color(active, 0.38), 1.25, 5.0, true, true)
+	elif linked_switch in puzzle.direction_switches:
+		for i in puzzle.turnstiles.size():
+			if int(puzzle.direction_switches[linked_switch]) & (2 << i):
+				var midpoint := (center_of(puzzle.turnstiles[i][0]) + center_of(puzzle.turnstiles[i][1])) * 0.5
+				draw_dashed_line(center_of(linked_switch), midpoint, Color(active, 0.5), 1.25, 5.0, true, true)
 	for cell in puzzle.switches:
 		_draw_switch(center_of(cell), unit, state)
-	for i in puzzle.turnstiles.size():
-		_draw_turnstile(i, unit, state)
+	for cell in puzzle.direction_switches:
+		_draw_direction_switch(center_of(cell), unit)
 	var inspected := selected_plate
 	if hover in puzzle.plates.values():
 		inspected = puzzle.plates.find_key(hover)
@@ -195,6 +200,9 @@ func _draw() -> void:
 			var tile_center := center_of(outside)
 			anchor = tile_center + Vector2(-width_px / 2, -unit * 0.26)
 		draw_string(font, anchor, name, HORIZONTAL_ALIGNMENT_LEFT, -1, caption_size, active if open else muted)
+	# Keep the direction readable when an edge also has a pressure condition.
+	for i in puzzle.turnstiles.size():
+		_draw_turnstile(i, unit, state)
 	if show_routes:
 		for i in puzzle.echoes.size():
 			var route: Array = puzzle.echoes[i]
@@ -222,6 +230,15 @@ func _draw() -> void:
 			# Separate the echo ring from a plate or bridge underneath it.
 			draw_arc(center, radius, 0, TAU, 64, Color(piece_shadow, alpha), width + 2.0, true)
 			draw_arc(center, radius, 0, TAU, 64, Color(piece_edge if n == 1 else second_echo_edge, alpha), width, true)
+
+func _draw_direction_switch(center: Vector2, unit: float) -> void:
+	var r := unit * 0.31
+	draw_arc(center, r, 0, TAU, 64, active, maxf(1.5, unit * 0.025), true)
+	for side in [-1, 1]:
+		var a := center + Vector2(-0.17 * side, -0.09 * side) * unit
+		var b := center + Vector2(0.17 * side, -0.09 * side) * unit
+		draw_line(a, b, active, 1.6, true)
+		draw_polyline(PackedVector2Array([b + Vector2(-0.07 * side, -0.06) * unit, b, b + Vector2(-0.07 * side, 0.06) * unit]), active, 1.6, true)
 
 func _draw_switch(center: Vector2, unit: float, state: int) -> void:
 	var r := unit * 0.32
@@ -260,6 +277,9 @@ func _draw_turnstile(index: int, unit: float, state: int) -> void:
 	normal = dir.orthogonal()
 	draw_circle(middle, unit*0.21, floor_color, true, -1, true)
 	draw_arc(middle, unit*0.21, 0, TAU, 48, muted, maxf(1,unit*0.014), true)
+	if index in puzzle.controlled_turnstiles:
+		# A second rim matches the linked switch and distinguishes it from a turnstile.
+		draw_arc(middle, unit*0.26, 0, TAU, 48, Color(active, 0.55), maxf(1,unit*0.012), true)
 	var tip := middle + dir*unit*0.135
 	draw_line(middle-dir*unit*0.13, tip, active, maxf(1.5,unit*0.032), true)
 	draw_polyline(PackedVector2Array([tip-dir*unit*0.09+normal*unit*0.085, tip, tip-dir*unit*0.09-normal*unit*0.085]), active, maxf(1.5,unit*0.032), true)

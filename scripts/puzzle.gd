@@ -10,6 +10,8 @@ var floor_cells: Array[Vector2i] = []
 var plates: Dictionary = {}
 var gates: Array = []
 var turnstiles: Array = []
+var direction_switches: Dictionary = {}
+var controlled_turnstiles: Array[int] = []
 var switches: Array[Vector2i] = []
 var bridges: Dictionary = {}
 # Bit 0 selects the bridge bank. The remaining bits reverse individual arrows.
@@ -33,6 +35,9 @@ func configure(data: Dictionary) -> void:
 	plates.clear()
 	gates.clear()
 	turnstiles.clear()
+	direction_switches.clear()
+	controlled_turnstiles.clear()
+	for index in level.get("controlled_turnstiles", []): controlled_turnstiles.append(int(index))
 	switches.clear()
 	bridges.clear()
 	rows = level.rows.size()
@@ -52,6 +57,8 @@ func configure(data: Dictionary) -> void:
 				goal = cell
 			elif mark == "*":
 				switches.append(cell)
+			elif mark == "!":
+				pass # Direction switches are linked explicitly below.
 			elif mark == "a" or mark == "b":
 				bridges[cell] = 0 if mark == "a" else 1
 			elif mark != ".":
@@ -60,6 +67,10 @@ func configure(data: Dictionary) -> void:
 		gates.append({"a": Vector2i(int(item.a[0]), int(item.a[1])), "b": Vector2i(int(item.b[0]), int(item.b[1])), "requires": item.requires.duplicate(), "vacant": item.get("vacant", []).duplicate()})
 	for edge in level.get("turnstiles", []):
 		turnstiles.append([Vector2i(int(edge[0][0]), int(edge[0][1])), Vector2i(int(edge[1][0]), int(edge[1][1]))])
+	for control in level.get("direction_switches", []):
+		var mask := 0
+		for index in control.turnstiles: mask |= 2 << int(index)
+		direction_switches[Vector2i(int(control.at[0]), int(control.at[1]))] = mask
 	reset_all()
 
 func reset_all() -> void:
@@ -128,8 +139,9 @@ func _turn_index(origin: Vector2i, target: Vector2i) -> int:
 
 func _triggers(origin: Vector2i, target: Vector2i) -> int:
 	var mask := 1 if target in switches else 0
+	mask |= int(direction_switches.get(target, 0))
 	var index := _turn_index(origin, target)
-	if index >= 0:
+	if index >= 0 and index not in controlled_turnstiles:
 		mask |= 2 << index
 	return mask
 
