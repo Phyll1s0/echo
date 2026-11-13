@@ -1069,3 +1069,57 @@ msgstr "试试疾行的外框和安静的内环，它们需要的拍数不同。
 
 msgid "Record LUURDD. Finally walk LURRRR."
 msgstr "先录制 LUURDD，最后走 LURRRR。"
+
+msgid "Looking Glass"
+msgstr "镜廊"
+
+msgid "Mirror Routes"
+msgstr "镜像路线"
+
+msgid "An echo holds one wing while you climb the other. Look for the plate that opens the door across the mirror."
+msgstr "让回声守住一翼，你从另一翼攀登。找一找，哪块踏板能打开镜子另一端的门？"
+
+msgid "An echo will climb the left wing. Take the right."
+msgstr "回声会沿左翼上行。你走右翼。"
+
+msgid "Each of you takes a different wing."
+msgstr "你们一左一右，各走一边。"
+
+msgid "Climb in step with your reflection."
+msgstr "和倒影一起向上走。"
+
+msgid "The echo reaches A. Your door opens."
+msgstr "回声站上了 A，你这侧的门开了。"
+
+msgid "Cross before the reflection fades."
+msgstr "趁倒影还在，跨过门。"
+
+msgid "Ferris Wheel"
+msgstr "摩天轮"
+
+msgid "One rider works the axle. The other takes a cabin to the crown."
+msgstr "一个人穿过轮轴，另一个人坐上吊舱，在轮顶碰面。"
+
+msgid "The switch at the hub turns both upper doors inward. Each side of the crown needs the opposite cabin occupied."
+msgstr "轮轴的开关能转动顶部的两扇单向门。要从一侧登顶，另一侧的吊舱里得有人。"
+
+msgid "Send your echo through the hub and out to A. Take the right rim yourself. The mirror route works too."
+msgstr "让回声穿过轮轴去 A，你从右边绕轮缘上行。左右对调也能登顶。"
+
+msgid "Record UDUDUUUULLLUL. Ride RURRUUUUUULLUL."
+msgstr "录制UDUDUUUULLLUL，最后走 RURRUUUUUULLUL。"
+
+msgid "Rose Window"
+msgstr "玫瑰花窗"
+
+msgid "A rose window in four petals. Open the upper pane, then bring two reflections into its lens."
+msgstr "四瓣花窗。先推开上方的窗扇，再让两道倒影回到花心。"
+
+msgid "Split the echoes between A and B to enter the upper petal. The last door opens when both echoes meet on the lens."
+msgstr "两道回声分站 A 和 B，你就能进入上方的花瓣。最后一道门要靠它们在花心的透镜上相遇。"
+
+msgid "Give the recordings mirror routes of equal length. You can take either side of the upper petal."
+msgstr "让两道回声走一对等长的镜像路线。你走上方花瓣的左边或右边都可以。"
+
+msgid "Record LULUULLULUURURRDRDR, then RURUURRURUULULLDLDL. Walk LULUUURUUULUUDUDURUR."
+msgstr "录制LULUULLULUURURRDRDR、RURUURRURUULULLDLDL，最后走 LULUUURUUULUUDUDURUR。"

@@ -10,6 +10,7 @@ const WORLDS := {
 	"Wonderland": {"sky": Color("fff4f3"), "far": Color("f5dce0"), "near": Color("ecc3cd"), "ink": Color("b66b80"), "tile": Color("f2d5dc"), "grid": Color("a5687b"), "light": Color("923c56")},
 	"Inferno": {"dark": true, "sky": Color("180d12"), "far": Color("2b141b"), "near": Color("402020"), "ink": Color("ca725c"), "tile": Color("321e24"), "grid": Color("ac796d"), "light": Color("ffb07b")},
 	"Slipstream": {"sky": Color("eff6f4"), "far": Color("d6e6e2"), "near": Color("bdd7d1"), "ink": Color("527d78"), "tile": Color("dce9e5"), "grid": Color("69847e"), "light": Color("28635e")},
+	"Looking Glass": {"sky": Color("f5f3fa"), "far": Color("e1e1f2"), "near": Color("d5d6ec"), "ink": Color("78719e"), "tile": Color("dfdef0"), "grid": Color("827b9e"), "light": Color("57497f")},
 	"Nocturne": {"dark": true, "sky": Color("08090a"), "far": Color("111315"), "near": Color("171a1c"), "ink": Color("899295"), "tile": Color("171a1c"), "grid": Color("748083"), "light": Color("e3e8e8")}
 }
 
@@ -44,6 +45,7 @@ func _draw() -> void:
 			"Resonance": _ocean(colors)
 			"Phase Shift": _desert(colors)
 			"Penumbra": _eclipse(colors)
+			"Looking Glass": _glass(colors)
 			"Nocturne": _nocturne(colors)
 			"Wonderland": _wonderland(colors)
 			"Inferno": _inferno(colors)
@@ -59,6 +61,23 @@ func _draw() -> void:
 			var quiet := smoothstep(0.18, 0.48, point.distance_to(size * 0.5) / span)
 			var wave := 0.5 + 0.5 * sin(point.distance_to(size * Vector2(0.16, 0.86)) * 0.023 - clock * 0.05)
 			draw_circle(point, 0.8, Color(0.35, 0.42, 0.42, quiet * (0.025 + wave * 0.045)), true, -1, true)
+
+func _glass(c: Dictionary) -> void:
+	# Faint mirrored panes at the edges keep the centre of the paper clear.
+	for side in [0, 1]:
+		var x := size.x * (0.07 if side == 0 else 0.93)
+		var centre := Vector2(x, size.y * 0.26)
+		var r := minf(size.x * 0.055, size.y * 0.055)
+		for k in 2:
+			var points := PackedVector2Array()
+			for i in 9:
+				var theta := i * TAU / 8
+				points.append(centre + Vector2.from_angle(theta) * r * (1.0 - k * 0.30))
+			draw_polyline(points, Color(c.ink, 0.17 - k * 0.06), 1.0, true)
+	for i in 2:
+		var y := size.y * (0.89 + i * 0.04)
+		var pane := PackedVector2Array([Vector2(0,y), Vector2(size.x*0.22,y), Vector2(size.x*0.30,y+size.y*0.04), Vector2(size.x*0.70,y+size.y*0.04), Vector2(size.x*0.78,y), Vector2(size.x,y)])
+		draw_polyline(pane, Color(c.ink, 0.18), 1.0, true)
 
 func _slipstream(c: Dictionary) -> void:
 	# Broken orbits and low flowing lines keep the playing area empty.

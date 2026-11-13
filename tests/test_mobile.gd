@@ -30,11 +30,11 @@ func _run() -> void:
 			verify(ui.board.cell_size() >= 12, "Tiles stay legible "+key_+" / "+str(i))
 			for button in ui.page.find_children("*", "Button", true, false):
 				verify(bounds.encloses(button.get_global_rect()), "Phone button fits "+key_+" / "+button.text)
-			if i in [20,21]:
-				geometry[key_]["guide"+str(i+1)] = point(button_named("Chapter Guide"))
+			if ui.session.level.id in ["21","22"]:
+				geometry[key_]["guide"+ui.session.level.id] = point(button_named("Chapter Guide"))
 				ui.show_chapter_guide()
 				await settle()
-				geometry[key_]["guide"+str(i+1)+"_close"] = point(button_named("Close Guide"))
+				geometry[key_]["guide"+ui.session.level.id+"_close"] = point(button_named("Close Guide"))
 				ui._close_modal()
 			if i == 0:
 				geometry[key_]["guide"] = point(button_named("Chapter Guide"))
@@ -65,7 +65,7 @@ func _run() -> void:
 				ui._close_modal()
 		ui.show_rooms("Inferno")
 		await settle()
-		geometry[key_]["inferno22"] = point(room_card(21))
+		geometry[key_]["inferno22"] = point(room_card(ui.room_index("22")))
 		ui.show_chapters()
 		await settle()
 		geometry[key_]["extra"] = point(button_named("Extra"))
@@ -82,7 +82,7 @@ func _run() -> void:
 				verify(bounds.encloses(button.get_global_rect()), "Extra controls fit " + key_)
 		if dimensions == Vector2i(390,664): await capture("extra-switchyard-phone")
 		ui.show_home()
-		ui.open_level(16,false,false)
+		ui.open_level(ui.room_index("17"),false,false)
 		await settle()
 		await capture("mobile-"+key_)
 	ui.touch_controls = false

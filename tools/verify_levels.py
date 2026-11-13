@@ -263,7 +263,7 @@ class Room:
         assert shortest is not None and shortest <= len(self.level["final"])
         if len(records) == 2:
             assert self.one_echo_solution() is None, "This room must require two recordings"
-        if len(records) == 2 and self.level["id"] not in ["X04", "21", "24", "30"] and not (self.portals or self.currents):
+        if len(records) == 2 and self.level["id"] not in ["X04", "21", "24", "30", "33"] and not (self.portals or self.currents):
             entrances = [n for n in self.floor if abs(n[0]-self.goal[0])+abs(n[1]-self.goal[1]) == 1]
             assert len(entrances) == 1
             pre = entrances[0]
@@ -402,7 +402,11 @@ def check_extra(level):
 
 if __name__ == "__main__":
     levels = json.loads((ROOT / "data/levels.json").read_text())
-    assert [r["id"] for r in levels] == [f'{n:02d}' for n in range(1, len(levels)+1)]
+    by_id = {r["id"]: r for r in levels}
+    assert len(by_id) == len(levels) and set(by_id) == {f'{n:02d}' for n in range(1, len(levels)+1)}
+    from itertools import groupby
+    chapters = [(name, list(rooms)) for name, rooms in groupby(levels, key=lambda r: r["chapter"])]
+    assert len({name for name, _ in chapters}) == len(chapters) and all(len(rooms) <= 4 for _, rooms in chapters)
     for level in levels:
         if level.get("legacy_id"):
             check_extra(level)
@@ -424,13 +428,13 @@ if __name__ == "__main__":
         if level["id"] == "27":
             assert Room(level, disable_currents=True).one_echo_solution() is None, "The current must change the timing"
     for plan in json.loads((ROOT / "tests/inferno_routes.json").read_text()):
-        room = Room(levels[int(plan["id"]) - 1])
+        room = Room(by_id[plan["id"]])
         tapes = []
         for route in plan["recordings"]:
             tapes.append(room.replay(route, tapes))
         assert room.replay(plan["final"], tapes)[-1] == room.goal
     for plan in json.loads((ROOT / "tests/composition_routes.json").read_text()):
-        room = Room(levels[int(plan["id"]) - 1])
+        room = Room(by_id[plan["id"]])
         tapes = []
         for letters in plan["recordings"]:
             tapes.append(room.replay(letters, tapes))

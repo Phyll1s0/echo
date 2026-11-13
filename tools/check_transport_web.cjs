@@ -2,7 +2,10 @@
 const { chromium, webkit } = require('playwright');
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
-const rooms = JSON.parse(fs.readFileSync('data/levels.json', 'utf8')).filter(r => r.chapter === 'Slipstream');
+const catalog = JSON.parse(fs.readFileSync('data/levels.json', 'utf8'));
+const ids = process.env.ECHO_ROOMS?.split(',');
+const rooms = catalog.filter(r => ids ? ids.includes(r.id) : r.chapter === 'Slipstream' || ['30','31','32','33'].includes(r.id));
+assert(rooms.length > 0 && (!ids || rooms.length === ids.length), 'Unknown room selection');
 const geometry = JSON.parse(fs.readFileSync('builds/web-controls.json', 'utf8'))['390x664'];
 const keys = {U:'ArrowUp',D:'ArrowDown',L:'ArrowLeft',R:'ArrowRight'};
 const directions = {U:'up',D:'down',L:'left',R:'right'};

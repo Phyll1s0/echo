@@ -22,7 +22,7 @@ const CHOICES := {
 	"room_titles": ["Off", "1 s", "1.5 s", "2 s"],
 	"path_weight": ["Faint", "Standard", "Bold"]
 }
-const ROMAN := ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"]
+const ROMAN := ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"]
 const EXTRA := "Extra"
 var chapters: Array[String] = []
 var campaign_levels: Array
@@ -34,6 +34,7 @@ var level_index := 0
 var screen := ""
 # Keep the entry page when restarting or advancing to another room.
 var room_return: Callable
+var entered_from_rooms := false
 var ambient
 var page: Control
 var modal: ColorRect
@@ -115,10 +116,11 @@ func _ready() -> void:
 					open_level(index, true)
 					return
 		elif arg.begins_with("--level="):
-			var number := arg.trim_prefix("--level=").to_int()
-			if number >= 1 and number <= levels.size():
-				show_rooms(levels[number - 1].chapter)
-				open_level(number - 1, true)
+			var index := room_index("%02d" % arg.trim_prefix("--level=").to_int())
+			if index >= 0:
+				show_rooms(levels[index].chapter)
+				open_level(index, true)
+				return
 
 func _profile() -> String:
 	return "%s:%s:%s:%s:%s:%s" % [compact_ui(), touch_controls, touch_landscape(), size.x < 360, size.y < 500, size.y < 360]
@@ -204,7 +206,10 @@ func _body() -> VBoxContainer:
 	return body
 
 func _session_index() -> int:
-	var id = store.data.session.get("level_id", "")
+	return room_index(store.data.session.get("level_id", ""))
+
+# Public links and saves use permanent room IDs; catalog order is the play order.
+func room_index(id: String) -> int:
 	for i in levels.size():
 		if levels[i].id == id:
 			return i
@@ -219,6 +224,7 @@ func _next_unfinished() -> int:
 func show_home() -> void:
 	levels = campaign_levels
 	room_return = show_home
+	entered_from_rooms = false
 	_fresh_page("home")
 	var body := _body()
 	var top := HBoxContainer.new()
@@ -349,6 +355,7 @@ func show_chapters() -> void:
 func show_rooms(chapter: String) -> void:
 	if chapter in chapters: chapter_focus = chapters.find(chapter)
 	levels = extra_levels if chapter == EXTRA else campaign_levels
+	entered_from_rooms = true
 	room_return = show_rooms.bind(chapter)
 	var index := _selection_page("rooms", "← Chapters", show_chapters, chapter)
 	var heading := HBoxContainer.new()
@@ -362,7 +369,7 @@ func show_rooms(chapter: String) -> void:
 		if info.chapter != chapter:
 			continue
 		var done: bool = _completed_rooms(chapter).has(info.id)
-		var unlocked: bool = chapter == EXTRA or done or i == 0 or info.get("chapter_entry", false) or store.data.completed.has(levels[i-1].id)
+		var unlocked: bool = chapter == EXTRA or done or i == 0 or info.get("chapter_entry", false) or store.data.completed.has(levels[i-1].id) or store.data.completed.has(info.get("also_unlock_after", ""))
 		var room := list_action("%s    %s" % [info.id, tr(info.title)], open_level.bind(i, true))
 		room.set_meta("base_px", 18 if compact_ui() else 21)
 		room.disabled = not unlocked
@@ -387,6 +394,8 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 		return
 	level_index = index
 	session = Puzzle.new(levels[index])
+	if entered_from_rooms:
+		room_return = show_rooms.bind(session.level.chapter)
 	var saved: Variant = store.data.session
 	if session.level.chapter == EXTRA:
 		saved = store.data.extra_sessions.get(session.level.id, {})

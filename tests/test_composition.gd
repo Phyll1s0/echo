@@ -20,7 +20,7 @@ func _run() -> void:
 			for gate in ui.session.gates:
 				for chip in ui.board.condition_layout(gate):
 					verify(bounds.encloses(Rect2(chip.center - Vector2.ONE * chip.radius, Vector2.ONE * chip.radius * 2)), "Gate conditions stay inside the board: %s / %s" % [ui.session.level.id,dimensions])
-		ui.open_level(28, false, false)
+		ui.open_level(ui.room_index("29"), false, false)
 		await settle()
 		var snapshot: Dictionary = ui.session.snapshot()
 		var gate: Dictionary = ui.session.gates[-1]
@@ -28,20 +28,20 @@ func _run() -> void:
 		await click(ui.board.global_position + middle)
 		verify(ui.board.selected_gate == ui.session.gates.size()-1 and ui.status_text == "Gate requires B  −A", "A door edge reveals its full occupied and empty conditions")
 		verify(ui.session.snapshot() == snapshot, "Inspecting a door costs no beat and changes no recording")
-		ui.open_level(27, false, false)
+		ui.open_level(ui.room_index("28"), false, false)
 		await settle()
 		await click(ui.board.global_position + ui.board.center_of(ui.session.plates["@"]))
 		verify(ui.board.selected_plate == "@" and ui.board.selected_portal == ui.session.plates["@"], "An overlapping lens and portal can both be inspected")
 	# The twofold composition offers distinct, legal plans for either door.
 	root.size = Vector2i(390,664)
 	for plan in JSON.parse_string(FileAccess.get_file_as_string("res://tests/composition_routes.json")):
-		ui.open_level(int(plan.id)-1, false, false)
+		ui.open_level(ui.room_index(plan.id), false, false)
 		await settle()
 		for tape in plan.recordings:
 			await walk(tape)
 			await key(KEY_ENTER)
 		await walk(plan.final)
-		verify(ui.session.cleared(), "Kaleidoscope's alternate approach finishes through real input")
+		verify(ui.session.cleared(), "The alternate approach finishes through real input: " + plan.id)
 	DirAccess.remove_absolute(path)
 	print("ECHO composition: %d checks; %d failures." % [checks, failures])
 	quit(1 if failures else 0)

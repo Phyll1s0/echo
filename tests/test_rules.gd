@@ -19,6 +19,9 @@ func walk(puzzle, letters: String) -> void:
 		var delta: Vector2i = puzzle.player() - old
 		verify((absi(delta.x)+absi(delta.y)==1 or not puzzle.portals.is_empty() or not puzzle.currents.is_empty()) and puzzle.tick()==t+1, "One input advances exactly one beat")
 
+func fixture(catalog: Array, id: String) -> Dictionary:
+	return catalog.filter(func(room): return room.id == id)[0]
+
 func _initialize() -> void:
 	var catalog: Array = JSON.parse_string(FileAccess.get_file_as_string("res://data/levels.json"))
 	var extra: Array = JSON.parse_string(FileAccess.get_file_as_string("res://data/extra.json"))
@@ -41,7 +44,7 @@ func _initialize() -> void:
 			verify(branch.seal(), "Record an alternate Switchyard route")
 		walk(branch, plan.final)
 		verify(branch.cleared(), "Alternate Switchyard entrance reaches the exit")
-	var p = Puzzle.new(catalog[0])
+	var p = Puzzle.new(fixture(catalog, "01"))
 	walk(p,"UU")
 	verify(p.seal(), "Can record two moves")
 	walk(p,"RR")
@@ -64,14 +67,14 @@ func _initialize() -> void:
 	forged = before.duplicate(true)
 	forged.echoes.clear()
 	verify(not p.restore(forged) and p.snapshot()==before, "Reject a replay depending on a missing echo")
-	var dual = Puzzle.new(catalog[5])
-	for route in catalog[5].recordings:
+	var dual = Puzzle.new(fixture(catalog, "06"))
+	for route in fixture(catalog, "06").recordings:
 		walk(dual, route)
 		verify(dual.seal(), "Causal recordings valid")
 	walk(dual,"L")
 	var original_plan: Dictionary = dual.snapshot()
 	verify(dual.rerecord_last() and dual.echoes.size()==1 and dual.tick()==6, "Modify latest recording, retain earlier recording")
-	var editing = Puzzle.new(catalog[5])
+	var editing = Puzzle.new(fixture(catalog, "06"))
 	verify(editing.restore(JSON.parse_string(JSON.stringify(dual.snapshot()))) and editing.cancel_edit() and editing.snapshot()==original_plan, "Resuming an edit preserves the option to restore the full original plan")
 	verify(dual.undo() and dual.seal() and dual.undo() and dual.echoes.size()==1 and dual.tick()==5, "Undo across a seal boundary")
 	var path := "user://rule-test-%d.json" % OS.get_process_id()
@@ -84,7 +87,7 @@ func _initialize() -> void:
 	_test_devices(catalog)
 	_test_lens(catalog)
 	_test_silence(catalog)
-	_test_direction_switches(catalog[20])
+	_test_direction_switches(fixture(catalog, "21"))
 	_test_lava(catalog)
 	_test_paradox(extra[1])
 	print("ECHO rules: %d checks; %d failures." % [checks, failures])
@@ -132,14 +135,14 @@ func _test_lava(catalog: Array) -> void:
 	forged.draft.append([1,0])
 	verify(not Puzzle.new(fixture).restore(forged), "Saves reject routes landing on lava")
 	for plan in JSON.parse_string(FileAccess.get_file_as_string("res://tests/inferno_routes.json")):
-		var branch = Puzzle.new(catalog[int(plan.id) - 1])
+		var branch = Puzzle.new(fixture(catalog, plan.id))
 		for route in plan.recordings:
 			walk(branch, route)
 			verify(branch.seal(), "Alternate Inferno recording is legal")
 		walk(branch, plan.final)
 		verify(branch.cleared(), "Alternate Inferno approach clears the room")
-	for index in range(21,25):
-		var room = Puzzle.new(catalog[index])
+	for level in catalog.filter(func(r): return r.chapter == "Inferno"):
+		var room = Puzzle.new(level)
 		for route in room.level.recordings:
 			walk(room, route)
 			room.seal()
@@ -173,7 +176,7 @@ func _test_direction_switches(level: Dictionary) -> void:
 	verify(ride.cleared(), "The lower ring is also a playable route")
 
 func _test_devices(catalog: Array) -> void:
-	var turn = Puzzle.new(catalog[6])
+	var turn = Puzzle.new(fixture(catalog, "07"))
 	walk(turn, "UURR")
 	verify(turn.turn_direction(0,turn.mechanism_state())==Vector2i.LEFT, "Crossing reverses the arrow")
 	verify(turn.undo() and turn.turn_direction(0,turn.mechanism_state())==Vector2i.RIGHT, "Undo restores direction")
@@ -182,12 +185,12 @@ func _test_devices(catalog: Array) -> void:
 	walk(turn,"UURR")
 	verify(turn.mechanism_state()==2, "Two simultaneous crossings reverse the arrow once")
 	var before: Dictionary = turn.snapshot()
-	var restored = Puzzle.new(catalog[6])
+	var restored = Puzzle.new(fixture(catalog, "07"))
 	verify(restored.restore(before) and restored.mechanism_state()==2, "Restore reconstructs shared turnstile state")
 	turn.restart_round()
 	verify(turn.mechanism_state()==0 and turn.rerecord_last() and turn.mechanism_state()==2, "Editing reconstructs the historical board")
 	verify(turn.cancel_edit() and turn.mechanism_state()==0, "Cancelling an edit restores the correct round")
-	var bridge = Puzzle.new(catalog[7])
+	var bridge = Puzzle.new(fixture(catalog, "08"))
 	walk(bridge,"RR")
 	verify(not bridge.move(Vector2i.RIGHT) and bridge.tick()==2, "Folded bridge rejects entry without advancing time")
 	bridge.restart_round()
@@ -203,20 +206,20 @@ func _test_devices(catalog: Array) -> void:
 	verify(not footing.bridge_active(footing.player(),footing.mechanism_state()) and footing.can_move(Vector2i.RIGHT), "An actor can step off a newly folded bridge")
 	var resumed = Puzzle.new(footing.level)
 	verify(resumed.restore(footing.snapshot()) and resumed.move(Vector2i.RIGHT) and resumed.cleared(), "Save on a folded bridge resumes correctly")
-	var under = Puzzle.new(catalog[8])
+	var under = Puzzle.new(fixture(catalog, "09"))
 	walk(under,under.level.recordings[0])
 	verify(under.seal(), "Record the lower lane")
 	walk(under,"RRUDU")
 	verify(under.echo_position(0)==under.player() and (under.mechanism_state() & 1)==0, "Simultaneous arrivals swap the banks once")
 	walk(under,"ULL")
 	verify(under.echo_position(0)==Vector2i(4,2) and not under.bridge_active(Vector2i(4,2),under.mechanism_state()), "A recorded route survives a later bridge change")
-	var loaded = Puzzle.new(catalog[8])
+	var loaded = Puzzle.new(fixture(catalog, "09"))
 	verify(loaded.restore(under.snapshot()) and loaded.mechanism_state()==under.mechanism_state(), "Mid-puzzle save restores both mechanisms")
 	walk(loaded,"LUU")
 	verify(loaded.cleared(), "Resumed dynamic room can finish")
 
 func _test_lens(catalog: Array) -> void:
-	var lens = Puzzle.new(catalog[10])
+	var lens = Puzzle.new(fixture(catalog, "11"))
 	walk(lens, "LUUR")
 	verify(not lens.plate_on(Puzzle.LENS) and not lens.move(Vector2i.UP), "One actor cannot open the lens gate")
 	verify(lens.seal(), "Record a route ending at the lens")
@@ -226,7 +229,7 @@ func _test_lens(catalog: Array) -> void:
 	verify(not lens.plate_on(Puzzle.LENS) and lens.undo() and lens.plate_on(Puzzle.LENS), "Undo restores the last shared beat")
 	var restored = Puzzle.new(lens.level)
 	verify(restored.restore(lens.snapshot()) and restored.move(Vector2i.UP), "A saved rendezvous can resume through the gate")
-	var finale = Puzzle.new(catalog[13])
+	var finale = Puzzle.new(fixture(catalog, "14"))
 	for route in finale.level.recordings:
 		walk(finale, route)
 		verify(finale.seal(), "Record a return journey for Totality")
@@ -238,7 +241,7 @@ func _test_lens(catalog: Array) -> void:
 		verify(not finale.bridge_active(cell, finale.mechanism_state()), "After the rendezvous each tape crosses its folded bridge")
 
 func _test_silence(catalog: Array) -> void:
-	var hush = Puzzle.new(catalog[14])
+	var hush = Puzzle.new(fixture(catalog, "15"))
 	walk(hush, "UUDU")
 	verify(hush.seal(), "Record a return visit to A")
 	walk(hush, "RRRR")
@@ -246,14 +249,14 @@ func _test_silence(catalog: Array) -> void:
 	verify(not hush.move(Vector2i.RIGHT) and hush.snapshot()==before, "An occupied silence plate blocks without consuming a beat")
 	walk(hush, "LRR")
 	verify(hush.cleared(), "Pacing lets the echo fade and opens the silence gate")
-	var last = Puzzle.new(catalog[16])
+	var last = Puzzle.new(fixture(catalog, "17"))
 	walk(last, "LLUURRRL")
 	verify(last.seal(), "Record a later return to the lens")
 	walk(last, "RRUULL")
 	verify(last.seal(), "The other echo ends on its first meeting")
 	walk(last, "DDRRRDDD")
 	verify(not last.plate_on(Puzzle.LENS) and not last.gate_open(last.gates[-1]), "One remaining self keeps a silence lens shut even though it is no longer activated")
-	var restored = Puzzle.new(catalog[16])
+	var restored = Puzzle.new(fixture(catalog, "17"))
 	verify(restored.restore(last.snapshot()) and not restored.can_move(Vector2i.DOWN), "A saved silence gate restores its occupancy")
 	walk(last, "UDD")
 	verify(last.cleared() and last.undo() and last.undo() and last.undo() and not last.can_move(Vector2i.DOWN), "Undo restores the echo and closes the silence gate again")

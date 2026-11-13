@@ -220,6 +220,40 @@ func _draw_gate_conditions(gate: Dictionary, unit: float, highlighted: bool) -> 
 		if item.vacant:
 			draw_line(center - Vector2(r + item.minus, 0), center - Vector2(r + 1, 0), color, 1.4, true)
 
+# Printed scenery sits behind every tile; it never covers a door or marks a move.
+func _draw_room_print(unit: float) -> void:
+	var centre := center_of(Vector2i(puzzle.columns >> 1, puzzle.rows >> 1))
+	var line := Color(active, 0.27)
+	match puzzle.level.get("art", ""):
+		"ferris_wheel":
+			var radius := unit * 3.88
+			for side in [-1,1]:
+				var foot := centre + Vector2(side * 2.35, 4.45) * unit
+				draw_line(centre, foot, Color(active, 0.38), maxf(1.4, unit * 0.045), true)
+				draw_line(foot - Vector2(unit*0.32,0), foot + Vector2(unit*0.32,0), line, 2, true)
+			draw_arc(centre, radius, 0, TAU, 128, line, maxf(1.3, unit * 0.036), true)
+			draw_arc(centre, radius - unit * 0.18, 0, TAU, 128, Color(active, 0.14), 1, true)
+			for n in 8:
+				var tip := centre + Vector2.from_angle(n * TAU / 8) * radius
+				draw_line(centre, tip, Color(active, 0.17), maxf(1, unit*0.024), true)
+				var cabin := Rect2(tip + Vector2(-0.21,0.18)*unit, Vector2(0.42,0.26)*unit)
+				draw_line(tip, tip + Vector2.DOWN * unit * 0.18, line, 1, true)
+				draw_rect(cabin, floor_color)
+				draw_rect(cabin, line, false, 1.2, true)
+		"rose_window":
+			for n in 4:
+				var dir := Vector2.from_angle(n * TAU / 4)
+				var normal := dir.orthogonal()
+				var pane := PackedVector2Array()
+				for j in 64:
+					var theta := TAU*j/64.0
+					var axial := (1.0 - cos(theta))*0.5
+					var width := sin(theta) * (0.62 + axial * 0.55)
+					pane.append(centre + (dir * (0.75 + axial * 4.25) + normal * width) * unit)
+				draw_colored_polygon(pane, Color(Color("9e82bb") if n%2 == 0 else Color("72aaaa"), 0.22))
+				pane.append(pane[0])
+				draw_polyline(pane, Color(active,0.30), 1.2, true)
+
 func _draw() -> void:
 	if puzzle == null or font == null:
 		return
@@ -233,6 +267,7 @@ func _draw() -> void:
 	var inspected_portal: Vector2i = hover if hover in puzzle.portals else selected_portal
 	var inspected_gate := gate_at(get_local_mouse_position()) if hover != VOID_CELL else -1
 	if inspected_gate < 0: inspected_gate = selected_gate
+	if puzzle.level.has("art"): _draw_room_print(unit)
 	if puzzle.lava_groups > 0: _draw_lava_cycle()
 	for cell in puzzle.floor_cells:
 		var rect := Rect2(center_of(cell) - Vector2.ONE * (unit - gap) * 0.5, Vector2.ONE * (unit - gap))

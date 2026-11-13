@@ -16,7 +16,9 @@ func _run() -> void:
 	ui.store.data.room_titles = 0
 	root.add_child(ui)
 	await settle()
-	var entry_rooms := [0, 4, 6, 10, 14, 17, 20, 21, 25, 26, 28]
+	var entry_rooms: Array[int] = []
+	for id in ["01","30","05","07","11","15","32","21","22","26","27","29","31"]:
+		entry_rooms.append(ui.room_index(id))
 	for i in ui.levels.size():
 		ui.open_level(i, false, false)
 		await settle()
@@ -96,7 +98,7 @@ func _run() -> void:
 	verify(ui.session == live and ui.session.snapshot() == snapshot, "Closing after rotation preserves the live room")
 	ui.undo_move()
 	verify(ui.session.tick() == 0 and ui.session.echoes.size() == 1, "Undo still works after guide")
-	var old_room: Dictionary = ui.campaign_levels[17].duplicate(true)
+	var old_room: Dictionary = ui.campaign_levels[ui.room_index("18")].duplicate(true)
 	old_room.id = "X01"
 	old_room.chapter = "Extra"
 	var old_puzzle = ui.Puzzle.new(old_room)
@@ -113,7 +115,7 @@ func _run() -> void:
 	verify(ui.store.data.completed.has("19") and not ui.store.data.extra_completed.has("X02"), "Old Extra completion migrates to Wonderland")
 	verify(ui.store.data.session == JSON.parse_string(JSON.stringify(campaign)) and ui.store.data.extra_sessions.has("X01"), "Migration preserves the current campaign and unopened draft")
 	ui.show_rooms("Wonderland")
-	ui.open_level(17, true, false)
+	ui.open_level(ui.room_index("18"), true, false)
 	verify(ui.session.level.id == "18" and ui.session.tick() == 2 and ui.session.player() == old_puzzle.player(), "Wonderland resumes the old Extra draft")
 	verify(not ui.store.data.extra_sessions.has("X01") and ui.store.data.session.level_id == "18", "Opening the migrated room stores its new identity")
 	verify(ui.session.cancel_edit() and ui.session.echoes.size() == 1 and ui.session.tick() == 1, "A migrated edit can still restore the previous plan")

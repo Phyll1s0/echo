@@ -101,6 +101,18 @@ const PAGES := {
 			["R", "Both jumps and the current cost one beat."],
 			["L", "You stop on the first ordinary landing tile."]]
 	}],
+	"Looking Glass": [{
+		"title": "Mirror Routes",
+		"body": "An echo holds one wing while you climb the other. Look for the plate that opens the door across the mirror.",
+		"rows": ["##X", "A#.", ".#.", ".S."],
+		"gates": [{"a": [2, 1], "b": [2, 0], "requires": ["A"]}],
+		"recordings": ["LUU"],
+		"steps": [["", "An echo will climb the left wing. Take the right."],
+			["R", "Each of you takes a different wing."],
+			["U", "Climb in step with your reflection."],
+			["U", "The echo reaches A. Your door opens."],
+			["U", "Cross before the reflection fades."]]
+	}],
 	"Nocturne": [{
 		"title": "Leave a Space",
 		"body": "A gate marked −A needs A empty before you move. An echo can step away or fade to open it.\n−L needs a completely empty lens; even one self keeps it shut.",
