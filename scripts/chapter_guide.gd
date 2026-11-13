@@ -87,9 +87,9 @@ const PAGES := {
 			["R", "Step away from the exit ring normally."]]
 	}, {
 		"title": "Currents",
-		"body": "Double arrows carry you along until an ordinary tile. You cannot stop or steer in the middle.\nThe entire ride is one beat. A blocked gate or unsafe tile cancels the whole move.",
+		"body": "Arrows carry you along until an ordinary tile. You cannot stop or steer in the middle.\nThe entire ride is one beat. A blocked gate or unsafe tile cancels the whole move.",
 		"rows": ["S.>>>.X"], "gates": [],
-		"steps": [["", "Approach the double arrows."], ["R", "This ordinary step takes one beat."],
+		"steps": [["", "Approach the arrows."], ["R", "This ordinary step takes one beat."],
 			["R", "The whole current takes one beat, too."],
 			["R", "Your echoes advance once during a ride."]]
 	}, {

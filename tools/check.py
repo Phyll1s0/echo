@@ -35,4 +35,5 @@ if args.visual:
 run(ui_args, "0 failures.")
 run([godot, "--headless", "--path", ".", "--script", "tests/test_guides.gd"], "0 failures.")
 run([godot, "--headless", "--path", ".", "--script", "tests/test_chapters.gd"], "0 failures.")
+run([godot, "--headless", "--path", ".", "--script", "tests/test_composition.gd"], "0 failures.")
 print("All ECHO checks passed.")

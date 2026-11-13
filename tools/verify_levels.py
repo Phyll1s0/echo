@@ -263,7 +263,7 @@ class Room:
         assert shortest is not None and shortest <= len(self.level["final"])
         if len(records) == 2:
             assert self.one_echo_solution() is None, "This room must require two recordings"
-        if len(records) == 2 and self.level["id"] not in ["X04", "21", "24"] and not (self.portals or self.currents):
+        if len(records) == 2 and self.level["id"] not in ["X04", "21", "24", "30"] and not (self.portals or self.currents):
             entrances = [n for n in self.floor if abs(n[0]-self.goal[0])+abs(n[1]-self.goal[1]) == 1]
             assert len(entrances) == 1
             pre = entrances[0]
@@ -428,6 +428,12 @@ if __name__ == "__main__":
         tapes = []
         for route in plan["recordings"]:
             tapes.append(room.replay(route, tapes))
+        assert room.replay(plan["final"], tapes)[-1] == room.goal
+    for plan in json.loads((ROOT / "tests/composition_routes.json").read_text()):
+        room = Room(levels[int(plan["id"]) - 1])
+        tapes = []
+        for letters in plan["recordings"]:
+            tapes.append(room.replay(letters, tapes))
         assert room.replay(plan["final"], tapes)[-1] == room.goal
     extras = json.loads((ROOT / "data/extra.json").read_text())
     assert [r["id"] for r in extras] == ["X04", "X05"]

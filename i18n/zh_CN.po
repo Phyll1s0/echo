@@ -950,11 +950,11 @@ msgstr "移动一次，穿过两端。现在是第 1 拍。"
 msgid "Step away from the exit ring normally."
 msgstr "下一步可以正常走出出口环。"
 
-msgid "Double arrows carry you along until an ordinary tile. You cannot stop or steer in the middle.\nThe entire ride is one beat. A blocked gate or unsafe tile cancels the whole move."
-msgstr "双箭头会一直带你前进，直到普通格。途中不能停下或转向。\n整段只算一拍。途中有关闭的门或危险格，这一步就会取消。"
+msgid "Arrows carry you along until an ordinary tile. You cannot stop or steer in the middle.\nThe entire ride is one beat. A blocked gate or unsafe tile cancels the whole move."
+msgstr "箭头会一直带你前进，直到普通格。途中不能停下或转向。\n整段只算一拍。途中有关闭的门或危险格，这一步就会取消。"
 
-msgid "Approach the double arrows."
-msgstr "先靠近双箭头。"
+msgid "Approach the arrows."
+msgstr "先靠近箭头。"
 
 msgid "This ordinary step takes one beat."
 msgstr "普通的一步占一拍。"
@@ -995,8 +995,8 @@ msgstr "同编号的断环相连。走入一端，这一拍就从另一端走出
 msgid "Use the portal to record a visit to A. Your next self can take the lower path."
 msgstr "通过传送门录下前往 A 的路线。下一轮的你可以走下方的路。"
 
-msgid "The double arrows carry you to the first ordinary tile. The whole ride costs one beat."
-msgstr "双箭头会把你带到第一个普通格。整段路只占一拍。"
+msgid "The arrows carry you to the first ordinary tile. The whole ride costs one beat."
+msgstr "箭头会把你带到第一个普通格。整段路只占一拍。"
 
 msgid "A is only two steps away. Let your echo handle it while you use the express lane."
 msgstr "A 离起点只有两步。让回声负责 A，你来走疾行道。"
@@ -1037,5 +1037,35 @@ msgstr "每拍选择一个方向。点击“留下回声”录制路线；“撤
 msgid "Choose a direction each beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."
 msgstr "每拍选择一个方向。Enter 留下回声，Z 撤销一拍，R 重开关卡并清除所有回声。"
 
-msgid "Matching portal rings connect distant tiles. Double arrows carry you to an ordinary tile. A whole chain is one beat; if any part is blocked, the move is cancelled. Echoes remember the complete route."
-msgstr "同编号的传送环连接远处的格子，双箭头会把你带到普通格。整条连锁只算一拍；任何一处受阻，整步取消。回声会记住完整路线。"
+msgid "Matching portal rings connect distant tiles. Arrows carry you to an ordinary tile. A whole chain is one beat; if any part is blocked, the move is cancelled. Echoes remember the complete route."
+msgstr "同编号的传送环连接远处的格子，箭头会把你带到普通格。整条连锁只算一拍；任何一处受阻，整步取消。回声会记住完整路线。"
+
+msgid "Cloister"
+msgstr "回廊"
+
+msgid "Kaleidoscope"
+msgstr "万花镜"
+
+msgid "Two mirrored courtyards. Give your echoes the two outer posts."
+msgstr "两座相映的庭院。让回声守住两端。"
+
+msgid "A and B open every approach to the exit. Choose a route through either courtyard."
+msgstr "A 和 B 同时占用时，出口的三扇门都会打开。可以选择任一庭院的路线。"
+
+msgid "A short detour lets both recordings arrive before you cross."
+msgstr "绕行一小段，让两条回声先到，再穿过出口。"
+
+msgid "Record LLLL, then RRRR. Finally walk UDUUU."
+msgstr "先录制 LLLL，再录制 RRRR，最后走 UDUUU。"
+
+msgid "A clockwise frame, two folded rings, and an exit at the centre."
+msgstr "顺时针的外框，两条折叠的环路，出口就在正中。"
+
+msgid "A opens the east approach. B opens the west. Either plan can finish this room."
+msgstr "A 打开东侧入口，B 打开西侧入口。两种方案都可以通关。"
+
+msgid "Try both the flowing outer frame and the quiet inner ring. Their travel times are different."
+msgstr "试试疾行的外框和安静的内环，它们需要的拍数不同。"
+
+msgid "Record LUURDD. Finally walk LURRRR."
+msgstr "先录制 LUURDD，最后走 LURRRR。"

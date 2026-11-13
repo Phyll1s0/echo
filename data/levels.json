@@ -1606,7 +1606,7 @@
     ],
     "final": "RRR",
     "hints": [
-      "The double arrows carry you to the first ordinary tile. The whole ride costs one beat.",
+      "The arrows carry you to the first ordinary tile. The whole ride costs one beat.",
       "A is only two steps away. Let your echo handle it while you use the express lane.",
       "Record UU. Finally walk RRR."
     ],
@@ -1782,5 +1782,156 @@
     "intro": "Link two portal pairs in one move. Enter together, then let one echo go.",
     "guide": true,
     "guide_page": 2
+  },
+  {
+    "id": "30",
+    "chapter": "Slipstream",
+    "title": "Cloister",
+    "chapter_entry": true,
+    "max_echoes": 2,
+    "rows": [
+      "....X....",
+      ".###.###.",
+      ".###.###.",
+      "A...S...B",
+      ".###.###.",
+      ".###.###.",
+      "........."
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          0
+        ],
+        "b": [
+          4,
+          0
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          5,
+          0
+        ],
+        "b": [
+          4,
+          0
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          4,
+          1
+        ],
+        "b": [
+          4,
+          0
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      }
+    ],
+    "recordings": [
+      "LLLL",
+      "RRRR"
+    ],
+    "final": "UDUUU",
+    "intro": "Two mirrored courtyards. Give your echoes the two outer posts.",
+    "hints": [
+      "A and B open every approach to the exit. Choose a route through either courtyard.",
+      "A short detour lets both recordings arrive before you cross.",
+      "Record LLLL, then RRRR. Finally walk UDUUU."
+    ]
+  },
+  {
+    "id": "31",
+    "chapter": "Slipstream",
+    "title": "Kaleidoscope",
+    "chapter_entry": true,
+    "max_echoes": 1,
+    "rows": [
+      ".>>>>>>>.",
+      "^###.###v",
+      "^#.....#v",
+      "^#.###.#v",
+      "A...X...B",
+      "^#.###.#v",
+      "^#.....#v",
+      "^###.###v",
+      ".<<<S<<<."
+    ],
+    "portals": [
+      {
+        "id": "I",
+        "a": [
+          2,
+          2
+        ],
+        "b": [
+          6,
+          6
+        ]
+      },
+      {
+        "id": "II",
+        "a": [
+          6,
+          2
+        ],
+        "b": [
+          2,
+          6
+        ]
+      }
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          4
+        ],
+        "b": [
+          4,
+          4
+        ],
+        "requires": [
+          "B"
+        ]
+      },
+      {
+        "a": [
+          5,
+          4
+        ],
+        "b": [
+          4,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "intro": "A clockwise frame, two folded rings, and an exit at the centre.",
+    "hints": [
+      "A opens the east approach. B opens the west. Either plan can finish this room.",
+      "Try both the flowing outer frame and the quiet inner ring. Their travel times are different.",
+      "Record LUURDD. Finally walk LURRRR."
+    ],
+    "recordings": [
+      "LUURDD"
+    ],
+    "final": "LURRRR"
   }
 ]

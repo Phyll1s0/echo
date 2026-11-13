@@ -464,6 +464,7 @@ func _show_game(introduce: bool = false) -> void:
 	playfield.add_child(board)
 	if compact_ui(): board.custom_minimum_size.y = 60
 	board.move_requested.connect(try_move)
+	board.inspection_changed.connect(func(message: String): status_text = message; _refresh())
 	board.motion_finished.connect(_animation_done)
 	message_label = text_label("", 14 if compact_ui() else 18, ink, HORIZONTAL_ALIGNMENT_CENTER)
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1104,7 +1105,7 @@ func show_help() -> void:
 	if screen == "game" and (silence or session.lava_groups > 0 or not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS) or not session.portals.is_empty() or not session.currents.is_empty()):
 		var rules := PackedStringArray(["Choose a direction each beat. Tap Leave an Echo to record your route. Undo takes back a beat; Pause offers hints and Restart Room." if touch_controls else "Choose a direction each beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."])
 		if not session.portals.is_empty() or not session.currents.is_empty():
-			rules.append("Matching portal rings connect distant tiles. Double arrows carry you to an ordinary tile. A whole chain is one beat; if any part is blocked, the move is cancelled. Echoes remember the complete route.")
+			rules.append("Matching portal rings connect distant tiles. Arrows carry you to an ordinary tile. A whole chain is one beat; if any part is blocked, the move is cancelled. Echoes remember the complete route.")
 		if session.lava_groups > 0:
 			rules.append("Lava advances one group per move. Match the dots on tiles to the cycle above the board. The triangle marks the group sinking next; choose a tile that is safe when you land. Invalid moves cost no beat.")
 		if silence:
