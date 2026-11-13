@@ -32,8 +32,8 @@ msgstr "残影"
 msgid "Resonance"
 msgstr "共鸣"
 
-msgid "Phase Shift"
-msgstr "相移"
+msgid "Flux"
+msgstr "流变"
 
 msgid "Penumbra"
 msgstr "半影"
@@ -1070,8 +1070,8 @@ msgstr "试试疾行的外框和安静的内环，它们需要的拍数不同。
 msgid "Record LUURDD. Finally walk LURRRR."
 msgstr "先录制 LUURDD，最后走 LURRRR。"
 
-msgid "Looking Glass"
-msgstr "镜廊"
+msgid "Prism"
+msgstr "棱镜"
 
 msgid "Mirror Routes"
 msgstr "镜像路线"
@@ -1123,3 +1123,48 @@ msgstr "让两道回声走一对等长的镜像路线。你走上方花瓣的左
 
 msgid "Record LULUULLULUURURRDRDR, then RURUURRURUULULLDLDL. Walk LULUUURUUULUUDUDURUR."
 msgstr "录制LULUULLULUURURRDRDR、RURUURRURUULULLDLDL，最后走 LULUUURUUULUUDUDURUR。"
+
+msgid "Sugar Spiral"
+msgstr "棒棒糖"
+
+msgid "The stick splits into two ribbons. The sugar at the centre unwraps when the outer ribbon reaches A."
+msgstr "沿糖棍往上，两道糖纹在这里分开。外圈踩到 A，糖心就打开了。"
+
+msgid "Follow the rim with your recording. You can trace the inner curl yourself."
+msgstr "让回声沿糖果边缘走，你沿着内侧卷纹绕向糖心。"
+
+msgid "Count from the fork. Arrive beside the centre as your echo reaches the top."
+msgstr "从分岔处开始数拍。回声登顶时，你要走到糖心旁边。"
+
+msgid "Record UUUUULLLLUUURURURRR. Walk UUULLULURUURURRDRDLL."
+msgstr "先录制 UUUUULLLLUUURURURRR，最后走 UUULLULURUURURRDRDLL。"
+
+msgid "Afterglow"
+msgstr "余晖"
+
+msgid "Borrow the light of the upper star tip. Enter while it shines and cross the centre when it goes dark."
+msgstr "借一点星尖的光。亮时走进内门，熄灭后穿入星心。"
+
+msgid "The upper tip holds A. Record a walk that ends there."
+msgstr "A 在顶部的星尖。录下一条刚好在那里结束的路线。"
+
+msgid "Take the opposite arm. Enter on the last beat of light; the echo fades as you step inside."
+msgstr "沿另一侧星芒上行。趁最后一拍星光进入内门，这一步落下时回声刚好消散。"
+
+msgid "Record UULULUURURUU. Walk UURURUULULLDDR."
+msgstr "先录制 UULULUURURUU，最后走 UURURUULULLDDR。"
+
+msgid "Cloudbreak"
+msgstr "云隙"
+
+msgid "Two clouds meet across a narrow gap. Send an echo over the high crest and walk the low shelf yourself."
+msgstr "两朵云隔着一道小缝。让回声走高高的云顶，你沿低处的云边走。"
+
+msgid "The plate sits at the tip of the upper cloud. Look for its gate along the low crossing."
+msgstr "踏板就在大云伸出的尖端，它控制着下方云隙处的门。"
+
+msgid "Use the small loop beside the start to line up the two arrivals."
+msgstr "借起点旁边的小圈绕一步，让两边同时抵达。"
+
+msgid "Record URURURRRRDR. Walk URDDRRRRURRRURUR."
+msgstr "先录制 URURURRRRDR，最后走 URDDRRRRURRRURUR。"

@@ -282,6 +282,47 @@
     "also_unlock_after": "04"
   },
   {
+    "id": "36",
+    "title": "Cloudbreak",
+    "chapter": "Resonance",
+    "art": "cloudbreak",
+    "chapter_entry": true,
+    "max_echoes": 1,
+    "rows": [
+      "####..######",
+      "##.....#####",
+      "#..###.A#.X#",
+      "..######....",
+      "S.###.......",
+      "#.....######"
+    ],
+    "gates": [
+      {
+        "a": [
+          7,
+          4
+        ],
+        "b": [
+          8,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "recordings": [
+      "URURURRRRDR"
+    ],
+    "final": "URDDRRRRURRRURUR",
+    "intro": "Two clouds meet across a narrow gap. Send an echo over the high crest and walk the low shelf yourself.",
+    "hints": [
+      "The plate sits at the tip of the upper cloud. Look for its gate along the low crossing.",
+      "Use the small loop beside the start to line up the two arrivals.",
+      "Record URURURRRRDR. Walk URDDRRRRURRRURUR."
+    ]
+  },
+  {
     "id": "06",
     "title": "Interlace",
     "chapter": "Resonance",
@@ -333,12 +374,13 @@
       "LLUUUU",
       "RRUUUU"
     ],
-    "final": "LURUUUU"
+    "final": "LURUUUU",
+    "also_unlock_after": "05"
   },
   {
     "id": "07",
     "title": "Turnabout",
-    "chapter": "Phase Shift",
+    "chapter": "Flux",
     "max_echoes": 1,
     "rows": [
       ".B.A#####",
@@ -400,7 +442,7 @@
   {
     "id": "08",
     "title": "Tidal Shift",
-    "chapter": "Phase Shift",
+    "chapter": "Flux",
     "max_echoes": 1,
     "rows": [
       "*######",
@@ -423,7 +465,7 @@
   {
     "id": "09",
     "title": "Crosscurrent",
-    "chapter": "Phase Shift",
+    "chapter": "Flux",
     "max_echoes": 1,
     "rows": [
       "#X####",
@@ -474,7 +516,7 @@
   {
     "id": "10",
     "title": "Counterpoint",
-    "chapter": "Phase Shift",
+    "chapter": "Flux",
     "max_echoes": 2,
     "rows": [
       "###X#####",
@@ -777,6 +819,143 @@
     "final": "RRRRR"
   },
   {
+    "id": "35",
+    "title": "Afterglow",
+    "chapter": "Nocturne",
+    "art": "afterglow",
+    "chapter_entry": true,
+    "max_echoes": 1,
+    "rows": [
+      "####A####",
+      "####.####",
+      "###...###",
+      "##..#..##",
+      "....X....",
+      "##..#..##",
+      "###...###",
+      "####.####",
+      "####S####"
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          3
+        ],
+        "b": [
+          3,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          3,
+          5
+        ],
+        "b": [
+          3,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          2,
+          4
+        ],
+        "b": [
+          3,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          3,
+          4
+        ],
+        "b": [
+          4,
+          4
+        ],
+        "requires": [],
+        "vacant": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          5,
+          3
+        ],
+        "b": [
+          5,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          5,
+          5
+        ],
+        "b": [
+          5,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          5,
+          4
+        ],
+        "b": [
+          4,
+          4
+        ],
+        "requires": [],
+        "vacant": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          6,
+          4
+        ],
+        "b": [
+          5,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "recordings": [
+      "UULULUURURUU"
+    ],
+    "final": "UURURUULULLDDR",
+    "intro": "Borrow the light of the upper star tip. Enter while it shines and cross the centre when it goes dark.",
+    "hints": [
+      "The upper tip holds A. Record a walk that ends there.",
+      "Take the opposite arm. Enter on the last beat of light; the echo fades as you step inside.",
+      "Record UULULUURURUU. Walk UURURUULULLDDR."
+    ]
+  },
+  {
     "id": "16",
     "title": "Negative Space",
     "chapter": "Nocturne",
@@ -831,7 +1010,8 @@
       "LLUU",
       "RRUUDU"
     ],
-    "final": "LRUUUUU"
+    "final": "LRUUUUU",
+    "also_unlock_after": "15"
   },
   {
     "id": "17",
@@ -1000,6 +1180,65 @@
     ]
   },
   {
+    "id": "34",
+    "title": "Sugar Spiral",
+    "chapter": "Wonderland",
+    "art": "sugar_spiral",
+    "chapter_entry": true,
+    "max_echoes": 1,
+    "rows": [
+      "##...A.##",
+      "#..###..#",
+      "..#...#..",
+      ".#..#..#.",
+      ".#.#X..#.",
+      ".....##..",
+      "#..#.#..#",
+      "##...####",
+      "####.####",
+      "####.####",
+      "####S####"
+    ],
+    "gates": [
+      {
+        "a": [
+          5,
+          4
+        ],
+        "b": [
+          4,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          4,
+          5
+        ],
+        "b": [
+          4,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "recordings": [
+      "UUUUULLLLUUURURURRR"
+    ],
+    "final": "UUULLULURUURURRDRDLL",
+    "intro": "The stick splits into two ribbons. The sugar at the centre unwraps when the outer ribbon reaches A.",
+    "hints": [
+      "Follow the rim with your recording. You can trace the inner curl yourself.",
+      "Count from the fork. Arrive beside the centre as your echo reaches the top.",
+      "Record UUUUULLLLUUURURURRR. Walk UUULLULURUURURRDRDLL."
+    ]
+  },
+  {
     "id": "21",
     "chapter": "Wonderland",
     "title": "Carousel",
@@ -1155,78 +1394,6 @@
       "1: ↑2 ←2 →2 ←2 → ← ↑2   /   Exit: ↑2 ←2 →4 ↑2 →2 ↓"
     ],
     "legacy_id": "X01",
-    "chapter_entry": true
-  },
-  {
-    "id": "19",
-    "title": "Understudy",
-    "chapter": "Wonderland",
-    "max_echoes": 2,
-    "rows": [
-      "#######X",
-      "###b.B#a",
-      "###a###.",
-      "#A*@###a",
-      "###.###.",
-      "###S...b"
-    ],
-    "gates": [
-      {
-        "a": [
-          3,
-          3
-        ],
-        "b": [
-          3,
-          2
-        ],
-        "requires": [
-          "@"
-        ]
-      },
-      {
-        "a": [
-          7,
-          3
-        ],
-        "b": [
-          7,
-          2
-        ],
-        "requires": [
-          "A",
-          "B"
-        ]
-      },
-      {
-        "a": [
-          7,
-          1
-        ],
-        "b": [
-          7,
-          0
-        ],
-        "requires": [
-          "B"
-        ],
-        "vacant": [
-          "A"
-        ]
-      }
-    ],
-    "recordings": [
-      "UULLRL",
-      "UUUURRLR"
-    ],
-    "final": "RRRRUUUUU",
-    "intro": "Someone must reach B in a recording. Start by working out who could let them through the lens gate.",
-    "hints": [
-      "During the second recording, meet the first echo on L. As you enter the raised deck, that echo can change the bank for the next step.",
-      "The exit passage needs two visits to the switch, then quiet. Let the first echo end on A while the second is still able to return to B.",
-      "1: ↑2 ←2 → ←   /   2: ↑4 →2 ← →   /   Exit: →4 ↑5"
-    ],
-    "legacy_id": "X02",
     "chapter_entry": true
   },
   {
@@ -1844,7 +2011,7 @@
   },
   {
     "id": "31",
-    "chapter": "Looking Glass",
+    "chapter": "Prism",
     "title": "Kaleidoscope",
     "chapter_entry": true,
     "max_echoes": 1,
@@ -1924,7 +2091,7 @@
   },
   {
     "id": "33",
-    "chapter": "Looking Glass",
+    "chapter": "Prism",
     "title": "Rose Window",
     "art": "rose_window",
     "chapter_entry": true,
@@ -2011,9 +2178,81 @@
     ]
   },
   {
+    "id": "19",
+    "title": "Understudy",
+    "chapter": "Prism",
+    "max_echoes": 2,
+    "rows": [
+      "#######X",
+      "###b.B#a",
+      "###a###.",
+      "#A*@###a",
+      "###.###.",
+      "###S...b"
+    ],
+    "gates": [
+      {
+        "a": [
+          3,
+          3
+        ],
+        "b": [
+          3,
+          2
+        ],
+        "requires": [
+          "@"
+        ]
+      },
+      {
+        "a": [
+          7,
+          3
+        ],
+        "b": [
+          7,
+          2
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          7,
+          1
+        ],
+        "b": [
+          7,
+          0
+        ],
+        "requires": [
+          "B"
+        ],
+        "vacant": [
+          "A"
+        ]
+      }
+    ],
+    "recordings": [
+      "UULLRL",
+      "UUUURRLR"
+    ],
+    "final": "RRRRUUUUU",
+    "intro": "Someone must reach B in a recording. Start by working out who could let them through the lens gate.",
+    "hints": [
+      "During the second recording, meet the first echo on L. As you enter the raised deck, that echo can change the bank for the next step.",
+      "The exit passage needs two visits to the switch, then quiet. Let the first echo end on A while the second is still able to return to B.",
+      "1: ↑2 ←2 → ←   /   2: ↑4 →2 ← →   /   Exit: →4 ↑5"
+    ],
+    "legacy_id": "X02",
+    "chapter_entry": true
+  },
+  {
     "id": "20",
     "title": "Triptych",
-    "chapter": "Looking Glass",
+    "chapter": "Prism",
     "max_echoes": 3,
     "rows": [
       ".a.@.a.###",

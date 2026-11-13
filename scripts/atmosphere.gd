@@ -4,13 +4,13 @@ extends Control
 const WORLDS := {
 	"Afterimage": {"sky": Color("f2f6ef"), "far": Color("dce7d8"), "near": Color("c9dac6"), "ink": Color("617f63"), "tile": Color("e0eadb"), "grid": Color("6f866f"), "light": Color("335f40")},
 	"Resonance": {"sky": Color("f0f5f8"), "far": Color("d8e6ee"), "near": Color("c1d7e3"), "ink": Color("567d92"), "tile": Color("deebf2"), "grid": Color("6b8697"), "light": Color("2d607a")},
-	"Phase Shift": {"sky": Color("faf5eb"), "far": Color("ecdfc5"), "near": Color("dfccaa"), "ink": Color("92764b"), "tile": Color("efe2c9"), "grid": Color("96805b"), "light": Color("7d572e")},
+	"Flux": {"sky": Color("faf5eb"), "far": Color("ecdfc5"), "near": Color("dfccaa"), "ink": Color("92764b"), "tile": Color("efe2c9"), "grid": Color("96805b"), "light": Color("7d572e")},
 	"Penumbra": {"sky": Color("f5f2f9"), "far": Color("e4ddef"), "near": Color("d5c9e2"), "ink": Color("806c9d"), "tile": Color("e8dff1"), "grid": Color("877599"), "light": Color("63477d")},
 	"Extra": {"sky": Color("f1f0ec"), "far": Color("dfded7"), "near": Color("d4d2c9"), "ink": Color("646864"), "tile": Color("e4e3da"), "grid": Color("7e8176"), "light": Color("595940")},
 	"Wonderland": {"sky": Color("fff4f3"), "far": Color("f5dce0"), "near": Color("ecc3cd"), "ink": Color("b66b80"), "tile": Color("f2d5dc"), "grid": Color("a5687b"), "light": Color("923c56")},
 	"Inferno": {"dark": true, "sky": Color("180d12"), "far": Color("2b141b"), "near": Color("402020"), "ink": Color("ca725c"), "tile": Color("321e24"), "grid": Color("ac796d"), "light": Color("ffb07b")},
 	"Slipstream": {"sky": Color("eff6f4"), "far": Color("d6e6e2"), "near": Color("bdd7d1"), "ink": Color("527d78"), "tile": Color("dce9e5"), "grid": Color("69847e"), "light": Color("28635e")},
-	"Looking Glass": {"sky": Color("f5f3fa"), "far": Color("e1e1f2"), "near": Color("d5d6ec"), "ink": Color("78719e"), "tile": Color("dfdef0"), "grid": Color("827b9e"), "light": Color("57497f")},
+	"Prism": {"sky": Color("f5f3fa"), "far": Color("e1e1f2"), "near": Color("d5d6ec"), "ink": Color("78719e"), "tile": Color("dfdef0"), "grid": Color("827b9e"), "light": Color("57497f")},
 	"Nocturne": {"dark": true, "sky": Color("08090a"), "far": Color("111315"), "near": Color("171a1c"), "ink": Color("899295"), "tile": Color("171a1c"), "grid": Color("748083"), "light": Color("e3e8e8")}
 }
 
@@ -43,9 +43,9 @@ func _draw() -> void:
 		match chapter:
 			"Afterimage": _forest(colors)
 			"Resonance": _ocean(colors)
-			"Phase Shift": _desert(colors)
+			"Flux": _desert(colors)
 			"Penumbra": _eclipse(colors)
-			"Looking Glass": _glass(colors)
+			"Prism": _glass(colors)
 			"Nocturne": _nocturne(colors)
 			"Wonderland": _wonderland(colors)
 			"Inferno": _inferno(colors)

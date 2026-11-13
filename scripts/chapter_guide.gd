@@ -30,7 +30,7 @@ const PAGES := {
 			["R", "A and B are occupied together. The gate opens."],
 			["D", "Cross on your next move."]]
 	}],
-	"Phase Shift": [{
+	"Flux": [{
 		"title": "Arrow Gates",
 		"body": "Cross an arrow gate in its marked direction. It reverses after the crossing.\nEchoes follow their recorded routes and can reverse arrows, too.",
 		"rows": ["S..X"], "gates": [], "turnstiles": [[[1, 0], [2, 0]]],
@@ -101,7 +101,7 @@ const PAGES := {
 			["R", "Both jumps and the current cost one beat."],
 			["L", "You stop on the first ordinary landing tile."]]
 	}],
-	"Looking Glass": [{
+	"Prism": [{
 		"title": "Mirror Routes",
 		"body": "An echo holds one wing while you climb the other. Look for the plate that opens the door across the mirror.",
 		"rows": ["##X", "A#.", ".#.", ".S."],

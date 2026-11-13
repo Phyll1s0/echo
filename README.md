@@ -4,13 +4,17 @@ Every step you take moves your past selves, too.
 
 **[Play in your browser](https://phyll1s0.com/echo/)** — on desktop or phone.
 
-ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through thirty-three rooms across nine chapters, plus two optional Extra challenges, Switchyard and Paradox. There is no time pressure: the world advances only when you move.
+ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through thirty-six rooms across nine chapters, plus two optional Extra challenges, Switchyard and Paradox. There is no time pressure: the world advances only when you move.
 
 Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. Chapter VI, **Wonderland**, adds coral-pink paper, a playable Ferris wheel with a switch at the axle, and a carousel controlled from another branch. Chapter VII, **Inferno**, pairs charcoal and ember orange with four groups of sinking lava tiles. The interface defaults to English, with Simplified Chinese available in Settings.
 
-Chapter VIII, **Slipstream**, uses cool jade paper, broken orbits, and flowing lines. Paired portals and arrow currents change how far one beat can carry you. Start with [**27 Fold**](https://phyll1s0.com/echo/?number=27), or try the combined mechanisms in **29 Crossfade** and **30 Event Horizon**. These four rooms are directly accessible.
+Chapter VIII, **Slipstream**, uses cool jade paper, broken orbits, and flowing lines. Paired portals and arrow currents change how far one beat can carry you. Start with [**29 Fold**](https://phyll1s0.com/echo/?room=26), or try the combined mechanisms in **31 Crossfade** and **32 Event Horizon**. These four rooms are directly accessible.
 
-Each chapter has three or four rooms. [**05 Cloister**](https://phyll1s0.com/echo/?number=05) introduces the two-echo harmonies of Resonance. In Wonderland, [**19 Ferris Wheel**](https://phyll1s0.com/echo/?number=19) sends one rider through the axle and the other up the rim. **Chapter IX · Looking Glass** opens with [**31 Kaleidoscope**](https://phyll1s0.com/echo/?number=31). In [**32 Rose Window**](https://phyll1s0.com/echo/?number=32), two echoes separate into the side petals, then meet at the central lens. **33 Triptych** closes the gallery.
+Each chapter has four rooms. [**05 Cloister**](https://phyll1s0.com/echo/?room=30) introduces the two-echo harmonies of Resonance. In Wonderland, [**21 Ferris Wheel**](https://phyll1s0.com/echo/?room=32) sends one rider through the axle and the other up the rim. **Chapter IX · Prism** opens with [**33 Kaleidoscope**](https://phyll1s0.com/echo/?room=31). In [**34 Rose Window**](https://phyll1s0.com/echo/?room=33), two echoes separate into the side petals, then meet at the central lens. **36 Triptych** closes the gallery.
+
+[**07 Cloudbreak**](https://phyll1s0.com/echo/?room=36) follows two cloud banks. [**18 Afterglow**](https://phyll1s0.com/echo/?room=35) draws a star around two doors that need opposite moments. [**22 Sugar Spiral**](https://phyll1s0.com/echo/?room=34) curls two candy ribbons around a shared centre.
+
+![Cloudbreak, Afterglow and Sugar Spiral as played in their chapter colours](docs/images/cloud-star-candy.png)
 
 ![The playable pink Ferris Wheel and four-petal Rose Window](docs/images/wheel-and-window.png)
 
@@ -101,7 +105,7 @@ Click a distant plate or hover over it to highlight its linked gates. Matching m
 
 ## Chapters and rooms
 
-In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to browse. The reel follows your finger directly. Long swipes travel across chapters; a quick release adds a short glide. The mouse wheel and trackpad accumulate travel and snap when you stop. The centred chapter stays large while its neighbours fade into the surrounding space. Tap a chapter or press Enter to see its rooms; returning restores the same selection. **08 Turnabout**, **12 First Contact**, and **16 Hush** are available as direct chapter entries. Subsequent rooms unlock in order. Wonderland and Inferno rooms are directly accessible.
+In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to browse. The reel follows your finger directly. Long swipes travel across chapters; a quick release adds a short glide. The mouse wheel and trackpad accumulate travel and snap when you stop. The centred chapter stays large while its neighbours fade into the surrounding space. Tap a chapter or press Enter to see its rooms; returning restores the same selection. **09 Turnabout**, **13 First Contact**, and **17 Hush** are available as direct chapter entries. Subsequent rooms unlock in order. Wonderland and Inferno rooms are directly accessible.
 
 ![The chapter index](docs/images/chapters.png)
 
@@ -113,45 +117,48 @@ In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to brow
 |  | 04 Relay Line | Use one echo to open two gates in sequence |
 | II · Resonance | 05 Cloister | Give two echoes the outer posts and choose a path through four mirrored courtyards |
 |  | 06 Two Voices | Meet two conditions on the same beat |
-|  | 07 Interlace | Let one recording make the next possible, then use both to reach the exit |
-| III · Phase Shift | 08 Turnabout | Cross a reversed arrow gate to activate two plates in order |
-|  | 09 Tidal Shift | Visit a switch twice to support two crossings |
-|  | 10 Crosscurrent | Offset two routes by two beats and share a single device trigger |
-|  | 11 Counterpoint | Alternate bridge banks, then bring both echoes to the exit plates |
-| IV · Penumbra | 12 First Contact | Meet your past self at a lens from the opposite branch |
-|  | 13 Borrowed Light | Split after a meeting: one self takes the bridge while the other reaches the switch |
-|  | 14 Confluence | Occupy separate plates, then converge to open a remote lens gate |
-|  | 15 Totality | Record crossings on raised bridges, then replay them across folded bridges to reach separate plates |
-| V · Nocturne | 16 Hush | Open one gate with an echo, then let it fade before an empty-plate gate |
-|  | 17 Negative Space | Activate two plates together, then end one recording while the other returns |
-|  | 18 Coda | Separate, meet, and disappear to satisfy three gates in sequence |
-| VI · Wonderland | 19 Ferris Wheel | Send one rider to the axle and opposite cabin while the other climbs the rim |
-|  | 20 Carousel | Enter a ring, then let an outside echo reverse its exit door |
-|  | 21 Escapement | Combine a lens meeting, arrow reversal, and bridge swaps |
-|  | 22 Understudy | Let one echo fade while the other returns to a plate |
-| VII · Inferno | 23 Cinder Walk | Read the next sinking group and choose between crossings |
-|  | 24 Afterburn | Meet on a lens, then time a safe echo return to A |
-|  | 25 Furnace | Coordinate a remote switch, four exit doors, two plates, and the lava cycle |
-|  | 26 Damnation | Occupy both plates to enter, then let A fade while B returns |
-| VIII · Slipstream | 27 Fold | Cross between islands in one beat, then let an echo hold the distant plate |
-|  | 28 Short Circuit | Compress a long crossing into one beat to match a brief plate visit |
-|  | 29 Crossfade | Meet at a portal lens, raise b for the second recording, then restore a for the exit |
-|  | 30 Event Horizon | Chain two portal pairs, record a causal visit to B, then end A while B returns |
-| IX · Looking Glass | 31 Kaleidoscope | Read the clockwise frame, fold across the inner ring, and choose either approach to the central exit |
-|  | 32 Rose Window | Split the reflections between two petals, then reunite them on the central lens |
-|  | 33 Triptych | Coordinate three recordings across the upper gallery and a remote switch |
+|  | 07 Cloudbreak | Synchronise the high crest and the low cloud shelf |
+|  | 08 Interlace | Let one recording make the next possible, then use both to reach the exit |
+| III · Flux | 09 Turnabout | Cross a reversed arrow gate to activate two plates in order |
+|  | 10 Tidal Shift | Visit a switch twice to support two crossings |
+|  | 11 Crosscurrent | Offset two routes by two beats and share a single device trigger |
+|  | 12 Counterpoint | Alternate bridge banks, then bring both echoes to the exit plates |
+| IV · Penumbra | 13 First Contact | Meet your past self at a lens from the opposite branch |
+|  | 14 Borrowed Light | Split after a meeting: one self takes the bridge while the other reaches the switch |
+|  | 15 Confluence | Occupy separate plates, then converge to open a remote lens gate |
+|  | 16 Totality | Record crossings on raised bridges, then replay them across folded bridges to reach separate plates |
+| V · Nocturne | 17 Hush | Open one gate with an echo, then let it fade before an empty-plate gate |
+|  | 18 Afterglow | Pass the first door by starlight and the last one after the echo fades |
+|  | 19 Negative Space | Activate two plates together, then end one recording while the other returns |
+|  | 20 Coda | Separate, meet, and disappear to satisfy three gates in sequence |
+| VI · Wonderland | 21 Ferris Wheel | Send one rider to the axle and opposite cabin while the other climbs the rim |
+|  | 22 Sugar Spiral | Take two curling ribbons from the stick to the candy centre |
+|  | 23 Carousel | Enter a ring, then let an outside echo reverse its exit door |
+|  | 24 Escapement | Combine a lens meeting, arrow reversal, and bridge swaps |
+| VII · Inferno | 25 Cinder Walk | Read the next sinking group and choose between crossings |
+|  | 26 Afterburn | Meet on a lens, then time a safe echo return to A |
+|  | 27 Furnace | Coordinate a remote switch, four exit doors, two plates, and the lava cycle |
+|  | 28 Damnation | Occupy both plates to enter, then let A fade while B returns |
+| VIII · Slipstream | 29 Fold | Cross between islands in one beat, then let an echo hold the distant plate |
+|  | 30 Short Circuit | Compress a long crossing into one beat to match a brief plate visit |
+|  | 31 Crossfade | Meet at a portal lens, raise b for the second recording, then restore a for the exit |
+|  | 32 Event Horizon | Chain two portal pairs, record a causal visit to B, then end A while B returns |
+| IX · Prism | 33 Kaleidoscope | Read the clockwise frame, fold across the inner ring, and choose either approach to the central exit |
+|  | 34 Rose Window | Split the reflections between two petals, then reunite them on the central lens |
+|  | 35 Understudy | Let one echo fade while the other returns to a plate |
+|  | 36 Triptych | Coordinate three recordings across the upper gallery and a remote switch |
 
 ![Chapter V · Nocturne](docs/images/room-17.png)
 
-The former Extra rooms X01–X03 are now **21 Escapement**, **22 Understudy**, and **33 Triptych**. Triptych now closes Looking Glass. Existing completion records transfer automatically, and opening a moved room resumes its old unfinished draft. [**20 Carousel**](https://phyll1s0.com/echo/?number=20) adds a remote direction switch and two routes around its central ring. An echo must change the doors after you enter, then both recordings must reach the exit plates.
+The former Extra rooms X01–X03 are now **24 Escapement**, **35 Understudy**, and **36 Triptych**. Triptych now closes Prism. Existing completion records transfer automatically, and opening a moved room resumes its old unfinished draft. [**23 Carousel**](https://phyll1s0.com/echo/?room=21) adds a remote direction switch and two routes around its central ring. An echo must change the doors after you enter, then both recordings must reach the exit plates.
 
-[**Chapter VII · Inferno**](https://phyll1s0.com/echo/?number=23) adds four standalone entries. Furnace has four playable approaches to its central exit. Damnation offers a shorter upper crossing and a longer lower ring, with different recording plans. Its first room includes an animated lava guide.
+[**Chapter VII · Inferno**](https://phyll1s0.com/echo/?room=22) adds four standalone entries. Furnace has four playable approaches to its central exit. Damnation offers a shorter upper crossing and a longer lower ring, with different recording plans. Its first room includes an animated lava guide.
 
 Open **Chapters → Extra** for [**X04 Switchyard**](https://phyll1s0.com/echo/?room=X04) and [**X05 Paradox**](https://phyll1s0.com/echo/?room=X05). In Switchyard, two recordings can support three distinct approaches to a central exit, each requiring a different pair of plates. Both challenges are available immediately and remember their own unfinished routes. Home → Continue resumes your campaign.
 
 **Paradox** is a harder follow-up built around three causal recordings. A opens the route to B; A and B together open the C chamber; two older echoes meet on L while the third visits C to admit the live player. Changing the bridge bank lets the recordings cross folded gallery bridges. Three exit doors each need two plates occupied and the remaining plate empty. Three verified plans use different recording endings, and each plan enables only its own exit, even with unlimited extra moves.
 
-Campaign numbers follow play order. Use `?number=19` to open the displayed room 19. Original `?room=` links and saves still use permanent IDs. The catalog order sets the chapter menus and the next room. Room data and example solutions live in `data/levels.json` and `data/extra.json`. These routes verify that each room is solvable; players can find their own solutions. To launch a specific room during development, use `godot --path . -- --number=6`.
+Campaign numbers follow play order. Share permanent room links from this guide. Original `?room=` links and saves still use permanent IDs. The catalog order sets the chapter menus and the next room. Room data and example solutions live in `data/levels.json` and `data/extra.json`. These routes verify that each room is solvable; players can find their own solutions. To launch a specific room during development, use `godot --path . -- --number=6`.
 
 In map data, `*` marks switches belonging to the shared bridge bank. Tiles `a` and `b` represent initially raised and folded bridges. Each coordinate pair in `turnstiles` defines an arrow gate's initial direction.
 
@@ -180,11 +187,11 @@ node tools/check_transport_web.cjs
 
 Set `BROWSER_EXECUTABLE` if using a locally installed browser, and `ECHO_URL` to test a deployed build. `--touch` enables the pad in the native game for layout inspection.
 
-The browser check completes the four Slipstream rooms and the composed rooms (05, 19, 31 and 32) with touch input and the last selected room with keyboard input, including undo and reload after a move. Rule tests also check blocked intermediate edges, lava, folded bridges, forced loops, portal animations, and device events along recorded currents. Composition checks cover condition placement across window sizes, inspection without changing a recording, and alternate routes through Kaleidoscope, Ferris Wheel, and Rose Window.
+The browser check completes the four Slipstream rooms and the composed rooms (05, 21, 33 and 34) with touch input and the last selected room with keyboard input, including undo and reload after a move. Rule tests also check blocked intermediate edges, lava, folded bridges, forced loops, portal animations, and device events along recorded currents. Composition checks cover condition placement across window sizes, inspection without changing a recording, and alternate routes through Kaleidoscope, Ferris Wheel, and Rose Window.
 
 English and Chinese interface checks cover saved language preferences, every room's text, minimum window layouts, and undo or cancellation after changing language during an echo edit. Chinese translations live in `i18n/zh_CN.po`; internal room identifiers and saves are language-independent.
 
-For rooms with devices, search states include arrow directions and bridge banks. Rooms 08–10 are checked in separate recording and playback worlds, including searches with either device type frozen. Room 11 checks the three required exit positions and the areas that become inaccessible or trap the first switch user when devices cannot change. Room 15 also checks whether the active bridge bank allows live actors to return from the lens to the plates, establishing why replaying recorded crossings over folded bridges is necessary.
+For rooms with devices, search states include arrow directions and bridge banks. Rooms 09–11 are checked in separate recording and playback worlds, including searches with either device type frozen. Room 12 checks the three required exit positions and the areas that become inaccessible or trap the first switch user when devices cannot change. Room 16 also checks whether the active bridge bank allows live actors to return from the lens to the plates, establishing why replaying recorded crossings over folded bridges is necessary.
 
 ## Audio
 

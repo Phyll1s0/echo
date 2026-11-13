@@ -225,6 +225,26 @@ func _draw_room_print(unit: float) -> void:
 	var centre := center_of(Vector2i(puzzle.columns >> 1, puzzle.rows >> 1))
 	var line := Color(active, 0.27)
 	match puzzle.level.get("art", ""):
+		"sugar_spiral":
+			var candy := center_of(Vector2i(4, 3))
+			var ribbon := PackedVector2Array()
+			for i in 121:
+				var t := i / 120.0
+				var angle := 1.5 + t * TAU * 1.55
+				ribbon.append(candy + Vector2.from_angle(angle) * lerpf(0.24, 4.0, t) * unit)
+			draw_polyline(ribbon, Color(active, 0.17), maxf(2.2, unit * 0.11), true)
+			draw_arc(candy, 3.92 * unit, 0.14, TAU - 0.12, 120, line, 1.4, true)
+		"afterglow":
+			var outline := PackedVector2Array()
+			for n in 8:
+				var radius := (4.28 if n % 2 == 0 else 1.85) * unit
+				outline.append(centre + Vector2.from_angle(n * TAU / 8 - PI/2) * radius)
+			outline.append(outline[0])
+			draw_polyline(outline, Color(active, 0.34), maxf(1.2, unit * 0.027), true)
+		"cloudbreak":
+			for cell in [Vector2i(2,2),Vector2i(4,1),Vector2i(6,2),Vector2i(10,3)]:
+				var crest := center_of(cell)
+				draw_arc(crest, unit * 1.15, PI * 1.04, TAU * 0.98, 40, Color(active,0.22), maxf(1.1, unit*0.03), true)
 		"ferris_wheel":
 			var radius := unit * 3.88
 			for side in [-1,1]:
@@ -278,6 +298,15 @@ func _draw() -> void:
 			_draw_bridge(cell, rect, state)
 			continue
 		var fill := floor_color
+		match puzzle.level.get("art", ""):
+			"sugar_spiral":
+				if cell.y >= 8 or posmod(cell.x - cell.y, 5) <= 1:
+					fill = floor_color.lerp(Color("fff8ed"), 0.70)
+			"cloudbreak":
+				fill = floor_color.lerp(Color.WHITE, 0.28 if cell.y < 4 else 0.12)
+			"afterglow":
+				var glow: float = 0.18 if puzzle.plate_on("A") else 0.045
+				fill = floor_color.lerp(Color("f6dcb5"), glow)
 		var edge := grid_color
 		if cell == hover and puzzle.can_move(cell - player):
 			fill = floor_color.lerp(active, 0.14)
