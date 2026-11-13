@@ -21,6 +21,7 @@ var motion := true
 var move_seconds := 0.13
 var selected_plate := ""
 var selected_switch := VOID_CELL
+var selected_portal := VOID_CELL
 var hover := VOID_CELL
 var previous: Array = []
 var previous_gates: Array = []
@@ -64,7 +65,10 @@ func cancel_animation() -> void:
 	queue_redraw()
 
 func _process(delta: float) -> void:
-	phase = minf(1.0, phase + delta / move_seconds)
+	var stretch := 1.0
+	if not puzzle.draft_steps.is_empty():
+		stretch = minf(2.5, 1.0 + (puzzle.draft_steps.back().path.size() - 2) * 0.3)
+	phase = minf(1.0, phase + delta / (move_seconds * stretch))
 	queue_redraw()
 	if phase >= 1.0:
 		set_process(false)
@@ -108,9 +112,14 @@ func _gui_input(event: InputEvent) -> void:
 		elif cell in puzzle.switches or cell in puzzle.direction_switches:
 			selected_switch = VOID_CELL if selected_switch == cell else cell
 			selected_plate = ""
+		elif cell in puzzle.portals:
+			selected_portal = VOID_CELL if selected_portal == cell else cell
+			selected_plate = ""
+			selected_switch = VOID_CELL
 		else:
 			selected_plate = ""
 			selected_switch = VOID_CELL
+			selected_portal = VOID_CELL
 		queue_redraw()
 		accept_event()
 
@@ -138,6 +147,19 @@ func _draw() -> void:
 			edge = muted
 		draw_rect(rect, fill)
 		draw_rect(rect, edge, false, maxf(1.0, unit * 0.012), true)
+	for cell in puzzle.portals:
+		_draw_portal(cell, unit)
+	for cell in puzzle.currents:
+		_draw_current(center_of(cell), Vector2(puzzle.currents[cell]), unit)
+	var inspected_portal: Vector2i = hover if hover in puzzle.portals else selected_portal
+	if inspected_portal in puzzle.portals:
+		draw_dashed_line(center_of(inspected_portal), center_of(puzzle.portals[inspected_portal]), Color(active, 0.3), 1.2, 4, true, true)
+	if hover != VOID_CELL:
+		var preview: Dictionary = puzzle.resolve_move(hover - player)
+		if preview.reason.is_empty() and preview.path.size() > 2:
+			_draw_transit(preview, Color(active, 0.55))
+			var landing := center_of(preview.path.back())
+			draw_rect(Rect2(landing - Vector2.ONE * unit * 0.43, Vector2.ONE * unit * 0.86), active, false, 2, true)
 	var linked_switch: Vector2i = hover if hover in puzzle.switches or hover in puzzle.direction_switches else selected_switch
 	if linked_switch in puzzle.switches:
 		for cell in puzzle.bridges:
@@ -215,9 +237,8 @@ func _draw() -> void:
 		_draw_turnstile(i, unit, state)
 	if show_routes:
 		for i in puzzle.echoes.size():
-			var route: Array = puzzle.echoes[i]
-			for j in range(1, route.size()):
-				draw_dashed_line(center_of(route[j-1]), center_of(route[j]), Color(muted, path_opacity), 1.3, 5.0, true, true)
+			for step in puzzle.echo_steps[i]:
+				_draw_transit(step, Color(muted, path_opacity))
 	var now: Array = puzzle.actors()
 	var eased := smoothstep(0.0, 1.0, phase)
 	# Draw older actors first, then the solid player on top of overlapping rings.
@@ -227,19 +248,65 @@ func _draw() -> void:
 		if target == null and (old == null or phase >= 1.0):
 			continue
 		var center := center_of(old if target == null else target)
+		var scale_ := 1.0
+		var visibility := 1.0
 		if old != null and target != null:
-			center = center_of(old).lerp(center_of(target), eased)
+			var pose := _actor_pose(n, old, target)
+			center = pose.center
+			scale_ = pose.scale
+			visibility = pose.alpha
 		if n == 0:
-			var radius := unit * 0.125
-			draw_circle(center, radius, player_fill, true, -1, true)
-			draw_arc(center, radius, 0, TAU, 64, piece_edge, maxf(1.6, unit * 0.024), true)
+			var radius := unit * 0.125 * scale_
+			draw_circle(center, radius, Color(player_fill, visibility), true, -1, true)
+			draw_arc(center, radius, 0, TAU, 64, Color(piece_edge, visibility), maxf(1.6, unit * 0.024), true)
 		else:
-			var alpha := 1.0 - eased if target == null else 1.0
-			var radius := unit * (0.18 + (n - 1) * 0.065)
+			var alpha := (1.0 - eased if target == null else 1.0) * visibility
+			var radius := unit * (0.18 + (n - 1) * 0.065) * scale_
 			var width := maxf(2.0, unit * 0.036)
 			# Separate the echo ring from a plate or bridge underneath it.
 			draw_arc(center, radius, 0, TAU, 64, Color(piece_shadow, alpha), width + 2.0, true)
 			draw_arc(center, radius, 0, TAU, 64, Color(piece_edge if n == 1 else second_echo_edge, alpha), width, true)
+
+func _actor_pose(index: int, old: Vector2i, target: Vector2i) -> Dictionary:
+	var result := {"center": center_of(target), "scale": 1.0, "alpha": 1.0}
+	if phase >= 1.0: return result
+	var step: Dictionary = puzzle.actor_step(index)
+	if step.is_empty() or step.path.front() != old or step.path.back() != target:
+		result.center = center_of(old).lerp(center_of(target), smoothstep(0, 1, phase))
+		return result
+	var progress: float = phase * (step.path.size() - 1)
+	var segment := mini(floori(progress), step.path.size() - 2)
+	var fraction := smoothstep(0, 1, progress - segment)
+	if segment + 1 in step.jumps:
+		result.center = center_of(step.path[segment] if fraction < 0.5 else step.path[segment+1])
+		result.alpha = absf(fraction * 2 - 1)
+		result.scale = lerpf(0.2, 1.0, result.alpha)
+	else:
+		result.center = center_of(step.path[segment]).lerp(center_of(step.path[segment+1]), fraction)
+	return result
+
+func _draw_transit(step: Dictionary, color: Color) -> void:
+	for j in range(1, step.path.size()):
+		if j not in step.jumps:
+			draw_dashed_line(center_of(step.path[j-1]), center_of(step.path[j]), color, 1.3, 5.0, true, true)
+
+func _draw_portal(cell: Vector2i, unit: float) -> void:
+	var center := center_of(cell)
+	var r := unit * 0.36
+	var color := active if puzzle.portal_labels[cell] == "I" else muted
+	draw_circle(center, r, Color(color, 0.07), true, -1, true)
+	for side in 2:
+		var begin := side * PI + 0.28
+		draw_arc(center, r, begin, begin + PI * 0.68, 40, color, maxf(1.6, unit * 0.025), true)
+		var tip := center + Vector2.from_angle(begin + PI * 0.68) * r
+		draw_circle(tip, maxf(1.7, unit * 0.025), color, true, -1, true)
+	draw_string(font, center + Vector2(unit * 0.25, unit * 0.35), puzzle.portal_labels[cell], HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(11, roundi(unit * 0.16)), color)
+
+func _draw_current(center: Vector2, direction: Vector2, unit: float) -> void:
+	var normal := direction.orthogonal()
+	for offset in [-0.10, 0.10]:
+		var tip: Vector2 = center + direction * unit * (offset + 0.06)
+		draw_polyline(PackedVector2Array([tip - direction * unit * 0.10 + normal * unit * 0.10, tip, tip - direction * unit * 0.10 - normal * unit * 0.10]), active, maxf(1.7, unit * 0.025), true)
 
 func _draw_lava_cycle() -> void:
 	var count: int = puzzle.lava_groups

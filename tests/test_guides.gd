@@ -16,7 +16,7 @@ func _run() -> void:
 	ui.store.data.room_titles = 0
 	root.add_child(ui)
 	await settle()
-	var entry_rooms := [0, 4, 6, 10, 14, 17, 20, 21]
+	var entry_rooms := [0, 4, 6, 10, 14, 17, 20, 21, 25, 26, 28]
 	for i in ui.levels.size():
 		ui.open_level(i, false, false)
 		await settle()

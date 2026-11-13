@@ -22,7 +22,7 @@ const CHOICES := {
 	"room_titles": ["Off", "1 s", "1.5 s", "2 s"],
 	"path_weight": ["Faint", "Standard", "Bold"]
 }
-const ROMAN := ["I", "II", "III", "IV", "V", "VI", "VII"]
+const ROMAN := ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"]
 const EXTRA := "Extra"
 var chapters: Array[String] = []
 var campaign_levels: Array
@@ -1035,8 +1035,9 @@ func _leave_settings() -> void:
 func _has_chapter_guide() -> bool:
 	return session != null and ChapterGuide.PAGES.has(session.level.chapter) and (session.level.get("guide", false) or level_index == 0 or levels[level_index - 1].chapter != session.level.chapter)
 
-func show_chapter_guide(index: int = 0) -> void:
+func show_chapter_guide(index: int = -1) -> void:
 	if screen != "game" or not _has_chapter_guide(): return
+	if index < 0: index = int(session.level.get("guide_page", 0))
 	guide_page = clampi(index, 0, ChapterGuide.PAGES[session.level.chapter].size() - 1)
 	var info: Dictionary = ChapterGuide.PAGES[session.level.chapter][guide_page]
 	var content := _panel("guide", "", 620)
@@ -1100,8 +1101,10 @@ func _close_chapter_guide() -> void:
 func show_help() -> void:
 	var back: Callable = show_settings
 	var silence: bool = screen == "game" and session.gates.any(func(gate): return not gate.vacant.is_empty())
-	if screen == "game" and (silence or session.lava_groups > 0 or not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS)):
-		var rules := PackedStringArray(["Tap a direction to move one tile per beat. Tap Leave an Echo to record your route. Undo takes back a beat; Pause offers hints and Restart Room." if touch_controls else "Move one tile per beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."])
+	if screen == "game" and (silence or session.lava_groups > 0 or not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS) or not session.portals.is_empty() or not session.currents.is_empty()):
+		var rules := PackedStringArray(["Choose a direction each beat. Tap Leave an Echo to record your route. Undo takes back a beat; Pause offers hints and Restart Room." if touch_controls else "Choose a direction each beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."])
+		if not session.portals.is_empty() or not session.currents.is_empty():
+			rules.append("Matching portal rings connect distant tiles. Double arrows carry you to an ordinary tile. A whole chain is one beat; if any part is blocked, the move is cancelled. Echoes remember the complete route.")
 		if session.lava_groups > 0:
 			rules.append("Lava advances one group per move. Match the dots on tiles to the cycle above the board. The triangle marks the group sinking next; choose a tile that is safe when you land. Invalid moves cost no beat.")
 		if silence:

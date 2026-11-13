@@ -4,9 +4,13 @@ Every step you take moves your past selves, too.
 
 **[Play in your browser](https://phyll1s0.com/echo/)** — on desktop or phone.
 
-ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through twenty-five rooms across seven chapters, plus two optional Extra challenges, Switchyard and Paradox. There is no time pressure: the world advances only when you move.
+ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through twenty-nine rooms across eight chapters, plus two optional Extra challenges, Switchyard and Paradox. There is no time pressure: the world advances only when you move.
 
 Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. Chapter VI, **Wonderland**, adds coral-pink paper, a quiet Ferris wheel, and a carousel controlled from another branch. Chapter VII, **Inferno**, pairs charcoal and ember orange with four groups of sinking lava tiles. The interface defaults to English, with Simplified Chinese available in Settings.
+
+Chapter VIII, **Slipstream**, uses cool jade paper, broken orbits, and flowing lines. Paired portals and arrow currents change how far one beat can carry you. Start with [**26 Fold**](https://phyll1s0.com/echo/?room=26), or try the combined mechanisms in **28 Crossfade** and **29 Event Horizon**. All four new rooms are directly accessible.
+
+![Chapter VIII · Slipstream: portal pairs and currents in Event Horizon](docs/images/room-29.png)
 
 ![The paper-white home screen](docs/images/home.png)
 
@@ -51,7 +55,7 @@ The release is deployed at `/echo/` through the existing [personal-site reposito
 
 | Action | Input |
 | --- | --- |
-| Move one tile | Arrow keys, WASD, the touch direction pad, or an adjacent tile |
+| Choose a movement direction | Arrow keys, WASD, the touch direction pad, or an adjacent tile |
 | Leave an echo | Enter or **Leave an Echo** |
 | Undo one beat | Z, Backspace, or **Undo** |
 | Restart the room, clearing all echoes and the current route | R or Pause → **Restart Room** |
@@ -74,7 +78,7 @@ Click a distant plate or hover over it to highlight its linked gates. Hints prog
 
 ## Rules
 
-- Every successful move goes to an orthogonally adjacent tile and advances one beat. Backtracking is allowed. Waiting, diagonal movement, and walking through walls are not. Invalid input does not advance time.
+- Every successful input starts with an orthogonally adjacent tile and advances one beat. Portals and currents can extend that move. Backtracking is allowed. Waiting, diagonal movement, and walking through walls are not. Invalid input does not advance time.
 - There is no real-time limit. When you stop moving, the world stops.
 - Leaving an echo records your current route and resets the room to beat zero. Every route starts at the same position, and actors can share a tile.
 - An echo can still activate a plate on its final recorded beat. It disappears on the next beat; recordings do not loop or remain at their endpoints.
@@ -87,6 +91,9 @@ Click a distant plate or hover over it to highlight its linked gates. Hints prog
 - Round arrow switches reverse their linked one-way doors. These doors keep their direction when crossed; only a switch visit changes them. Echoes can operate a switch remotely, and simultaneous visits flip it once. Inspect a switch to see which doors it controls.
 - Stepping onto a diamond swaps the raised and folded bridge banks. You can enter a raised bridge and leave a folded bridge beneath you. Movement uses the bank state at the start of the beat. Multiple actors triggering the shared switch bank on one beat swap it only once.
 - Echoes follow their original recorded routes even after gates or bridges change, and still trigger devices. Each round starts with the initial device state. Undo restores the arrow directions and bridge banks for that beat.
+- Matching broken rings labelled **I** or **II** are paired portals. Enter one to appear at the other end on the same beat. Arriving at the exit does not bounce you back. Hover over or inspect a ring to see its partner.
+- **Double-arrow currents** carry you in their indicated directions until an ordinary tile. You cannot stop or steer halfway through. A portal exit can feed into a current and another portal; the whole chain is still one beat, and each echo advances only once. Hovering over an adjacent entry previews the path and final landing.
+- Every intermediate tile and edge must be passable before a transported move commits. Gates use occupancy and bridge/arrow state from before the input; lava uses the next beat's phase. Any obstruction cancels the whole move. Crossed devices update once at the end, and transported echoes retain the exact recorded path and device visits. Forced loops and routes ending back at the starting tile are rejected.
 - Undo restores actors, echoes, and gates. At the start of a round, it takes back the latest recording. To revise earlier recordings, undo them from newest to oldest. Before sealing an edited route, **Cancel Edit** restores the previous plan.
 - Campaign progress, the current round, and preferences are stored in Godot's `user://progress.json`. Saved routes are validated by replaying every step. Restarting a room keeps completed campaign progress.
 
@@ -123,6 +130,10 @@ In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to brow
 | | 23 Afterburn | Meet on a lens, then time a safe echo return to A |
 | | 24 Furnace | Coordinate a remote switch, four exit doors, two plates, and the lava cycle |
 | | 25 Damnation | Occupy both plates to enter, then let A fade while B returns |
+| VIII · Slipstream | 26 Fold | Cross between islands in one beat, then let an echo hold the distant plate |
+| | 27 Short Circuit | Compress a long crossing into one beat to match a brief plate visit |
+| | 28 Crossfade | Meet at a portal lens, raise b for the second recording, then restore a for the exit |
+| | 29 Event Horizon | Chain two portal pairs, record a causal visit to B, then end A while B returns |
 
 ![Chapter V · Nocturne](docs/images/room-17.png)
 
@@ -140,6 +151,8 @@ In map data, `*` marks switches belonging to the shared bridge bank. Tiles `a` a
 
 A gate's `requires` array lists plates that must be active, while `vacant` lists plates that must be empty. Both sets of conditions apply together. A lens in `requires` needs at least two occupants; a lens in `vacant` needs zero.
 
+In Slipstream maps, `^`, `v`, `<`, and `>` are currents. A `portals` entry has an `id`, `a`, and `b`; its endpoints can overlay a lens or current. Session format 2 stores the original direction inputs alongside each beat's landing coordinates so replay reconstructs chains without guessing. Format 1 saves from earlier versions still load.
+
 ## Validation
 
 ```sh
@@ -156,9 +169,12 @@ godot --headless --path . --script tests/test_mobile.gd
 # With Playwright installed and the preview server running:
 node tools/check_web.cjs
 BROWSER=webkit node tools/check_web.cjs
+node tools/check_transport_web.cjs
 ```
 
 Set `BROWSER_EXECUTABLE` if using a locally installed browser, and `ECHO_URL` to test a deployed build. `--touch` enables the pad in the native game for layout inspection.
+
+The transport browser check completes all four Slipstream rooms with touch input and Event Horizon with keyboard input, including undo and reload after a transported move. Rule tests also check blocked intermediate edges, lava, folded bridges, forced loops, portal animations, and device events along recorded currents.
 
 English and Chinese interface checks cover saved language preferences, every room's text, minimum window layouts, and undo or cancellation after changing language during an echo edit. Chinese translations live in `i18n/zh_CN.po`; internal room identifiers and saves are language-independent.
 

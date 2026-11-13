@@ -17,7 +17,7 @@ func walk(puzzle, letters: String) -> void:
 		var t: int = puzzle.tick()
 		verify(puzzle.move(Puzzle.DIRECTIONS[letter]), "Legal reference move: %s / %d / %s" % [puzzle.level.id,t,letter])
 		var delta: Vector2i = puzzle.player() - old
-		verify(absi(delta.x)+absi(delta.y)==1 and puzzle.tick()==t+1, "One adjacent move per beat")
+		verify((absi(delta.x)+absi(delta.y)==1 or not puzzle.portals.is_empty() or not puzzle.currents.is_empty()) and puzzle.tick()==t+1, "One input advances exactly one beat")
 
 func _initialize() -> void:
 	var catalog: Array = JSON.parse_string(FileAccess.get_file_as_string("res://data/levels.json"))

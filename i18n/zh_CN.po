@@ -907,3 +907,135 @@ msgstr "西门 / 1：左3 下 上 下 上 下 上3 右3 左3 下3 上 下 / 2：
 
 msgid "Open the ECHO repository"
 msgstr "打开 ECHO 的 GitHub 仓库"
+
+msgid "Slipstream"
+msgstr "流隙"
+
+msgid "Fold"
+msgstr "折叠"
+
+msgid "Short Circuit"
+msgstr "短路"
+
+msgid "Crossfade"
+msgstr "交叠"
+
+msgid "Event Horizon"
+msgstr "事件视界"
+
+msgid "Portals"
+msgstr "传送门"
+
+msgid "Currents"
+msgstr "疾行道"
+
+msgid "Chains"
+msgstr "连锁"
+
+msgid "This current loops back on itself."
+msgstr "这段疾行道形成了循环。"
+
+msgid "The route returns to its starting tile."
+msgstr "这条路线会回到原地。"
+
+msgid "Matching broken rings form a portal pair. Step into either ring to appear at the other end on the same beat.\nThe exit does not send you straight back. Echoes remember the jump, too."
+msgstr "相同编号的断环组成一对传送门。走入一端，这一拍就会从另一端出现。\n出口不会立即把你传回来。回声也会记住这次传送。"
+
+msgid "The matching I rings connect these two islands."
+msgstr "编号 I 的两个断环连接着这两座小岛。"
+
+msgid "One move takes you through both ends. Beat 1."
+msgstr "移动一次，穿过两端。现在是第 1 拍。"
+
+msgid "Step away from the exit ring normally."
+msgstr "下一步可以正常走出出口环。"
+
+msgid "Double arrows carry you along until an ordinary tile. You cannot stop or steer in the middle.\nThe entire ride is one beat. A blocked gate or unsafe tile cancels the whole move."
+msgstr "双箭头会一直带你前进，直到普通格。途中不能停下或转向。\n整段只算一拍。途中有关闭的门或危险格，这一步就会取消。"
+
+msgid "Approach the double arrows."
+msgstr "先靠近双箭头。"
+
+msgid "This ordinary step takes one beat."
+msgstr "普通的一步占一拍。"
+
+msgid "The whole current takes one beat, too."
+msgstr "走完整段疾行道，也只占一拍。"
+
+msgid "Your echoes advance once during a ride."
+msgstr "疾行期间，每条回声也只前进一步。"
+
+msgid "A portal exit can feed into a current, then another portal. Follow the chain to its final landing tile.\nEvery gate along the way uses the board before your move. The chain still costs only one beat."
+msgstr "传送门出口可以连接疾行道，再进入另一对传送门。顺着连锁找到最终落点。\n沿途所有门都按移动前的状态判定，整条连锁仍然只占一拍。"
+
+msgid "One move can link two portal pairs."
+msgstr "一次移动可以串联两对传送门。"
+
+msgid "Both jumps and the current cost one beat."
+msgstr "两次传送加一段疾行，总共只占一拍。"
+
+msgid "You stop on the first ordinary landing tile."
+msgstr "你会停在连锁后的第一个普通格。"
+
+msgid "Two islands, one beat apart. The matching rings connect them."
+msgstr "两座小岛，相隔一拍。同编号的断环将它们相连。"
+
+msgid "Cross the express lane while your echo reaches A. A whole current is one beat."
+msgstr "让回声前往 A，同时走上疾行道。整段疾行只占一拍。"
+
+msgid "Meet on the lens, swap the bridge banks, then split between A and B."
+msgstr "在透镜上相会，切换桥组，再分别前往 A 和 B。"
+
+msgid "Link two portal pairs in one move. Enter together, then let one echo go."
+msgstr "一步串联两对传送门。一起打开入口，再让一条回声消散。"
+
+msgid "The matching broken rings are connected. Enter either end to leave the other on the same beat."
+msgstr "同编号的断环相连。走入一端，这一拍就从另一端走出。"
+
+msgid "Use the portal to record a visit to A. Your next self can take the lower path."
+msgstr "通过传送门录下前往 A 的路线。下一轮的你可以走下方的路。"
+
+msgid "The double arrows carry you to the first ordinary tile. The whole ride costs one beat."
+msgstr "双箭头会把你带到第一个普通格。整段路只占一拍。"
+
+msgid "A is only two steps away. Let your echo handle it while you use the express lane."
+msgstr "A 离起点只有两步。让回声负责 A，你来走疾行道。"
+
+msgid "The portal lands on the lens. Arrange a meeting there after one self has raised bank b."
+msgstr "传送门出口就在透镜上。先让一个自己升起 b 桥组，再安排会合。"
+
+msgid "The first echo must revisit the diamond: b gets your second recording out; a gets you home."
+msgstr "第一条回声需要再次踩菱形：b 桥组让第二条录制通过，a 桥组让你抵达出口。"
+
+msgid "Use the lower loop to arrive after the bridge swap. The short current changes your arrival beat."
+msgstr "利用下方回路，在桥组切换后抵达。短疾行道会改变你的到达拍数。"
+
+msgid "A portal exit can feed into a current and then another portal. The whole chain is still one beat."
+msgstr "传送门出口可以接上疾行道，再进入另一对传送门。整条连锁仍然只算一拍。"
+
+msgid "Record A first. Its first visit admits the B recording; its later visit admits you."
+msgstr "先录制 A。它第一次到访时放行 B 的录制，之后再次到访时放行你。"
+
+msgid "The inner gate needs A and B. The exit needs B without A: end one recording, and bring the other back."
+msgstr "内门需要 A 和 B，出口需要有 B、无 A：结束一条录制，让另一条再次返回。"
+
+msgid "Record DLU. Finally walk RRRR."
+msgstr "先录制 DLU，最后走 RRRR。"
+
+msgid "Record UU. Finally walk RRR."
+msgstr "先录制 UU，最后走 RRR。"
+
+msgid "Record RRUDLRLULRRLLRL, then RLRLRRRRRRURLRL. Finally walk DRLRLRLRLRRRURRR."
+msgstr "先录制 RRUDLRLULRRLLRL，再录制 RLRLRRRRRRURLRL，最后走 DRLRLRLRLRRRURRR。"
+
+msgid "Record RUUURULLLRLRL, then LLLLURUDUUUDUDU. Finally walk LLLLULDDDLRLURRR."
+msgstr "先录制 RUUURULLLRLRL，再录制 LLLLURUDUUUDUDU，最后走 LLLLULDDDLRLURRR。"
+
+msgid "Choose a direction each beat. Tap Leave an Echo to record your route. Undo takes back a beat; Pause offers hints and Restart Room."
+msgstr "每拍选择一个方向。点击“留下回声”录制路线；“撤销”退回一拍；暂停中可查看提示或重开关卡。"
+
+msgid "Choose a direction each beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."
+msgstr "每拍选择一个方向。Enter 留下回声，Z 撤销一拍，R 重开关卡并清除所有回声。"
+
+msgid "Matching portal rings connect distant tiles. Double arrows carry you to an ordinary tile. A whole chain is one beat; if any part is blocked, the move is cancelled. Echoes remember the complete route."
+msgstr "同编号的传送环连接远处的格子，双箭头会把你带到普通格。整条连锁只算一拍；任何一处受阻，整步取消。回声会记住完整路线。"

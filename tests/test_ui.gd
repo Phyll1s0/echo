@@ -297,7 +297,7 @@ func test_extra() -> void:
 	await settle()
 	await click_named("Chapters")
 	await click_named("Extra")
-	verify(ui.levels.size() == 2 and ui.chapters.size() == 7, "Two independent challenges remain in Extra outside the seven chapters")
+	verify(ui.levels.size() == 2 and ui.chapters.size() == 8, "Two independent challenges remain in Extra outside the eight chapters")
 	for i in ui.levels.size():
 		verify(not room_card(i).disabled, "Each Extra room is open immediately")
 	await click(room_card(0).get_global_rect().get_center())
@@ -341,7 +341,7 @@ func _run() -> void:
 	await capture("home-start")
 	await test_home_settings()
 	await click_named("Chapters")
-	verify(ui.screen=="chapters" and ui.chapter_index.get_child_count()==7 and room_card(0)==null, "The index only offers seven chapter names")
+	verify(ui.screen=="chapters" and ui.chapter_index.get_child_count()==8 and room_card(0)==null, "The index only offers eight chapter names")
 	await capture("chapters")
 	await click_named("Nocturne")
 	verify(not room_card(14).disabled and room_card(15).disabled and ui.dark, "The black chapter can be entered directly, with later rooms locked")

@@ -1519,5 +1519,268 @@
       "Record UUDUUDDUDDRRUUDDU, then UUDURRUUUULLRLDUD. Finally walk UUDUUDDURRUURRRRRR."
     ],
     "chapter_entry": true
+  },
+  {
+    "id": "26",
+    "chapter": "Slipstream",
+    "title": "Fold",
+    "chapter_entry": true,
+    "rows": [
+      "##A..##",
+      "##...##",
+      "#######",
+      ".S...X.",
+      ".....##"
+    ],
+    "gates": [
+      {
+        "a": [
+          4,
+          3
+        ],
+        "b": [
+          5,
+          3
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "portals": [
+      {
+        "id": "I",
+        "a": [
+          0,
+          4
+        ],
+        "b": [
+          2,
+          1
+        ]
+      }
+    ],
+    "max_echoes": 1,
+    "recordings": [
+      "DLU"
+    ],
+    "final": "RRRR",
+    "hints": [
+      "The matching broken rings are connected. Enter either end to leave the other on the same beat.",
+      "Use the portal to record a visit to A. Your next self can take the lower path.",
+      "Record DLU. Finally walk RRRR."
+    ],
+    "intro": "Two islands, one beat apart. The matching rings connect them.",
+    "guide": true,
+    "guide_page": 0
+  },
+  {
+    "id": "27",
+    "chapter": "Slipstream",
+    "title": "Short Circuit",
+    "chapter_entry": true,
+    "rows": [
+      "A..####",
+      "...####",
+      "S.>>>.X",
+      "...####"
+    ],
+    "gates": [
+      {
+        "a": [
+          5,
+          2
+        ],
+        "b": [
+          6,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "max_echoes": 1,
+    "recordings": [
+      "UU"
+    ],
+    "final": "RRR",
+    "hints": [
+      "The double arrows carry you to the first ordinary tile. The whole ride costs one beat.",
+      "A is only two steps away. Let your echo handle it while you use the express lane.",
+      "Record UU. Finally walk RRR."
+    ],
+    "intro": "Cross the express lane while your echo reaches A. A whole current is one beat.",
+    "guide": true,
+    "guide_page": 1
+  },
+  {
+    "id": "28",
+    "chapter": "Slipstream",
+    "title": "Crossfade",
+    "chapter_entry": true,
+    "rows": [
+      "A.*###B..",
+      "..@.b....",
+      "...##....",
+      "#########",
+      "#########",
+      ".S..>a..X",
+      ".....####"
+    ],
+    "gates": [
+      {
+        "a": [
+          2,
+          1
+        ],
+        "b": [
+          3,
+          1
+        ],
+        "requires": [
+          "@"
+        ]
+      },
+      {
+        "a": [
+          7,
+          5
+        ],
+        "b": [
+          8,
+          5
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      }
+    ],
+    "portals": [
+      {
+        "id": "I",
+        "a": [
+          3,
+          5
+        ],
+        "b": [
+          2,
+          1
+        ]
+      }
+    ],
+    "max_echoes": 2,
+    "recordings": [
+      "RRUDLRLULRRLLRL",
+      "RLRLRRRRRRURLRL"
+    ],
+    "final": "DRLRLRLRLRRRURRR",
+    "hints": [
+      "The portal lands on the lens. Arrange a meeting there after one self has raised bank b.",
+      "The first echo must revisit the diamond: b gets your second recording out; a gets you home.",
+      "Use the lower loop to arrive after the bridge swap. The short current changes your arrival beat.",
+      "Record RRUDLRLULRRLLRL, then RLRLRRRRRRURLRL. Finally walk DRLRLRLRLRRRURRR."
+    ],
+    "intro": "Meet on the lens, swap the bridge banks, then split between A and B."
+  },
+  {
+    "id": "29",
+    "chapter": "Slipstream",
+    "title": "Event Horizon",
+    "chapter_entry": true,
+    "rows": [
+      "A...###B.",
+      ">>>.###.<",
+      "########.",
+      "#####..>.",
+      "#####.###",
+      ".###>...X",
+      "....S.###"
+    ],
+    "gates": [
+      {
+        "a": [
+          8,
+          2
+        ],
+        "b": [
+          8,
+          1
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          5,
+          5
+        ],
+        "b": [
+          6,
+          5
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          7,
+          5
+        ],
+        "b": [
+          8,
+          5
+        ],
+        "requires": [
+          "B"
+        ],
+        "vacant": [
+          "A"
+        ]
+      }
+    ],
+    "portals": [
+      {
+        "id": "I",
+        "a": [
+          0,
+          5
+        ],
+        "b": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "II",
+        "a": [
+          3,
+          1
+        ],
+        "b": [
+          6,
+          3
+        ]
+      }
+    ],
+    "max_echoes": 2,
+    "recordings": [
+      "RUUURULLLRLRL",
+      "LLLLURUDUUUDUDU"
+    ],
+    "final": "LLLLULDDDLRLURRR",
+    "hints": [
+      "A portal exit can feed into a current and then another portal. The whole chain is still one beat.",
+      "Record A first. Its first visit admits the B recording; its later visit admits you.",
+      "The inner gate needs A and B. The exit needs B without A: end one recording, and bring the other back.",
+      "Record RUUURULLLRLRL, then LLLLURUDUUUDUDU. Finally walk LLLLULDDDLRLURRR."
+    ],
+    "intro": "Link two portal pairs in one move. Enter together, then let one echo go.",
+    "guide": true,
+    "guide_page": 2
   }
 ]

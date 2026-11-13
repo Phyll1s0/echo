@@ -77,6 +77,30 @@ const PAGES := {
 			["R", "The cycle repeats every four beats."],
 			["R", "Take your time. Only your moves change the lava."]]
 	}],
+	"Slipstream": [{
+		"title": "Portals",
+		"body": "Matching broken rings form a portal pair. Step into either ring to appear at the other end on the same beat.\nThe exit does not send you straight back. Echoes remember the jump, too.",
+		"rows": ["S.##.X"], "gates": [],
+		"portals": [{"id": "I", "a": [1, 0], "b": [4, 0]}],
+		"steps": [["", "The matching I rings connect these two islands."],
+			["R", "One move takes you through both ends. Beat 1."],
+			["R", "Step away from the exit ring normally."]]
+	}, {
+		"title": "Currents",
+		"body": "Double arrows carry you along until an ordinary tile. You cannot stop or steer in the middle.\nThe entire ride is one beat. A blocked gate or unsafe tile cancels the whole move.",
+		"rows": ["S.>>>.X"], "gates": [],
+		"steps": [["", "Approach the double arrows."], ["R", "This ordinary step takes one beat."],
+			["R", "The whole current takes one beat, too."],
+			["R", "Your echoes advance once during a ride."]]
+	}, {
+		"title": "Chains",
+		"body": "A portal exit can feed into a current, then another portal. Follow the chain to its final landing tile.\nEvery gate along the way uses the board before your move. The chain still costs only one beat.",
+		"rows": ["S.####", "####>.", "###X.."], "gates": [],
+		"portals": [{"id": "I", "a": [1, 0], "b": [4, 1]}, {"id": "II", "a": [5, 1], "b": [4, 2]}],
+		"steps": [["", "One move can link two portal pairs."],
+			["R", "Both jumps and the current cost one beat."],
+			["L", "You stop on the first ordinary landing tile."]]
+	}],
 	"Nocturne": [{
 		"title": "Leave a Space",
 		"body": "A gate marked −A needs A empty before you move. An echo can step away or fade to open it.\n−L needs a completely empty lens; even one self keeps it shut.",

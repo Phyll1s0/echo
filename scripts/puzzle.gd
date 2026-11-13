@@ -16,6 +16,9 @@ var switches: Array[Vector2i] = []
 var bridges: Dictionary = {}
 var lava: Dictionary = {}
 var lava_groups := 0
+var portals: Dictionary = {}
+var portal_labels: Dictionary = {}
+var currents: Dictionary = {}
 # Bit 0 selects the bridge bank. The remaining bits reverse individual arrows.
 # Keep one state per beat so undo is exact even after every echo has faded.
 var mechanism_history: Array[int] = [0]
@@ -25,6 +28,10 @@ var columns := 0
 var rows := 0
 var echoes: Array = []
 var draft: Array[Vector2i] = []
+# One entry per beat, including the original input and every tile traversed.
+# Echoes replay these paths, even if devices have since changed.
+var draft_steps: Array = []
+var echo_steps: Array = []
 var edit_origin: Dictionary = {}
 
 func _init(data: Dictionary = {}) -> void:
@@ -43,6 +50,9 @@ func configure(data: Dictionary) -> void:
 	switches.clear()
 	bridges.clear()
 	lava.clear()
+	portals.clear()
+	portal_labels.clear()
+	currents.clear()
 	lava_groups = int(level.get("lava_groups", 0))
 	rows = level.rows.size()
 	columns = 0
@@ -63,6 +73,8 @@ func configure(data: Dictionary) -> void:
 				switches.append(cell)
 			elif mark == "!":
 				pass # Direction switches are linked explicitly below.
+			elif mark in ["^", "v", "<", ">"]:
+				currents[cell] = {"^": Vector2i.UP, "v": Vector2i.DOWN, "<": Vector2i.LEFT, ">": Vector2i.RIGHT}[mark]
 			elif mark in ["1", "2", "3", "4"]:
 				lava[cell] = mark.to_int() - 1
 			elif mark == "a" or mark == "b":
@@ -77,15 +89,24 @@ func configure(data: Dictionary) -> void:
 		var mask := 0
 		for index in control.turnstiles: mask |= 2 << int(index)
 		direction_switches[Vector2i(int(control.at[0]), int(control.at[1]))] = mask
+	for pair in level.get("portals", []):
+		var a := Vector2i(int(pair.a[0]), int(pair.a[1]))
+		var b := Vector2i(int(pair.b[0]), int(pair.b[1]))
+		portals[a] = b
+		portals[b] = a
+		portal_labels[a] = str(pair.id)
+		portal_labels[b] = str(pair.id)
 	reset_all()
 
 func reset_all() -> void:
 	echoes.clear()
+	echo_steps.clear()
 	edit_origin.clear()
 	restart_round()
 
 func restart_round() -> void:
 	draft.assign([start])
+	draft_steps.clear()
 	mechanism_history.assign([0])
 
 func tick() -> int:
@@ -157,17 +178,23 @@ func _triggers(origin: Vector2i, target: Vector2i) -> int:
 		mask |= 2 << index
 	return mask
 
-func _state_after(at: int, origin: Vector2i, target: Vector2i) -> int:
-	var triggered := _triggers(origin, target)
-	for route in echoes:
-		if at+1 < route.size():
-			triggered |= _triggers(route[at], route[at+1])
+func _path_triggers(step: Dictionary) -> int:
+	var triggered := 0
+	for i in range(1, step.path.size()):
+		var target: Vector2i = step.path[i]
+		if i in step.jumps:
+			triggered |= (1 if target in switches else 0) | int(direction_switches.get(target, 0))
+		else:
+			triggered |= _triggers(step.path[i-1], target)
+	return triggered
+
+func _state_after(at: int, step: Dictionary) -> int:
+	var triggered := _path_triggers(step)
+	for steps in echo_steps:
+		if at < steps.size(): triggered |= _path_triggers(steps[at])
 	return mechanism_state() ^ triggered
 
-func blocked_reason(delta: Vector2i) -> String:
-	if cleared() or absi(delta.x) + absi(delta.y) != 1:
-		return "No move available."
-	var destination := player() + delta
+func _landing_reason(destination: Vector2i) -> String:
 	if destination not in floor_cells:
 		return "No tile there."
 	# The whole board changes on arrival. Never accept a move that leaves the
@@ -176,11 +203,17 @@ func blocked_reason(delta: Vector2i) -> String:
 		return "That group sinks on the next beat."
 	if not bridge_active(destination, mechanism_state()):
 		return "This bridge is folded."
-	var turn := _turn_index(player(), destination)
+	return ""
+
+func _edge_reason(origin: Vector2i, destination: Vector2i) -> String:
+	var reason := _landing_reason(destination)
+	if not reason.is_empty(): return reason
+	var turn := _turn_index(origin, destination)
+	var delta := destination - origin
 	if turn >= 0 and delta != turn_direction(turn, mechanism_state()):
 		return "Follow the arrow."
 	for gate in gates:
-		if (player() == gate.a and destination == gate.b) or (player() == gate.b and destination == gate.a):
+		if (origin == gate.a and destination == gate.b) or (origin == gate.b and destination == gate.a):
 			if not gate_open(gate):
 				if LENS in gate.requires and not plate_on(LENS):
 					return "Two selves must meet on L."
@@ -190,15 +223,50 @@ func blocked_reason(delta: Vector2i) -> String:
 				return "Gate requires " + " + ".join(PackedStringArray(gate.requires)).replace(LENS, "L")
 	return ""
 
+func resolve_move(delta: Vector2i) -> Dictionary:
+	var step := {"input": delta, "path": [player()], "jumps": [], "reason": ""}
+	if cleared() or absi(delta.x) + absi(delta.y) != 1:
+		step.reason = "No move available."
+		return step
+	var origin := player()
+	var direction := delta
+	var visited: Dictionary = {}
+	while true:
+		var target := origin + direction
+		step.reason = _edge_reason(origin, target)
+		if not step.reason.is_empty(): return step
+		step.path.append(target)
+		if portals.has(target):
+			target = portals[target]
+			step.reason = _landing_reason(target)
+			if not step.reason.is_empty(): return step
+			step.jumps.append(step.path.size())
+			step.path.append(target)
+		# A portal's exit never immediately teleports back. An arrow there can
+		# carry the actor onward into another portal, all within this one beat.
+		if not currents.has(target): break
+		if visited.has(target):
+			step.reason = "This current loops back on itself."
+			return step
+		visited[target] = true
+		direction = currents[target]
+		origin = target
+	if step.path.back() == player(): step.reason = "The route returns to its starting tile."
+	return step
+
+func blocked_reason(delta: Vector2i) -> String:
+	return resolve_move(delta).reason
+
 func can_move(delta: Vector2i) -> bool:
 	return blocked_reason(delta).is_empty()
 
 func move(delta: Vector2i) -> bool:
-	if not can_move(delta):
+	var step := resolve_move(delta)
+	if not step.reason.is_empty():
 		return false
-	var target := player() + delta
-	mechanism_history.append(_state_after(tick(), player(), target))
-	draft.append(target)
+	mechanism_history.append(_state_after(tick(), step))
+	draft.append(step.path.back())
+	draft_steps.append(step)
 	return true
 
 func can_seal() -> bool:
@@ -208,6 +276,7 @@ func seal() -> bool:
 	if not can_seal():
 		return false
 	echoes.append(draft.duplicate())
+	echo_steps.append(draft_steps.duplicate(true))
 	edit_origin.clear()
 	restart_round()
 	return true
@@ -218,6 +287,7 @@ func can_undo() -> bool:
 func undo() -> bool:
 	if draft.size() > 1:
 		draft.pop_back()
+		draft_steps.pop_back()
 		mechanism_history.pop_back()
 		return true
 	return _unseal_last()
@@ -238,9 +308,10 @@ func _unseal_last() -> bool:
 	if echoes.is_empty():
 		return false
 	draft.assign(echoes.pop_back())
+	draft_steps = echo_steps.pop_back().duplicate(true)
 	mechanism_history.assign([0])
 	for t in range(draft.size()-1):
-		mechanism_history.append(_state_after(t, draft[t], draft[t+1]))
+		mechanism_history.append(_state_after(t, draft_steps[t]))
 	return true
 
 func actors() -> Array:
@@ -249,13 +320,25 @@ func actors() -> Array:
 		result.append(echo_position(i))
 	return result
 
+func actor_step(index: int) -> Dictionary:
+	var steps: Array = draft_steps if index == 0 else echo_steps[index-1]
+	var at := tick() - 1
+	return steps[at] if at >= 0 and at < steps.size() else {}
+
 func snapshot() -> Dictionary:
 	var recordings: Array = []
 	for route in echoes:
 		recordings.append(_encode(route))
-	var result := {"version": 1, "level_id": level.id, "echoes": recordings, "draft": _encode(draft)}
+	var inputs: Array = []
+	for steps in echo_steps: inputs.append(_encode_inputs(steps))
+	var result := {"version": 2, "level_id": level.id, "echoes": recordings, "draft": _encode(draft), "echo_inputs": inputs, "draft_inputs": _encode_inputs(draft_steps)}
 	if not edit_origin.is_empty():
 		result["edit_origin"] = edit_origin.duplicate(true)
+	return result
+
+func _encode_inputs(steps: Array) -> String:
+	var result := ""
+	for step in steps: result += DIRECTIONS.find_key(step.input)
 	return result
 
 func _encode(route: Array) -> Array:
@@ -264,16 +347,21 @@ func _encode(route: Array) -> Array:
 		result.append([cell.x, cell.y])
 	return result
 
-func _replay(encoded: Variant) -> bool:
+func _replay(encoded: Variant, inputs: Variant = null) -> bool:
 	if not encoded is Array or encoded.is_empty():
 		return false
 	if not _valid_coordinate(encoded[0]) or Vector2i(int(encoded[0][0]), int(encoded[0][1])) != start:
 		return false
+	if inputs != null and (not inputs is String or inputs.length() != encoded.size()-1): return false
 	for i in range(1, encoded.size()):
 		if not _valid_coordinate(encoded[i]):
 			return false
 		var target := Vector2i(int(encoded[i][0]), int(encoded[i][1]))
-		if not move(target - player()):
+		var delta := target - player()
+		if inputs != null:
+			if not DIRECTIONS.has(inputs[i-1]): return false
+			delta = DIRECTIONS[inputs[i-1]]
+		if not move(delta) or player() != target:
 			return false
 	return true
 
@@ -282,16 +370,22 @@ func _valid_coordinate(value: Variant) -> bool:
 
 func restore(data: Dictionary) -> bool:
 	# Validate in a temporary puzzle, including each recording against its prefix.
-	if data.get("version") != 1 or data.get("level_id") != level.id:
+	if (data.get("version") != 1 and data.get("version") != 2) or data.get("level_id") != level.id:
 		return false
 	var records = data.get("echoes")
 	if not records is Array or records.size() > int(level.max_echoes):
 		return false
 	var candidate = get_script().new(level)
-	for route in records:
-		if not candidate._replay(route) or not candidate.seal():
+	var inputs = data.get("echo_inputs") if data.version == 2 else null
+	if data.version == 2 and (not inputs is Array or inputs.size() != records.size() or not data.has("draft_inputs")): return false
+	if data.version == 2:
+		if not data.draft_inputs is String: return false
+		for value in inputs:
+			if not value is String: return false
+	for i in records.size():
+		if not candidate._replay(records[i], inputs[i] if inputs != null else null) or not candidate.seal():
 			return false
-	if not candidate._replay(data.get("draft")):
+	if not candidate._replay(data.get("draft"), data.get("draft_inputs") if data.version == 2 else null):
 		return false
 	var origin = data.get("edit_origin", {})
 	if not origin is Dictionary or origin.has("edit_origin"):
@@ -302,6 +396,8 @@ func restore(data: Dictionary) -> bool:
 			return false
 	echoes = candidate.echoes.duplicate(true)
 	draft.assign(candidate.draft)
+	echo_steps = candidate.echo_steps.duplicate(true)
+	draft_steps = candidate.draft_steps.duplicate(true)
 	mechanism_history.assign(candidate.mechanism_history)
 	edit_origin = origin.duplicate(true)
 	return true

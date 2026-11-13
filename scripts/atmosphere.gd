@@ -9,6 +9,7 @@ const WORLDS := {
 	"Extra": {"sky": Color("f1f0ec"), "far": Color("dfded7"), "near": Color("d4d2c9"), "ink": Color("646864"), "tile": Color("e4e3da"), "grid": Color("7e8176"), "light": Color("595940")},
 	"Wonderland": {"sky": Color("fff4f3"), "far": Color("f5dce0"), "near": Color("ecc3cd"), "ink": Color("b66b80"), "tile": Color("f2d5dc"), "grid": Color("a5687b"), "light": Color("923c56")},
 	"Inferno": {"dark": true, "sky": Color("180d12"), "far": Color("2b141b"), "near": Color("402020"), "ink": Color("ca725c"), "tile": Color("321e24"), "grid": Color("ac796d"), "light": Color("ffb07b")},
+	"Slipstream": {"sky": Color("eff6f4"), "far": Color("d6e6e2"), "near": Color("bdd7d1"), "ink": Color("527d78"), "tile": Color("dce9e5"), "grid": Color("69847e"), "light": Color("28635e")},
 	"Nocturne": {"dark": true, "sky": Color("08090a"), "far": Color("111315"), "near": Color("171a1c"), "ink": Color("899295"), "tile": Color("171a1c"), "grid": Color("748083"), "light": Color("e3e8e8")}
 }
 
@@ -46,6 +47,7 @@ func _draw() -> void:
 			"Nocturne": _nocturne(colors)
 			"Wonderland": _wonderland(colors)
 			"Inferno": _inferno(colors)
+			"Slipstream": _slipstream(colors)
 		return
 	draw_rect(Rect2(Vector2.ZERO, size), Color("fcfcfb"))
 	# Sparse dots suggest the echo rings, leaving a clean centre for the title.
@@ -57,6 +59,20 @@ func _draw() -> void:
 			var quiet := smoothstep(0.18, 0.48, point.distance_to(size * 0.5) / span)
 			var wave := 0.5 + 0.5 * sin(point.distance_to(size * Vector2(0.16, 0.86)) * 0.023 - clock * 0.05)
 			draw_circle(point, 0.8, Color(0.35, 0.42, 0.42, quiet * (0.025 + wave * 0.045)), true, -1, true)
+
+func _slipstream(c: Dictionary) -> void:
+	# Broken orbits and low flowing lines keep the playing area empty.
+	for i in 2:
+		var centre := Vector2(0.12 if i == 0 else 0.88, 0.24) * size
+		var r := minf(size.x * 0.06, size.y * 0.07)
+		for side in 2:
+			draw_arc(centre, r, side * PI + 0.25, side * PI + 2.4, 48, Color(c.ink, 0.27), 1.2, true)
+	for layer in 3:
+		var line := PackedVector2Array()
+		for n in 100:
+			var x := n / 99.0
+			line.append(Vector2(x * size.x, (0.89 + layer * 0.045 + sin(x * TAU * 1.3 + layer * 0.6) * 0.018) * size.y))
+		draw_polyline(line, Color(c.ink, 0.16 + layer * 0.035), 1.4, true)
 
 func _inferno(c: Dictionary) -> void:
 	var sun := Vector2(0.88, 0.23) * size
