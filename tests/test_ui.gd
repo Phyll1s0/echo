@@ -63,7 +63,7 @@ func has_label(scope: Node, value: String) -> bool:
 
 func room_card(i: int) -> Button:
 	for item in ui.chapter_index.find_children("*", "Button", true, false):
-		if item.text.begins_with(ui.levels[i].id + " "):
+		if item.text.begins_with((ui.levels[i].id if ui.levels[i].chapter == "Extra" else "%02d" % (i+1)) + " "):
 			return item
 	return null
 
@@ -362,6 +362,7 @@ func _run() -> void:
 	verify(not room_card(ui.room_index("11")).disabled and room_card(ui.room_index("12")).disabled, "Penumbra starts at First Contact without requiring earlier chapters")
 	await click_named("← Chapters")
 	await click_named("Resonance")
+	verify(room_card(ui.room_index("30")).text == "05    Cloister", "The former room 30 opens chapter II as room 05")
 	verify(ui.screen=="rooms" and not room_card(ui.room_index("30")).disabled and room_card(ui.room_index("05")).disabled and room_card(ui.room_index("06")).disabled and room_card(ui.room_index("07"))==null, "Cloister opens Resonance; its later rooms unlock in order")
 	await key(KEY_ESCAPE)
 	verify(ui.screen=="chapters", "Escape from rooms returns to the chapter names")

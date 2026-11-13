@@ -152,8 +152,16 @@ commitViewport();
 	const version = document.querySelector('meta[name="application-version"]')?.content || 'local';
 	const packURL = `${pack}?build=${version}-${GODOT_CONFIG.fileSizes[pack]}`;
 	GODOT_CONFIG.fileSizes[packURL] = GODOT_CONFIG.fileSizes[pack];
-	const requestedRoom = new URL(location.href).searchParams.get('room') || '';
-	const roomArgs = /^X[0-9]{2}$/.test(requestedRoom) ? ['--', `--extra-room=${requestedRoom}`] : (/^[0-9]{2}$/.test(requestedRoom) ? ['--', `--level=${Number(requestedRoom)}`] : []);
+	const params = new URL(location.href).searchParams;
+	const number = params.get('number') || '';
+	const requestedRoom = params.get('room') || '';
+	let roomArgs = [];
+	if (/^0?[1-9]$|^[1-9][0-9]$/.test(number))
+		roomArgs = ['--', `--number=${number}`];
+	else if (/^X[0-9]{2}$/.test(requestedRoom))
+		roomArgs = ['--', `--extra-room=${requestedRoom}`];
+	else if (/^[0-9]{2}$/.test(requestedRoom))
+		roomArgs = ['--', `--level=${requestedRoom}`];
 	const engine = new Engine({ ...GODOT_CONFIG, onProgress });
 	Promise.all([
 		engine.init(GODOT_CONFIG.executable),

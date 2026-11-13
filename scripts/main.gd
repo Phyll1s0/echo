@@ -115,9 +115,13 @@ func _ready() -> void:
 					show_rooms(campaign_levels[index].chapter)
 					open_level(index, true)
 					return
-		elif arg.begins_with("--level="):
-			var index := room_index("%02d" % arg.trim_prefix("--level=").to_int())
-			if index >= 0:
+		elif arg.begins_with("--level=") or arg.begins_with("--number="):
+			var index: int
+			if arg.begins_with("--number="):
+				index = arg.trim_prefix("--number=").to_int() - 1
+			else:
+				index = room_index("%02d" % arg.trim_prefix("--level=").to_int())
+			if index >= 0 and index < levels.size():
 				show_rooms(levels[index].chapter)
 				open_level(index, true)
 				return
@@ -214,6 +218,11 @@ func room_index(id: String) -> int:
 		if levels[i].id == id:
 			return i
 	return -1
+
+func room_number(index: int) -> String:
+	if levels[index].chapter == EXTRA:
+		return levels[index].id
+	return "%02d" % (index + 1)
 
 func _next_unfinished() -> int:
 	for i in levels.size():
@@ -370,7 +379,7 @@ func show_rooms(chapter: String) -> void:
 			continue
 		var done: bool = _completed_rooms(chapter).has(info.id)
 		var unlocked: bool = chapter == EXTRA or done or i == 0 or info.get("chapter_entry", false) or store.data.completed.has(levels[i-1].id) or store.data.completed.has(info.get("also_unlock_after", ""))
-		var room := list_action("%s    %s" % [info.id, tr(info.title)], open_level.bind(i, true))
+		var room := list_action("%s    %s" % [room_number(i), tr(info.title)], open_level.bind(i, true))
 		room.set_meta("base_px", 18 if compact_ui() else 21)
 		room.disabled = not unlocked
 		var state := tr("Complete") if done else (tr("Locked") if not unlocked else "")
@@ -430,7 +439,7 @@ func _show_game(introduce: bool = false) -> void:
 	top.add_child(room_title)
 	var chapter_text := _chapter_label(session.level.chapter) if compact_ui() or session.level.chapter == EXTRA else "%s   /   %s" % [_chapter_label(session.level.chapter), tr(session.level.chapter)]
 	room_title.add_child(text_label(chapter_text, 13 if compact_ui() else 17, muted))
-	var name_label := text_label("%s   %s" % [session.level.id, tr(session.level.title)], 18 if compact_ui() else 26)
+	var name_label := text_label("%s   %s" % [room_number(level_index), tr(session.level.title)], 18 if compact_ui() else 26)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	room_title.add_child(name_label)
 	if _has_chapter_guide():
@@ -537,7 +546,7 @@ func _show_room_title(underlay: Control) -> void:
 	stack.add_theme_constant_override("separation", roundi(10 * ui_scale()))
 	title_card.add_child(stack)
 	var color: Color = Atmosphere.WORLDS.get(session.level.chapter, {}).get("light", muted)
-	var reference := tr("%s   /   Room %s") % [_chapter_label(session.level.chapter), session.level.id]
+	var reference := tr("%s   /   Room %s") % [_chapter_label(session.level.chapter), room_number(level_index)]
 	stack.add_child(text_label(reference, 19, color, HORIZONTAL_ALIGNMENT_CENTER))
 	var title_name := text_label(session.level.title, 32 if compact_ui() else 60, ink, HORIZONTAL_ALIGNMENT_CENTER)
 	stack.custom_minimum_size.x = minf(size.x - 40, 700)
@@ -1175,7 +1184,7 @@ func show_pause() -> void:
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	modal_scroll.add_child(content)
-	var pause_caption := text_label(tr("Room %s   /   %s") % [session.level.id, tr(session.level.title)], 16, muted)
+	var pause_caption := text_label(tr("Room %s   /   %s") % [room_number(level_index), tr(session.level.title)], 16, muted)
 	pause_caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(pause_caption)
 	content.add_child(text_label("Paused", 34))
