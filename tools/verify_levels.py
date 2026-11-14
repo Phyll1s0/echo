@@ -248,6 +248,19 @@ class Room:
                         q.append(child)
         return None
 
+    def recording_reach(self, supplied=()):
+        """Optimistic reach with fixed remote signals; no waiting or locked-edge bypass."""
+        start = self.start, 0
+        seen, q = {start}, deque([start])
+        while q:
+            pos, state = q.popleft()
+            for _, dest, events in self.choices(pos, [pos, *supplied], state):
+                child = dest, self.advance(state, events)
+                if child not in seen:
+                    seen.add(child)
+                    q.append(child)
+        return {pos for pos, _ in seen}
+
     def relaxed_reach(self, start, *, fixed_bank=None, fixed_arrows=False, blocked_edge=None):
         """Ignore pressure gates; optionally hold one bank or cut one edge."""
         seen, q = {start}, deque([start])
@@ -276,7 +289,7 @@ class Room:
         assert shortest is not None and shortest <= len(self.level["final"])
         if len(records) == 2:
             assert self.one_echo_solution() is None, "This room must require two recordings"
-        if len(records) == 2 and self.level["id"] not in ["X04", "21", "24", "30", "33", "37", "39", "40", "43", "44"] and not (self.portals or self.currents):
+        if len(records) == 2 and self.level["id"] not in ["X04", "21", "24", "30", "33", "37", "39", "40", "41", "43", "44"] and not (self.portals or self.currents):
             entrances = [n for n in self.floor if abs(n[0]-self.goal[0])+abs(n[1]-self.goal[1]) == 1]
             assert len(entrances) == 1
             pre = entrances[0]
@@ -303,6 +316,19 @@ class Room:
                 assert Room(self.level, freeze_turns=True).one_echo_solution() is None, "Turn reversal can be skipped"
             if self.bridges:
                 assert Room(self.level, freeze_bridges=True).one_echo_solution() is None, "Bridge switching can be skipped"
+        if self.level["id"] in ["37", "41"]:
+            assert self.pads["B"] not in self.recording_reach(), "B must depend on an earlier A recording"
+        if self.level["id"] == "37":
+            first_visit = records[0].index(self.pads["A"])
+            assert self.shortest_final([records[0][:first_visit+1], records[1]]) is None, "A must return for the final crossing"
+        if self.level["id"] == "38":
+            assert self.shortest_final([records[0][:-4]]) is None, "The lower moon circuit must be necessary"
+        if self.level["id"] == "39":
+            unfolded = Room(self.level, disable_portals=True)
+            assert unfolded.pads["B"] not in unfolded.recording_reach([unfolded.pads["A"]]), "Walking around must not bypass the orbital portals"
+        if self.level["id"] == "42":
+            straight = self.replay("LLUUUUUU", [])
+            assert self.shortest_final([straight]) is None, "The straight A-B-C recording must not solve the reordered bridges"
         if self.level["id"] == "14":
             # At the last lens crossing the player enters bank b and both echoes
             # occupy the lens. With b raised a live traveller there cannot reach

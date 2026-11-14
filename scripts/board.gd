@@ -13,6 +13,7 @@ var grid_color := Color("6a7780")
 var piece_edge := Color.WHITE
 var second_echo_edge := Color("d5efff")
 var piece_shadow := Color("0c1115")
+var signal_colors: Dictionary = {}
 const VOID_CELL := Vector2i(-999, -999)
 var puzzle
 var font: Font
@@ -35,8 +36,8 @@ func set_colors(colors: Dictionary) -> void:
 	floor_color = colors.tile
 	grid_color = colors.grid
 	active = colors.light
-	var night: bool = colors.get("dark", false) and not colors.get("paper_tiles", false)
-	if colors.get("paper_tiles", false): active = Color("075a6c")
+	var night: bool = colors.get("dark", false)
+	signal_colors = colors.get("signals", {})
 	ink = Color("f2f4f3") if night else Color("242d30")
 	muted = Color("abb9c3") if night else Color("66777c")
 	player_fill = Color("e5f0f7") if night else Color("263135")
@@ -163,18 +164,34 @@ func _draw_tile_edges(cell: Vector2i, rect: Rect2, color: Color, unit: float) ->
 		var outside: bool = cell + neighbors[i] not in puzzle.floor_cells
 		draw_line(corners[i], corners[(i+1)%4], Color(color, 0.90 if outside else 0.32), maxf(1.3, unit * 0.018) if outside else 0.8, true)
 
+func _signal_color(id: String, lit: bool = true) -> Color:
+	var color: Color = signal_colors.get(id, active)
+	return color if lit else muted.lerp(color, 0.58)
+
+func _projection_color(cell: Vector2i) -> Color:
+	var result := Color(0,0,0,1)
+	var sources: Array = puzzle.projections[cell]
+	for id in sources:
+		var color := _signal_color(id)
+		result.r += color.r / sources.size()
+		result.g += color.g / sources.size()
+		result.b += color.b / sources.size()
+	return result
+
 func _draw_plate(id: String, unit: float) -> void:
 	var cell: Vector2i = puzzle.plates[id]
 	var center := center_of(cell)
 	var enabled: bool = puzzle.plate_on(id)
 	var color: Color = active if enabled else muted
+	if not signal_colors.is_empty(): color = _signal_color(id, enabled)
+	var glow := _signal_color(id)
 	if id == puzzle.LENS:
-		draw_circle(center, unit * 0.25, Color(active, 0.12 if enabled else 0.025), true, -1, true)
+		draw_circle(center, unit * 0.25, Color(glow, (0.18 if not signal_colors.is_empty() else 0.12) if enabled else 0.025), true, -1, true)
 		for side in [-1,1]:
 			draw_arc(center + Vector2(side * unit * 0.075, 0), unit * 0.17, 0, TAU, 40, color, maxf(1.6, unit * 0.023), true)
 		return
 	var r := unit * 0.25
-	draw_circle(center, r, Color(active, 0.16 if enabled else 0.025), true, -1, true)
+	draw_circle(center, r, Color(glow, (0.22 if not signal_colors.is_empty() else 0.16) if enabled else 0.025), true, -1, true)
 	draw_arc(center, r, 0, TAU, 48, color, maxf(1.5, unit * 0.022), true)
 	var px := maxi(11, roundi(unit * 0.24))
 	var width := font.get_string_size(id, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
@@ -182,7 +199,7 @@ func _draw_plate(id: String, unit: float) -> void:
 	if cell in puzzle.occupied():
 		px = maxi(10, roundi(unit * 0.18))
 		base = center + Vector2(-unit * 0.39, -unit * 0.29)
-	draw_string(font, base, id, HORIZONTAL_ALIGNMENT_LEFT, -1, px, active if enabled else ink)
+	draw_string(font, base, id, HORIZONTAL_ALIGNMENT_LEFT, -1, px, color if not signal_colors.is_empty() else (active if enabled else ink))
 
 func condition_layout(gate: Dictionary) -> Array:
 	var cell: Vector2i = gate.b if gate.a == puzzle.goal else gate.a
@@ -214,6 +231,7 @@ func _draw_gate_conditions(gate: Dictionary, unit: float, highlighted: bool) -> 
 		var met: bool = not puzzle.plate_on(item.id) if item.vacant else puzzle.plate_on(item.id)
 		if item.vacant: met = puzzle.plates[item.id] not in puzzle.occupied()
 		var color: Color = active if met or highlighted else muted
+		if not signal_colors.is_empty(): color = _signal_color(item.id, met or highlighted)
 		if unit < 26:
 			draw_circle(center, maxf(1.1, r * 0.70), color, not item.vacant, 1.0 if item.vacant else -1.0, true)
 			continue
@@ -230,7 +248,7 @@ func _draw_gate_conditions(gate: Dictionary, unit: float, highlighted: bool) -> 
 # Printed scenery sits behind every tile; it never covers a door or marks a move.
 func _draw_projection(cell: Vector2i, rect: Rect2, unit: float) -> void:
 	var enabled: bool = puzzle.projection_active(cell)
-	var light := Color("6ddce8")
+	var light := _projection_color(cell)
 	var strength := 1.0 if enabled else 0.0
 	if phase < 1.0:
 		var was_enabled := true
@@ -239,16 +257,20 @@ func _draw_projection(cell: Vector2i, rect: Rect2, unit: float) -> void:
 			if count < (2 if id == puzzle.LENS else 1): was_enabled = false
 		strength = lerpf(1.0 if was_enabled else 0.0, strength, smoothstep(0.0, 1.0, phase))
 	if strength > 0.0:
-		draw_rect(rect, Color(Color("b4e8ed"), strength))
-		draw_rect(rect, Color(Color("599bab"), strength), false, 1.4, true)
+		draw_rect(rect, Color(floor_color.lerp(light, 0.30), strength))
+		draw_rect(rect, Color(light, strength * 0.85), false, 1.4, true)
 		for n in [-1,0,1]:
 			var y: float = rect.get_center().y + n * unit * 0.16
-			draw_line(Vector2(rect.position.x+unit*0.12,y),Vector2(rect.end.x-unit*0.12,y),Color(Color("4ca0ae"),strength),1.0,true)
+			draw_line(Vector2(rect.position.x+unit*0.12,y),Vector2(rect.end.x-unit*0.12,y),Color(light,strength * 0.35),1.0,true)
 	if strength < 1.0:
-		for corner in [Vector2(-1,-1),Vector2(1,-1),Vector2(1,1),Vector2(-1,1)]:
+		var corners := [Vector2(-1,-1),Vector2(1,-1),Vector2(1,1),Vector2(-1,1)]
+		var sources: Array = puzzle.projections[cell]
+		for i in corners.size():
+			var corner: Vector2 = corners[i]
 			var tip: Vector2 = rect.get_center() + corner * rect.size * 0.5
-			draw_line(tip,tip-Vector2(corner.x*unit*0.19,0),light,1.5,true)
-			draw_line(tip,tip-Vector2(0,corner.y*unit*0.19),light,1.5,true)
+			var tint := Color(_signal_color(sources[i % sources.size()]), 0.68)
+			draw_line(tip,tip-Vector2(corner.x*unit*0.19,0),tint,1.4,true)
+			draw_line(tip,tip-Vector2(0,corner.y*unit*0.19),tint,1.4,true)
 	var left := cell.x
 	var right := cell.x
 	while puzzle.projections.get(Vector2i(left-1,cell.y),[]) == puzzle.projections[cell]: left -= 1
@@ -258,13 +280,13 @@ func _draw_projection(cell: Vector2i, rect: Rect2, unit: float) -> void:
 	if unit < 27:
 		for i in label.length():
 			var dot := rect.get_center() + Vector2((i-(label.length()-1)*0.5)*4.0,-unit*0.22)
-			draw_circle(dot, 1.2, Color("164b59") if enabled else light, true, -1, true)
+			draw_circle(dot, 1.2, light if enabled else Color(light,0.83), true, -1, true)
 		return
 	var px := maxi(10,roundi(unit*0.17))
 	var width := font.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,px).x
 	var point := rect.get_center()+Vector2(-width*0.5,px*0.34)
 	if enabled or cell in puzzle.occupied(): point = rect.position+Vector2(unit*0.08,px)
-	draw_string(font,point,label,HORIZONTAL_ALIGNMENT_LEFT,-1,px,Color("164b59") if enabled else light)
+	draw_string(font,point,label,HORIZONTAL_ALIGNMENT_LEFT,-1,px,light if enabled else Color(light,0.83))
 
 func _draw_ellipse(centre: Vector2, radii: Vector2, color: Color, angle: float = 0.0) -> void:
 	var points := PackedVector2Array()
@@ -303,21 +325,21 @@ func _draw_room_print(unit: float) -> void:
 				var blade := PackedVector2Array()
 				for p in [Vector2(1,0.7),Vector2(1.8,2.1),Vector2(3.6,2.1)]:
 					blade.append(core+p.rotated(n*PI/2)*unit)
-				draw_polyline(blade,Color("5ec4d5",0.27),1.4,true)
-			draw_arc(core,unit*1.45,0,TAU,80,Color("5ec4d5",0.20),1.3,true)
+				draw_polyline(blade,Color(active,0.16),1.4,true)
+			draw_arc(core,unit*1.45,0,TAU,80,Color(active,0.14),1.3,true)
 		"hologram":
 			var left := center_of(Vector2i(1,4))
 			var right := center_of(Vector2i(5,4))
 			for side in [left,right]:
-				draw_line(side-Vector2(0,unit*3.3),side+Vector2(0,unit*3.7),Color("73ddea",0.25),unit*0.22,true)
+				draw_line(side-Vector2(0,unit*3.3),side+Vector2(0,unit*3.7),Color(active,0.15),unit*0.22,true)
 		"reactor":
 			for radius in [1.5,3.5]:
-				draw_arc(centre,unit*radius,0,TAU,96,Color("73ddea",0.17),1.3,true)
+				draw_arc(centre,unit*radius,0,TAU,96,Color(active,0.14),1.3,true)
 		"warp":
 			for x in [1,7]:
 				for y in [1,7]:
 					var dock := center_of(Vector2i(x,y))
-					draw_arc(dock,unit*1.73,0,TAU,72,Color("73ddea",0.28),1.3,true)
+					draw_arc(dock,unit*1.73,0,TAU,72,Color(active,0.18),1.3,true)
 		"sugar_spiral":
 			var candy := center_of(Vector2i(4, 3))
 			var ribbon := PackedVector2Array()
@@ -399,7 +421,8 @@ func _draw() -> void:
 		match puzzle.level.get("art", ""):
 			"satellite":
 				if cell.x < 4 or cell.x > 6:
-					fill = Color("1c4465") if (cell.x+cell.y)%2 == 0 else Color("173b59")
+					fill = Color("30334e") if cell.x < 4 else Color("293e49")
+					if (cell.x+cell.y)%2 == 0: fill = fill.lightened(0.025)
 			"binary":
 				fill = floor_color.lerp(Color("ba945d") if cell.x < 5 else Color("72b1df"),0.08)
 			"sugar_spiral":
@@ -464,7 +487,8 @@ func _draw() -> void:
 			draw_line(middle - end, middle - end * 0.72, active, width, true)
 			draw_line(middle + end, middle + end * 0.72, active, width, true)
 		else:
-			draw_line(middle - end, middle + end, ink, width, true)
+			var closed_ink := muted.lightened(0.10) if not signal_colors.is_empty() else ink
+			draw_line(middle - end, middle + end, closed_ink, width, true)
 		var highlighted: bool = i == inspected_gate or inspected in gate.requires or inspected in gate.vacant
 		if highlighted:
 			draw_line(middle - end, middle + end, Color(active, 0.35), width + 5, true)

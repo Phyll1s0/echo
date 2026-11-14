@@ -416,10 +416,11 @@ func open_level(index: int, resume: bool = false, introduce: bool = true) -> voi
 			saved.level_id = session.level.id
 			if saved.get("edit_origin") is Dictionary and not saved.edit_origin.is_empty():
 				saved.edit_origin.level_id = session.level.id
+	var needs_new_route := false
 	if resume and saved is Dictionary and saved.get("level_id") == session.level.id:
-		session.restore(saved)
+		needs_new_route = not session.restore(saved)
 	hint_index = -1
-	status_text = ""
+	status_text = "This route no longer matches the room. Begin a new route." if needs_new_route else ""
 	_save_session()
 	_show_game(introduce)
 

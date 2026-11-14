@@ -1326,7 +1326,7 @@ msgid "Holographic Bridges"
 msgstr "全息桥"
 
 msgid "The broken corners are a bridge waiting for light."
-msgstr "青色断角是一座等待点亮的桥。"
+msgstr "断角是一座等待点亮的桥。"
 
 msgid "Your echo approaches the projector."
 msgstr "回声正在接近投影器。"
@@ -1342,3 +1342,66 @@ msgstr "你可以从消失的桥上走到实心地面。"
 
 msgid "Projection requires %s"
 msgstr "投影需要 %s"
+
+msgid "The second wing opens only when the first sends a signal. Record the handoff, then bring both signals back together."
+msgstr "第二翼要等第一翼发出信号才会打开。先录下交接，再让两道信号重新会合。"
+
+msgid "The A door controls entry to the right solar wing. Your B recording needs an earlier A echo."
+msgstr "A 门控制右翼入口。录制 B 路线之前，需要已有的 A 回声。"
+
+msgid "Visit A twice: once to admit the B recording, then again for the final rendezvous. Use the panel loop to time its return."
+msgstr "两次踩到 A：第一次让 B 路线进入右翼，第二次参加最后的会合。用太阳帆内部的小圈调整返回时机。"
+
+msgid "Record UUULLUULDLURDLU, then UUULLULDRRRRRRR. Walk UUULLUULDDRRRUUU."
+msgstr "先录制 UUULLUULDLURDLU，再录制 UUULLULDRRRRRRR，最后走 UUULLUULDDRRRUUU。"
+
+msgid "The outer moon sends two signals in sequence. Open the inner crossing, then light the far tip."
+msgstr "月亮外缘依次发出两道信号。先打开内侧通道，再点亮远端月尖。"
+
+msgid "A opens both entrances to the inner curve. B controls the lower tip; the outer pocket has no path to the exit."
+msgstr "A 打开内弧的两个入口，B 控制下方月尖。外缘的小口袋无法直接通向出口。"
+
+msgid "Let the echo leave A for B after you enter the inner curve. One circuit around the lower pocket brings B back at the right moment."
+msgstr "进入内弧后，让回声离开 A 去往 B。在下方口袋绕一圈，B 就能在你抵达时再次亮起。"
+
+msgid "Record LDLLLLLDLDDDDRDLURD. Walk LDLULLDRDLDDDDDDRRRR."
+msgstr "先录制 LDLLLLLDLDDDDRDLURD，最后走 LDLULLDRDLDDDDDDRRRR。"
+
+msgid "Two isolated stars feed a shared exit. Only their paired portals can carry a recording between the orbits."
+msgstr "两颗分离的恒星共同点亮出口。录制路线必须借成对的传送环，才能跨越轨道。"
+
+msgid "The central shortcut is gone. Both approaches to the exit need A and B; find which portal exit leads toward each post."
+msgstr "中央没有捷径。出口两侧都需要 A 与 B，先找出每个传送出口分别通向哪处踏板。"
+
+msgid "A portal landing does not bounce you back. Walk off the ring before entering it again to choose your next orbit."
+msgstr "到达传送出口不会立刻传回。先走出传送环，再次进入它，才能选择下一段轨道。"
+
+msgid "Record LULLLLDUUU, then LULLLLDDDU. Walk LULLLLLLLLLU."
+msgstr "先录制 LULLLLDUUU，再录制 LULLLLDDDU，最后走 LULLLLLLLLLU。"
+
+msgid "One recording powers the upper blade. A second crosses that light to become the projector for the central iris."
+msgstr "一道录制点亮上方扇叶，第二道借光穿过，成为中央光圈的投影器。"
+
+msgid "A powers the two approaches to B. B powers every entrance to the core. You cannot record the B route first."
+msgstr "A 点亮通往 B 的两条路，B 点亮核心的全部入口。B 路线无法最先录制。"
+
+msgid "Record A, then use that echo to reach B. On the final round, the B echo remembers its crossing even after A has faded."
+msgstr "先录制 A，再借它的回声抵达 B。最后一轮，A 即使已经消散，B 回声仍会重走录下的跨越。"
+
+msgid "Record UULLUULUULDRUL, then UULLUULUURRRUURR. Walk UULLUULULURDLDRRRR."
+msgstr "先录制 UULLUULUULDRUL，再录制 UULLUULUURRRUURR，最后走 UULLUULULURDLDRRRR。"
+
+msgid "The projector order and the crossing order disagree. Rewrite the echo route so the right light arrives first."
+msgstr "投影器的顺序与光桥的顺序并不相同。调整回声路线，让正确的光先抵达。"
+
+msgid "The bridges ask for B, then A, then C. Walking straight past A, B, and C cannot open them in that order."
+msgstr "光桥依次需要 B、A、C。直接沿 A、B、C 向上走，无法按这个顺序点亮它们。"
+
+msgid "Reach B first, return to A, then head toward C. Use the solid landing rows to adjust your own arrival beat."
+msgstr "先去 B，回到 A，再前往 C。利用光桥之间的实心平台调整自己的抵达拍数。"
+
+msgid "Record LLUUUUDDUUUU. Walk RRUULRUUUULRUU."
+msgstr "先录制 LLUUUUDDUUUU，最后走 RRUULRUUUULRUU。"
+
+msgid "This route no longer matches the room. Begin a new route."
+msgstr "原来的路线已不适用于这一关，请从起点重新规划。"

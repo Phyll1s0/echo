@@ -2389,18 +2389,31 @@
           "B"
         ],
         "vacant": []
+      },
+      {
+        "a": [
+          5,
+          3
+        ],
+        "b": [
+          6,
+          3
+        ],
+        "requires": [
+          "A"
+        ]
       }
     ],
     "recordings": [
-      "UUULLUULDDLUU",
-      "UUURRUURDDDRU"
+      "UUULLUULDLURDLU",
+      "UUULLULDRRRRRRR"
     ],
-    "final": "UUULLULDRRRUUU",
-    "intro": "Two solar wings, one rendezvous. Their shapes match; their routes need not.",
+    "final": "UUULLUULDDRRRUUU",
+    "intro": "The second wing opens only when the first sends a signal. Record the handoff, then bring both signals back together.",
     "hints": [
-      "A is near the top of one wing. B sits halfway down the other. Match the arrival beats.",
-      "A small circuit inside a solar panel gives the shorter journey more time.",
-      "Record UUULLUULDDLUU, then UUURRUURDDDRU. Walk UUULLULDRRRUUU."
+      "The A door controls entry to the right solar wing. Your B recording needs an earlier A echo.",
+      "Visit A twice: once to admit the B recording, then again for the final rendezvous. Use the panel loop to time its return.",
+      "Record UUULLUULDLURDLU, then UUULLULDRRRRRRR. Walk UUULLUULDDRRRUUU."
     ]
   },
   {
@@ -2418,10 +2431,36 @@
       "A...####",
       ".##.####",
       "..#..###",
-      "#......#",
+      ".B#....#",
       "###....X"
     ],
     "gates": [
+      {
+        "a": [
+          3,
+          3
+        ],
+        "b": [
+          3,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          2,
+          4
+        ],
+        "b": [
+          3,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      },
       {
         "a": [
           6,
@@ -2432,20 +2471,19 @@
           8
         ],
         "requires": [
-          "A"
-        ],
-        "vacant": []
+          "B"
+        ]
       }
     ],
     "recordings": [
-      "LDLULDDLULLDLDD"
+      "LDLLLLLDLDDDDRDLURD"
     ],
-    "final": "LDLLDLDDDDDDRRRR",
-    "intro": "Follow the silver crescent. One echo reaches its dark edge while you round the inner curve.",
+    "final": "LDLULLDRDLDDDDDDRRRR",
+    "intro": "The outer moon sends two signals in sequence. Open the inner crossing, then light the far tip.",
     "hints": [
-      "The plate is on the outer edge; the exit lies at the lower tip. The crescent offers two paths around its hollow.",
-      "Use the wider upper crescent to delay the echo before it reaches A.",
-      "Record LDLULDDLULLDLDD. Walk LDLLDLDDDDDDRRRR."
+      "A opens both entrances to the inner curve. B controls the lower tip; the outer pocket has no path to the exit.",
+      "Let the echo leave A for B after you enter the inner curve. One circuit around the lower pocket brings B back at the right moment.",
+      "Record LDLLLLLDLDDDDRDLURD. Walk LDLULLDRDLDDDDDDRRRR."
     ]
   },
   {
@@ -2458,26 +2496,40 @@
     "rows": [
       "#####X#####",
       "...........",
-      ".###...###.",
-      ".###.@.###.",
-      ".###...###.",
-      "...........",
-      "#####S#####"
+      ".###.#.###.",
+      "A###.#.###B",
+      ".###.#.###.",
+      ".....#.....",
+      "####.S#####"
     ],
     "gates": [
       {
         "a": [
-          5,
+          4,
           1
         ],
         "b": [
           5,
-          0
+          1
         ],
         "requires": [
-          "@"
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          6,
+          1
         ],
-        "vacant": []
+        "b": [
+          5,
+          1
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
       }
     ],
     "portals": [
@@ -2505,15 +2557,15 @@
       }
     ],
     "recordings": [
-      "URRRRRDDDDLLLLDDL",
-      "ULLLLLDDDDRRRRDDR"
+      "LULLLLDUUU",
+      "LULLLLDDDU"
     ],
-    "final": "UUUUULDDDDRUUULURU",
-    "intro": "Two stars share one lens. Fold each orbit through the opposite star.",
+    "final": "LULLLLLLLLLU",
+    "intro": "Two isolated stars feed a shared exit. Only their paired portals can carry a recording between the orbits.",
     "hints": [
-      "Both recorded routes must meet on L while you approach the upper exit.",
-      "Each portal switches stars. Follow the rings beyond the jump to return to the lens.",
-      "Record URRRRRDDDDLLLLDDL, then ULLLLLDDDDRRRRDDR. Walk UUUUULDDDDRUUULURU."
+      "The central shortcut is gone. Both approaches to the exit need A and B; find which portal exit leads toward each post.",
+      "A portal landing does not bounce you back. Walk off the ring before entering it again to choose your next orbit.",
+      "Record LULLLLDUUU, then LULLLLDDDU. Walk LULLLLLLLLLU."
     ]
   },
   {
@@ -2584,12 +2636,12 @@
     "chapter": "Nexus",
     "chapter_entry": true,
     "art": "aperture",
-    "max_echoes": 1,
+    "max_echoes": 2,
     "rows": [
-      "####...##",
+      "####..B##",
       "####.#.##",
       "A....#.##",
-      ".#####.##",
+      "..####.##",
       "....X....",
       "##.#.###.",
       "##.......",
@@ -2614,19 +2666,35 @@
           ]
         ],
         "requires": [
+          "B"
+        ]
+      },
+      {
+        "cells": [
+          [
+            5,
+            0
+          ],
+          [
+            6,
+            1
+          ]
+        ],
+        "requires": [
           "A"
         ]
       }
     ],
     "recordings": [
-      "UULLUULLUU"
+      "UULLUULUULDRUL",
+      "UULLUULUURRRUURR"
     ],
-    "final": "UURRRRUULLLL",
-    "intro": "A remote projector makes the iris solid. Send your echo along one blade and take another.",
+    "final": "UULLUULULURDLDRRRR",
+    "intro": "One recording powers the upper blade. A second crosses that light to become the projector for the central iris.",
     "hints": [
-      "The broken cyan corners mark a projected tile. A must be occupied before you step onto it.",
-      "If the light goes out beneath you, step off onto a solid tile. You do not need to keep it lit after crossing.",
-      "Record UULLUULLUU. Walk UURRRRUULLLL."
+      "A powers the two approaches to B. B powers every entrance to the core. You cannot record the B route first.",
+      "Record A, then use that echo to reach B. On the final round, the B echo remembers its crossing even after A has faded.",
+      "Record UULLUULUULDRUL, then UULLUULUURRRUURR. Walk UULLUULULURDLDRRRR."
     ]
   },
   {
@@ -2665,7 +2733,7 @@
           ]
         ],
         "requires": [
-          "A"
+          "B"
         ]
       },
       {
@@ -2684,7 +2752,7 @@
           ]
         ],
         "requires": [
-          "B"
+          "A"
         ]
       },
       {
@@ -2708,14 +2776,14 @@
       }
     ],
     "recordings": [
-      "LLUUUUUU"
+      "LLUUUUDDUUUU"
     ],
-    "final": "RRUUUUUUUU",
-    "intro": "Three projectors, three crossings. Walk in step across the empty corridor.",
+    "final": "RRUULRUUUULRUU",
+    "intro": "The projector order and the crossing order disagree. Rewrite the echo route so the right light arrives first.",
     "hints": [
-      "The left corridor carries A, B, and C. Their projections cross the right corridor.",
-      "Keep both journeys in step. A whole row needs the same projector, so changing columns will not skip it.",
-      "Record LLUUUUUU. Walk RRUUUUUUUU."
+      "The bridges ask for B, then A, then C. Walking straight past A, B, and C cannot open them in that order.",
+      "Reach B first, return to A, then head toward C. Use the solid landing rows to adjust your own arrival beat.",
+      "Record LLUUUUDDUUUU. Walk RRUULRUUUULRUU."
     ]
   },
   {

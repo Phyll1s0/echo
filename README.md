@@ -14,9 +14,11 @@ Each chapter has four rooms. [**05 Cloister**](https://phyll1s0.com/echo/?room=3
 
 [**07 Cloudbreak**](https://phyll1s0.com/echo/?room=36) follows two cloud banks. [**18 Afterglow**](https://phyll1s0.com/echo/?room=35) draws a star around two doors that need opposite moments. [**22 Sugar Spiral**](https://phyll1s0.com/echo/?room=34) curls two candy ribbons around a shared centre.
 
-**Chapter X · Orbit** opens with [**37 Satellite**](https://phyll1s0.com/echo/?room=37). Two solar wings lead to a shared rendezvous, a crescent bends around an empty sky, and paired stars exchange routes through portals. **40 Periapsis** closes the chapter with two intersecting rings and a signal that must fade at the right moment.
+**Chapter X · Orbit** opens with [**37 Satellite**](https://phyll1s0.com/echo/?room=37). One solar wing opens the other before their signals reunite, a crescent bends around an empty sky, and paired stars exchange routes through portals. **40 Periapsis** closes the chapter with two intersecting rings and a signal that must fade at the right moment.
 
-**Chapter XI · Nexus** opens with [**41 Aperture**](https://phyll1s0.com/echo/?room=41). In this dark laboratory, pale platforms surround cyan holographic bridges. An echo on the matching projector makes a bridge solid; as it leaves, the bridge dissolves. Follow a moving sequence of light in **42 Hologram**, power the two rings of **43 Reactor**, and cross between the portal docks of **44 Warp**. All eight new rooms are directly accessible; their opening rooms include animated guides.
+**Chapter XI · Nexus** opens with [**41 Aperture**](https://phyll1s0.com/echo/?room=41). In this dark laboratory, slate platforms surround coloured holographic bridges. An echo on the matching projector makes a bridge solid; as it leaves, the bridge dissolves. Use one recording to reach the next projector, untangle a reversed supply order in **42 Hologram**, power the two rings of **43 Reactor**, and cross between the portal docks of **44 Warp**. All eight new rooms are directly accessible; their opening rooms include animated guides.
+
+Orbit uses muted indigo and silver; Nexus uses petrol-blue platforms and restrained light. A is amber, B is ice blue, and C is lavender. Plate letters and bridge labels remain visible, so colour is an additional cue. Powered spans brighten; ordinary floors stay quiet.
 
 ![Eight playable boards: the four orbital compositions above and four holographic puzzles below](docs/images/orbit-nexus.png)
 
@@ -102,7 +104,7 @@ Click a distant plate or hover over it to highlight its linked gates. Matching m
 - In Inferno, lava rotates through four groups, one per successful move. Dot counts identify each tile’s group, and the cycle above the board marks the current group and the next one to sink. A move must land on a tile that is safe **after** the rotation. A submerged tile can rise as you enter it. Invalid input costs no beat; undo, recordings, and saves restore the exact phase.
 - Round arrow switches reverse their linked one-way doors. These doors keep their direction when crossed; only a switch visit changes them. Echoes can operate a switch remotely, and simultaneous visits flip it once. Inspect a switch to see which doors it controls.
 - Stepping onto a diamond swaps the raised and folded bridge banks. You can enter a raised bridge and leave a folded bridge beneath you. Movement uses the bank state at the start of the beat. Multiple actors triggering the shared switch bank on one beat swap it only once.
-- In Nexus, cyan broken corners mark **holographic bridges**. Their labelled projectors must all be occupied before you enter. A lens projector requires two occupants. When power disappears beneath you, you may still step onto another passable tile. A row of connected tiles shares one label, and the light fades with the move.
+- In Nexus, coloured broken corners mark **holographic bridges**. Their labelled projectors must all be occupied before you enter. A lens projector requires two occupants. When power disappears beneath you, you may still step onto another passable tile. A row of connected tiles shares one label, and the light fades with the move.
 - Echoes follow their original recorded routes even after gates or bridges change, and still trigger devices. Each round starts with the initial device state. Undo restores the arrow directions and bridge banks for that beat.
 - Matching broken rings labelled **I** or **II** are paired portals. Enter one to appear at the other end on the same beat. Arriving at the exit does not bounce you back. Hover over or inspect a ring to highlight its partner. An overlaid lens or current sits inside the outer portal arcs.
 - **Arrow currents** carry you in their indicated directions until an ordinary tile. You cannot stop or steer halfway through. A portal exit can feed into a current and another portal; the whole chain is still one beat, and each echo advances only once. Hovering over an adjacent entry previews the path and final landing.
@@ -154,12 +156,12 @@ In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to brow
 |  | 34 Rose Window | Split the reflections between two petals, then reunite them on the central lens |
 |  | 35 Understudy | Let one echo fade while the other returns to a plate |
 |  | 36 Triptych | Coordinate three recordings across the upper gallery and a remote switch |
-| X · Orbit | 37 Satellite | Give two solar wings different routes that reach their posts together |
-|  | 38 Crescent | Follow the inner curve while an echo loops around the moon's outer edge |
-|  | 39 Binary | Exchange orbits through paired portals, then meet both echoes at the shared lens |
+| X · Orbit | 37 Satellite | Use A to record the right wing, then return A for the final two-signal rendezvous |
+|  | 38 Crescent | Let A admit you to the inner curve, then revisit B as you reach the far tip |
+|  | 39 Binary | Cross isolated orbits through portals to power both approaches to the shared exit |
 |  | 40 Periapsis | Enter the rings with both signals present, then let one disappear |
-| XI · Nexus | 41 Aperture | Light a projected iris from another blade of the board |
-|  | 42 Hologram | Keep two journeys in step to cross three successive bands of light |
+| XI · Nexus | 41 Aperture | Record A to reach B, then replay B to light the central iris |
+|  | 42 Hologram | Supply B, then A, then C by revisiting earlier projectors and adjusting on the landing rows |
 |  | 43 Reactor | Enter the outer ring under one signal, then power the core with two |
 |  | 44 Warp | Fold opposite docks together and approach the projected centre from another side |
 
@@ -202,7 +204,7 @@ BROWSER=webkit node tools/check_web.cjs
 node tools/check_transport_web.cjs
 ```
 
-Set `ECHO_ROOMS=37,38,39,40,41,42,43,44` to run the browser route check on both new chapters. Projection-specific tests cover extinguishing beneath a player, lens power, portal landings, blocked currents, restart, undo, and reload.
+Set `ECHO_ROOMS=37,38,39,40,41,42,43,44` to run the browser route check on both new chapters. Design checks also prevent the old central shortcut in Binary, require earlier recordings to reach B in Satellite and Aperture, and reject the straight projector route in Hologram. When a redesigned room cannot replay an older draft, it starts a new route with an explanation; completed progress is retained. Projection-specific tests cover extinguishing beneath a player, lens power, portal landings, blocked currents, restart, undo, and reload.
 
 Set `BROWSER_EXECUTABLE` if using a locally installed browser, and `ECHO_URL` to test a deployed build. `--touch` enables the pad in the native game for layout inspection.
 
