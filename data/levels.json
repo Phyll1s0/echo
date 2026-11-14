@@ -2357,5 +2357,518 @@
     ],
     "legacy_id": "X03",
     "chapter_entry": true
+  },
+  {
+    "id": "37",
+    "title": "Satellite",
+    "chapter": "Orbit",
+    "chapter_entry": true,
+    "art": "satellite",
+    "max_echoes": 2,
+    "rows": [
+      "#####X#####",
+      ".A..#.#....",
+      "....#.#....",
+      ".........B.",
+      "....#.#....",
+      "....#.#....",
+      "#####S#####"
+    ],
+    "gates": [
+      {
+        "a": [
+          5,
+          1
+        ],
+        "b": [
+          5,
+          0
+        ],
+        "requires": [
+          "A",
+          "B"
+        ],
+        "vacant": []
+      }
+    ],
+    "recordings": [
+      "UUULLUULDDLUU",
+      "UUURRUURDDDRU"
+    ],
+    "final": "UUULLULDRRRUUU",
+    "intro": "Two solar wings, one rendezvous. Their shapes match; their routes need not.",
+    "hints": [
+      "A is near the top of one wing. B sits halfway down the other. Match the arrival beats.",
+      "A small circuit inside a solar panel gives the shorter journey more time.",
+      "Record UUULLUULDDLUU, then UUURRUURDDDRU. Walk UUULLULDRRRUUU."
+    ]
+  },
+  {
+    "id": "38",
+    "title": "Crescent",
+    "chapter": "Orbit",
+    "chapter_entry": true,
+    "art": "crescent",
+    "max_echoes": 1,
+    "rows": [
+      "###....S",
+      "#......#",
+      "..#..###",
+      ".##.####",
+      "A...####",
+      ".##.####",
+      "..#..###",
+      "#......#",
+      "###....X"
+    ],
+    "gates": [
+      {
+        "a": [
+          6,
+          8
+        ],
+        "b": [
+          7,
+          8
+        ],
+        "requires": [
+          "A"
+        ],
+        "vacant": []
+      }
+    ],
+    "recordings": [
+      "LDLULDDLULLDLDD"
+    ],
+    "final": "LDLLDLDDDDDDRRRR",
+    "intro": "Follow the silver crescent. One echo reaches its dark edge while you round the inner curve.",
+    "hints": [
+      "The plate is on the outer edge; the exit lies at the lower tip. The crescent offers two paths around its hollow.",
+      "Use the wider upper crescent to delay the echo before it reaches A.",
+      "Record LDLULDDLULLDLDD. Walk LDLLDLDDDDDDRRRR."
+    ]
+  },
+  {
+    "id": "39",
+    "title": "Binary",
+    "chapter": "Orbit",
+    "chapter_entry": true,
+    "art": "binary",
+    "max_echoes": 2,
+    "rows": [
+      "#####X#####",
+      "...........",
+      ".###...###.",
+      ".###.@.###.",
+      ".###...###.",
+      "...........",
+      "#####S#####"
+    ],
+    "gates": [
+      {
+        "a": [
+          5,
+          1
+        ],
+        "b": [
+          5,
+          0
+        ],
+        "requires": [
+          "@"
+        ],
+        "vacant": []
+      }
+    ],
+    "portals": [
+      {
+        "id": "I",
+        "a": [
+          0,
+          1
+        ],
+        "b": [
+          10,
+          5
+        ]
+      },
+      {
+        "id": "II",
+        "a": [
+          10,
+          1
+        ],
+        "b": [
+          0,
+          5
+        ]
+      }
+    ],
+    "recordings": [
+      "URRRRRDDDDLLLLDDL",
+      "ULLLLLDDDDRRRRDDR"
+    ],
+    "final": "UUUUULDDDDRUUULURU",
+    "intro": "Two stars share one lens. Fold each orbit through the opposite star.",
+    "hints": [
+      "Both recorded routes must meet on L while you approach the upper exit.",
+      "Each portal switches stars. Follow the rings beyond the jump to return to the lens.",
+      "Record URRRRRDDDDLLLLDDL, then ULLLLLDDDDRRRRDDR. Walk UUUUULDDDDRUUULURU."
+    ]
+  },
+  {
+    "id": "40",
+    "title": "Periapsis",
+    "chapter": "Orbit",
+    "chapter_entry": true,
+    "art": "periapsis",
+    "max_echoes": 2,
+    "rows": [
+      "###.....###",
+      "###.###.###",
+      ".....#.....",
+      "A##.#X#.##B",
+      ".##.#.#.##.",
+      ".##.#.#.##.",
+      "...........",
+      "###.#.#.###",
+      "###..S..###"
+    ],
+    "gates": [
+      {
+        "a": [
+          5,
+          6
+        ],
+        "b": [
+          5,
+          5
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "a": [
+          5,
+          4
+        ],
+        "b": [
+          5,
+          3
+        ],
+        "requires": [
+          "B"
+        ],
+        "vacant": [
+          "A"
+        ]
+      }
+    ],
+    "recordings": [
+      "LLUULLLUUU",
+      "RRUURRRUUUUD"
+    ],
+    "final": "UULLDDRRUUUUU",
+    "intro": "Meet at the near side of the rings. Then let one signal disappear.",
+    "hints": [
+      "The first door needs A and B. The last needs B with A empty.",
+      "End the A route at its plate. Give B one later return so it can outlast A.",
+      "Record LLUULLLUUU, then RRUURRRUUUUD. Walk UULLDDRRUUUUU."
+    ]
+  },
+  {
+    "id": "41",
+    "title": "Aperture",
+    "chapter": "Nexus",
+    "chapter_entry": true,
+    "art": "aperture",
+    "max_echoes": 1,
+    "rows": [
+      "####...##",
+      "####.#.##",
+      "A....#.##",
+      ".#####.##",
+      "....X....",
+      "##.#.###.",
+      "##.......",
+      "####.####",
+      "####S####"
+    ],
+    "gates": [],
+    "projections": [
+      {
+        "cells": [
+          [
+            3,
+            4
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            5,
+            4
+          ]
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "recordings": [
+      "UULLUULLUU"
+    ],
+    "final": "UURRRRUULLLL",
+    "intro": "A remote projector makes the iris solid. Send your echo along one blade and take another.",
+    "hints": [
+      "The broken cyan corners mark a projected tile. A must be occupied before you step onto it.",
+      "If the light goes out beneath you, step off onto a solid tile. You do not need to keep it lit after crossing.",
+      "Record UULLUULLUU. Walk UURRRRUULLLL."
+    ]
+  },
+  {
+    "id": "42",
+    "title": "Hologram",
+    "chapter": "Nexus",
+    "chapter_entry": true,
+    "art": "hologram",
+    "max_echoes": 1,
+    "rows": [
+      "#####X#",
+      "...#...",
+      ".C.#...",
+      "...#...",
+      ".B.#...",
+      "...#...",
+      ".A.#...",
+      "#.###.#",
+      "#..S..#"
+    ],
+    "gates": [],
+    "projections": [
+      {
+        "cells": [
+          [
+            4,
+            5
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            6,
+            5
+          ]
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "cells": [
+          [
+            4,
+            3
+          ],
+          [
+            5,
+            3
+          ],
+          [
+            6,
+            3
+          ]
+        ],
+        "requires": [
+          "B"
+        ]
+      },
+      {
+        "cells": [
+          [
+            4,
+            1
+          ],
+          [
+            5,
+            1
+          ],
+          [
+            6,
+            1
+          ]
+        ],
+        "requires": [
+          "C"
+        ]
+      }
+    ],
+    "recordings": [
+      "LLUUUUUU"
+    ],
+    "final": "RRUUUUUUUU",
+    "intro": "Three projectors, three crossings. Walk in step across the empty corridor.",
+    "hints": [
+      "The left corridor carries A, B, and C. Their projections cross the right corridor.",
+      "Keep both journeys in step. A whole row needs the same projector, so changing columns will not skip it.",
+      "Record LLUUUUUU. Walk RRUUUUUUUU."
+    ]
+  },
+  {
+    "id": "43",
+    "title": "Reactor",
+    "chapter": "Nexus",
+    "chapter_entry": true,
+    "art": "reactor",
+    "max_echoes": 2,
+    "rows": [
+      "A.......B",
+      "..##.##..",
+      ".#.....#.",
+      ".#..#..#.",
+      "....X....",
+      ".#.###.#.",
+      ".#.....#.",
+      ".###.###.",
+      "....S...."
+    ],
+    "gates": [],
+    "projections": [
+      {
+        "cells": [
+          [
+            1,
+            4
+          ],
+          [
+            4,
+            1
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            7,
+            4
+          ]
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "cells": [
+          [
+            3,
+            4
+          ],
+          [
+            5,
+            4
+          ]
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      }
+    ],
+    "recordings": [
+      "LLLLUUUUUUUURDLU",
+      "RRRRUUUUUUUULDRU"
+    ],
+    "final": "LLLLUUUUUUDDRRURDR",
+    "intro": "A powers the outer span. A and B together project the path into the core.",
+    "hints": [
+      "Give each echo a path around the outside. Visit A again while you are already inside the first ring.",
+      "A short circuit around each upper corner can bring both echoes back for the inner span.",
+      "Record LLLLUUUUUUUURDLU, then RRRRUUUUUUUULDRU. Walk LLLLUUUUUUDDRRURDR."
+    ]
+  },
+  {
+    "id": "44",
+    "title": "Warp",
+    "chapter": "Nexus",
+    "chapter_entry": true,
+    "art": "warp",
+    "max_echoes": 2,
+    "rows": [
+      "A..###..B",
+      ".........",
+      "...#.#...",
+      "#.##.##.#",
+      "#...X...#",
+      "#.##.##.#",
+      "...#.#...",
+      "....S....",
+      "...###..."
+    ],
+    "gates": [],
+    "portals": [
+      {
+        "id": "I",
+        "a": [
+          0,
+          6
+        ],
+        "b": [
+          6,
+          0
+        ]
+      },
+      {
+        "id": "II",
+        "a": [
+          8,
+          6
+        ],
+        "b": [
+          2,
+          0
+        ]
+      }
+    ],
+    "projections": [
+      {
+        "cells": [
+          [
+            3,
+            4
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            5,
+            4
+          ]
+        ],
+        "requires": [
+          "A",
+          "B"
+        ]
+      }
+    ],
+    "recordings": [
+      "LLULLDLLLLLUL",
+      "RRURRDRRRRRUR"
+    ],
+    "final": "LLULUUUUURRRDDD",
+    "intro": "The portal docks fold opposite corners together. Rejoin through a bridge made of light.",
+    "hints": [
+      "Either portal carries you to the opposite upper island. Both upper posts power the central spans.",
+      "Record a visit to each upper post, then choose a dock and approach the core from another side.",
+      "Record LLULLDLLLLLUL, then RRURRDRRRRRUR. Walk LLULUUUUURRRDDD."
+    ]
   }
 ]

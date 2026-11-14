@@ -5,6 +5,110 @@ signal playback_changed
 const Puzzle = preload("res://scripts/puzzle.gd")
 const Board = preload("res://scripts/board.gd")
 const PAGES := {
+	"Orbit": [
+		{
+			"title": "Orbital Rendezvous",
+			"body": "Two routes can have different shapes and still reach their posts on the same beat. Record each journey, then cross while both signals are present.",
+			"rows": [
+				"A..S..B",
+				"###.###",
+				"###X###"
+			],
+			"gates": [
+				{
+					"a": [
+						3,
+						1
+					],
+					"b": [
+						3,
+						2
+					],
+					"requires": [
+						"A",
+						"B"
+					]
+				}
+			],
+			"recordings": [
+				"LLL",
+				"RRR"
+			],
+			"steps": [
+				[
+					"",
+					"Both wings have a recorded route."
+				],
+				[
+					"D",
+					"Take the short path toward the exit."
+				],
+				[
+					"U",
+					"One extra loop changes your arrival beat."
+				],
+				[
+					"D",
+					"Both signals arrive together. Cross next."
+				],
+				[
+					"D",
+					"The rendezvous needs to last only for the crossing."
+				]
+			]
+		}
+	],
+	"Nexus": [
+		{
+			"title": "Holographic Bridges",
+			"body": "A projector makes its matching holographic tiles solid before your move. When its last occupant leaves, the light fades. You can step off a vanished tile; echoes finish their recorded routes.",
+			"rows": [
+				"#A####",
+				"#.####",
+				"#S...X"
+			],
+			"gates": [],
+			"projections": [
+				{
+					"cells": [
+						[
+							4,
+							2
+						]
+					],
+					"requires": [
+						"A"
+					]
+				}
+			],
+			"recordings": [
+				"UU"
+			],
+			"steps": [
+				[
+					"",
+					"The broken corners are a bridge waiting for light."
+				],
+				[
+					"R",
+					"Your echo approaches the projector."
+				],
+				[
+					"R",
+					"A is occupied. The bridge becomes solid."
+				],
+				[
+					"R",
+					"Cross now. The echo fades and the light switches off beneath you."
+				],
+				[
+					"R",
+					"You can step off the vanished bridge onto solid ground."
+				]
+			]
+		}
+	],
+
 	"Afterimage": [{
 		"title": "Leave an Echo",
 		"body": "Each move advances one beat. Choose Leave an Echo to save your route and return to the start.\nThe hollow ring replays your steps, then fades one beat after its route ends.",

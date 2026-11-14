@@ -14,6 +14,7 @@ var direction_switches: Dictionary = {}
 var controlled_turnstiles: Array[int] = []
 var switches: Array[Vector2i] = []
 var bridges: Dictionary = {}
+var projections: Dictionary = {}
 var lava: Dictionary = {}
 var lava_groups := 0
 var portals: Dictionary = {}
@@ -49,6 +50,7 @@ func configure(data: Dictionary) -> void:
 	for index in level.get("controlled_turnstiles", []): controlled_turnstiles.append(int(index))
 	switches.clear()
 	bridges.clear()
+	projections.clear()
 	lava.clear()
 	portals.clear()
 	portal_labels.clear()
@@ -81,6 +83,9 @@ func configure(data: Dictionary) -> void:
 				bridges[cell] = 0 if mark == "a" else 1
 			elif mark != ".":
 				plates[mark] = cell
+	for projection in level.get("projections", []):
+		for point in projection.cells:
+			projections[Vector2i(int(point[0]), int(point[1]))] = projection.requires.duplicate()
 	for item in level.gates:
 		gates.append({"a": Vector2i(int(item.a[0]), int(item.a[1])), "b": Vector2i(int(item.b[0]), int(item.b[1])), "requires": item.requires.duplicate(), "vacant": item.get("vacant", []).duplicate()})
 	for edge in level.get("turnstiles", []):
@@ -152,6 +157,12 @@ func mechanism_state() -> int:
 func bridge_active(cell: Vector2i, state: int) -> bool:
 	return not bridges.has(cell) or bridges[cell] == (state & 1)
 
+func projection_active(cell: Vector2i) -> bool:
+	for id in projections.get(cell, []):
+		if not plate_on(id):
+			return false
+	return true
+
 func lava_phase(at_tick: int = -1) -> int:
 	return posmod(tick() if at_tick < 0 else at_tick, lava_groups) if lava_groups > 0 else -1
 
@@ -201,6 +212,8 @@ func _landing_reason(destination: Vector2i) -> String:
 	# live player on the group sinking this beat. Rejected input costs no beat.
 	if not lava_safe(destination, tick() + 1):
 		return "That group sinks on the next beat."
+	if not projection_active(destination):
+		return "This holographic bridge needs its projector."
 	if not bridge_active(destination, mechanism_state()):
 		return "This bridge is folded."
 	return ""

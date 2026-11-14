@@ -32,6 +32,13 @@ func _run() -> void:
 		await settle()
 		await click(ui.board.global_position + ui.board.center_of(ui.session.plates["@"]))
 		verify(ui.board.selected_plate == "@" and ui.board.selected_portal == ui.session.plates["@"], "An overlapping lens and portal can both be inspected")
+		ui.open_level(ui.room_index("43"), false, false)
+		await settle()
+		snapshot = ui.session.snapshot()
+		var projected := Vector2i(3,4)
+		await click(ui.board.global_position + ui.board.center_of(projected))
+		verify(ui.board.selected_projection == projected and ui.status_text == "Projection requires A + B", "A projected span reveals both power sources")
+		verify(ui.session.snapshot() == snapshot, "Inspecting a projection preserves the beat and recordings")
 	# The twofold composition offers distinct, legal plans for either door.
 	root.size = Vector2i(390,664)
 	for plan in JSON.parse_string(FileAccess.get_file_as_string("res://tests/composition_routes.json")):

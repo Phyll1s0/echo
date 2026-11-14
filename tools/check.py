@@ -28,6 +28,7 @@ run([sys.executable, "tools/verify_levels.py"], "X04 Switchyard")
 run([godot, "--headless", "--editor", "--import", "--path", "."])
 run([godot, "--headless", "--path", ".", "--script", "tests/test_rules.gd"], "0 failures.")
 run([godot, "--headless", "--path", ".", "--script", "tests/test_transport.gd"], "0 failures.")
+run([godot, "--headless", "--path", ".", "--script", "tests/test_projections.gd"], "0 failures.")
 ui_args = ([godot] if args.visual else [godot, "--headless"]) + [
     "--path", ".", "--script", "tests/test_ui.gd"]
 if args.visual:

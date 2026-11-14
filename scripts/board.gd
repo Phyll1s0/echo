@@ -24,6 +24,7 @@ var selected_plate := ""
 var selected_switch := VOID_CELL
 var selected_portal := VOID_CELL
 var selected_gate := -1
+var selected_projection := VOID_CELL
 var hover := VOID_CELL
 var previous: Array = []
 var previous_gates: Array = []
@@ -34,7 +35,8 @@ func set_colors(colors: Dictionary) -> void:
 	floor_color = colors.tile
 	grid_color = colors.grid
 	active = colors.light
-	var night: bool = colors.get("dark", false)
+	var night: bool = colors.get("dark", false) and not colors.get("paper_tiles", false)
+	if colors.get("paper_tiles", false): active = Color("075a6c")
 	ink = Color("f2f4f3") if night else Color("242d30")
 	muted = Color("abb9c3") if night else Color("66777c")
 	player_fill = Color("e5f0f7") if night else Color("263135")
@@ -108,6 +110,7 @@ func _gui_input(event: InputEvent) -> void:
 		var gate_index := gate_at(event.position)
 		selected_gate = -1
 		selected_plate = ""
+		selected_projection = VOID_CELL
 		selected_switch = VOID_CELL
 		selected_portal = VOID_CELL
 		if gate_index >= 0:
@@ -115,6 +118,10 @@ func _gui_input(event: InputEvent) -> void:
 			inspection_changed.emit("Gate requires " + gate_condition(puzzle.gates[gate_index]))
 		elif absi(delta.x) + absi(delta.y) == 1 and cell in puzzle.floor_cells:
 			move_requested.emit(delta)
+		elif cell in puzzle.projections:
+			var required: Array = puzzle.projections[cell]
+			selected_projection = cell
+			inspection_changed.emit("Projection requires " + " + ".join(PackedStringArray(required)).replace("@", "L"))
 		elif cell in puzzle.plates.values():
 			selected_plate = puzzle.plates.find_key(cell)
 			if cell in puzzle.portals: selected_portal = cell
@@ -221,10 +228,96 @@ func _draw_gate_conditions(gate: Dictionary, unit: float, highlighted: bool) -> 
 			draw_line(center - Vector2(r + item.minus, 0), center - Vector2(r + 1, 0), color, 1.4, true)
 
 # Printed scenery sits behind every tile; it never covers a door or marks a move.
+func _draw_projection(cell: Vector2i, rect: Rect2, unit: float) -> void:
+	var enabled: bool = puzzle.projection_active(cell)
+	var light := Color("6ddce8")
+	var strength := 1.0 if enabled else 0.0
+	if phase < 1.0:
+		var was_enabled := true
+		for id in puzzle.projections[cell]:
+			var count := previous.count(puzzle.plates[id])
+			if count < (2 if id == puzzle.LENS else 1): was_enabled = false
+		strength = lerpf(1.0 if was_enabled else 0.0, strength, smoothstep(0.0, 1.0, phase))
+	if strength > 0.0:
+		draw_rect(rect, Color(Color("b4e8ed"), strength))
+		draw_rect(rect, Color(Color("599bab"), strength), false, 1.4, true)
+		for n in [-1,0,1]:
+			var y: float = rect.get_center().y + n * unit * 0.16
+			draw_line(Vector2(rect.position.x+unit*0.12,y),Vector2(rect.end.x-unit*0.12,y),Color(Color("4ca0ae"),strength),1.0,true)
+	if strength < 1.0:
+		for corner in [Vector2(-1,-1),Vector2(1,-1),Vector2(1,1),Vector2(-1,1)]:
+			var tip: Vector2 = rect.get_center() + corner * rect.size * 0.5
+			draw_line(tip,tip-Vector2(corner.x*unit*0.19,0),light,1.5,true)
+			draw_line(tip,tip-Vector2(0,corner.y*unit*0.19),light,1.5,true)
+	var left := cell.x
+	var right := cell.x
+	while puzzle.projections.get(Vector2i(left-1,cell.y),[]) == puzzle.projections[cell]: left -= 1
+	while puzzle.projections.get(Vector2i(right+1,cell.y),[]) == puzzle.projections[cell]: right += 1
+	if cell.x != floori((left+right)/2.0): return
+	var label := "".join(PackedStringArray(puzzle.projections[cell])).replace("@","L")
+	if unit < 27:
+		for i in label.length():
+			var dot := rect.get_center() + Vector2((i-(label.length()-1)*0.5)*4.0,-unit*0.22)
+			draw_circle(dot, 1.2, Color("164b59") if enabled else light, true, -1, true)
+		return
+	var px := maxi(10,roundi(unit*0.17))
+	var width := font.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,px).x
+	var point := rect.get_center()+Vector2(-width*0.5,px*0.34)
+	if enabled or cell in puzzle.occupied(): point = rect.position+Vector2(unit*0.08,px)
+	draw_string(font,point,label,HORIZONTAL_ALIGNMENT_LEFT,-1,px,Color("164b59") if enabled else light)
+
+func _draw_ellipse(centre: Vector2, radii: Vector2, color: Color, angle: float = 0.0) -> void:
+	var points := PackedVector2Array()
+	for i in 101:
+		var theta := TAU * i / 100.0
+		points.append(centre + (Vector2(cos(theta),sin(theta))*radii).rotated(angle))
+	draw_polyline(points,color,1.2,true)
+
 func _draw_room_print(unit: float) -> void:
 	var centre := center_of(Vector2i(puzzle.columns >> 1, puzzle.rows >> 1))
 	var line := Color(active, 0.27)
 	match puzzle.level.get("art", ""):
+		"satellite":
+			var hub := center_of(Vector2i(5,3))
+			draw_line(hub+Vector2(0,-unit*2.6),hub+Vector2(0,unit*2.5),Color(active,0.25),unit*0.34,true)
+			for x in [1,9]:
+				var panel := Rect2(center_of(Vector2i(x,3))-Vector2(unit*1.42,unit*2.42),Vector2(unit*2.84,unit*4.84))
+				draw_rect(panel,Color(active,0.16),false,1.2,true)
+		"crescent":
+			var moon := center_of(Vector2i(3,4))
+			draw_arc(moon,unit*3.9,PI*0.4,PI*1.6,96,Color(active,0.26),1.2,true)
+			draw_arc(moon+Vector2(unit*3.4,0),unit*3.9,PI*0.61,PI*1.39,96,Color(active,0.18),1.2,true)
+		"binary":
+			for x in [2,8]:
+				var sun := center_of(Vector2i(x,3))
+				var color := Color("e9c58b") if x == 2 else Color("9fd6ff")
+				draw_circle(sun,unit*0.52,Color(color,0.10),true,-1,true)
+				draw_arc(sun,unit*0.52,0,TAU,64,Color(color,0.6),1.3,true)
+				_draw_ellipse(sun,Vector2(2.1,2.1)*unit,Color(color,0.20))
+		"periapsis":
+			_draw_ellipse(centre,Vector2(4.8,2.2)*unit,Color(active,0.24))
+			_draw_ellipse(centre,Vector2(2.0,4.0)*unit,Color(active,0.20))
+		"aperture":
+			var core := center_of(Vector2i(4,4))
+			for n in 4:
+				var blade := PackedVector2Array()
+				for p in [Vector2(1,0.7),Vector2(1.8,2.1),Vector2(3.6,2.1)]:
+					blade.append(core+p.rotated(n*PI/2)*unit)
+				draw_polyline(blade,Color("5ec4d5",0.27),1.4,true)
+			draw_arc(core,unit*1.45,0,TAU,80,Color("5ec4d5",0.20),1.3,true)
+		"hologram":
+			var left := center_of(Vector2i(1,4))
+			var right := center_of(Vector2i(5,4))
+			for side in [left,right]:
+				draw_line(side-Vector2(0,unit*3.3),side+Vector2(0,unit*3.7),Color("73ddea",0.25),unit*0.22,true)
+		"reactor":
+			for radius in [1.5,3.5]:
+				draw_arc(centre,unit*radius,0,TAU,96,Color("73ddea",0.17),1.3,true)
+		"warp":
+			for x in [1,7]:
+				for y in [1,7]:
+					var dock := center_of(Vector2i(x,y))
+					draw_arc(dock,unit*1.73,0,TAU,72,Color("73ddea",0.28),1.3,true)
 		"sugar_spiral":
 			var candy := center_of(Vector2i(4, 3))
 			var ribbon := PackedVector2Array()
@@ -282,6 +375,7 @@ func _draw() -> void:
 	var player: Vector2i = puzzle.player()
 	var state: int = puzzle.mechanism_state()
 	var inspected := selected_plate
+	var inspected_projection: Vector2i = hover if hover in puzzle.projections else selected_projection
 	if hover in puzzle.plates.values(): inspected = puzzle.plates.find_key(hover)
 	var linked_switch: Vector2i = hover if hover in puzzle.switches or hover in puzzle.direction_switches else selected_switch
 	var inspected_portal: Vector2i = hover if hover in puzzle.portals else selected_portal
@@ -291,6 +385,10 @@ func _draw() -> void:
 	if puzzle.lava_groups > 0: _draw_lava_cycle()
 	for cell in puzzle.floor_cells:
 		var rect := Rect2(center_of(cell) - Vector2.ONE * (unit - gap) * 0.5, Vector2.ONE * (unit - gap))
+		if cell in puzzle.projections:
+			_draw_projection(cell, rect, unit)
+			if inspected in puzzle.projections[cell]: _highlight_cell(cell, unit)
+			continue
 		if puzzle.lava.has(cell):
 			_draw_lava(cell, rect)
 			continue
@@ -299,6 +397,11 @@ func _draw() -> void:
 			continue
 		var fill := floor_color
 		match puzzle.level.get("art", ""):
+			"satellite":
+				if cell.x < 4 or cell.x > 6:
+					fill = Color("1c4465") if (cell.x+cell.y)%2 == 0 else Color("173b59")
+			"binary":
+				fill = floor_color.lerp(Color("ba945d") if cell.x < 5 else Color("72b1df"),0.08)
 			"sugar_spiral":
 				if cell.y >= 8 or posmod(cell.x - cell.y, 5) <= 1:
 					fill = floor_color.lerp(Color("fff8ed"), 0.70)
@@ -340,7 +443,7 @@ func _draw() -> void:
 	for id in puzzle.plates:
 		var cell: Vector2i = puzzle.plates[id]
 		_draw_plate(id, unit)
-		if id == inspected: _highlight_cell(cell, unit)
+		if id == inspected or id in puzzle.projections.get(inspected_projection, []): _highlight_cell(cell, unit)
 		if inspected_gate >= 0 and (id in puzzle.gates[inspected_gate].requires or id in puzzle.gates[inspected_gate].vacant):
 			_highlight_cell(cell, unit)
 	var exit_center := center_of(puzzle.goal)
@@ -392,8 +495,12 @@ func _draw() -> void:
 			visibility = pose.alpha
 		if n == 0:
 			var radius := unit * 0.125 * scale_
-			draw_circle(center, radius, Color(player_fill, visibility), true, -1, true)
-			draw_arc(center, radius, 0, TAU, 64, Color(piece_edge, visibility), maxf(1.6, unit * 0.024), true)
+			# Keep the live piece visible when a projection fades beneath it.
+			var over_dark_projection: bool = target in puzzle.projections and not puzzle.projection_active(target)
+			var live_fill := Color("d6f8ff") if over_dark_projection else player_fill
+			var live_edge := Color.WHITE if over_dark_projection else piece_edge
+			draw_circle(center, radius, Color(live_fill, visibility), true, -1, true)
+			draw_arc(center, radius, 0, TAU, 64, Color(live_edge, visibility), maxf(1.6, unit * 0.024), true)
 		else:
 			var alpha := (1.0 - eased if target == null else 1.0) * visibility
 			var radius := unit * (0.18 + (n - 1) * 0.065) * scale_

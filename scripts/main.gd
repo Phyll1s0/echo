@@ -22,7 +22,7 @@ const CHOICES := {
 	"room_titles": ["Off", "1 s", "1.5 s", "2 s"],
 	"path_weight": ["Faint", "Standard", "Bold"]
 }
-const ROMAN := ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"]
+const ROMAN := ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"]
 const EXTRA := "Extra"
 var chapters: Array[String] = []
 var campaign_levels: Array
@@ -303,6 +303,8 @@ func _chapter_heading(chapter: String, alignment: HorizontalAlignment) -> VBoxCo
 	heading.add_theme_constant_override("separation", 0)
 	var chapter_color: Color = Atmosphere.WORLDS.get(chapter, {}).get("light", muted)
 	if chapter == "Nocturne" and not dark: chapter_color = muted
+	if chapter == "Orbit" and not dark: chapter_color = Color("48617e")
+	if chapter == "Nexus" and not dark: chapter_color = Color("276977")
 	if chapter == "Inferno" and not dark: chapter_color = Color("a34c35")
 	if chapter != EXTRA:
 		heading.add_child(text_label(_chapter_label(chapter), 17, chapter_color, alignment))
@@ -667,6 +669,8 @@ func _refresh() -> void:
 	capacity_label.text = tr("  /  Echoes  %d / %d") % [session.echoes.size(), session.level.max_echoes]
 	message_label.text = tr(status_text)
 	message_label.visible = not compact_ui() or not status_text.is_empty()
+	if status_text.begins_with("Projection requires "):
+		message_label.text = tr("Projection requires %s") % status_text.trim_prefix("Projection requires ")
 	if status_text.begins_with("Gate requires "):
 		message_label.text = tr("Gate requires %s") % status_text.trim_prefix("Gate requires ")
 	elif status_text.begins_with("Gate needs empty "):
@@ -1120,10 +1124,12 @@ func _close_chapter_guide() -> void:
 func show_help() -> void:
 	var back: Callable = show_settings
 	var silence: bool = screen == "game" and session.gates.any(func(gate): return not gate.vacant.is_empty())
-	if screen == "game" and (silence or session.lava_groups > 0 or not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS) or not session.portals.is_empty() or not session.currents.is_empty()):
+	if screen == "game" and (not session.projections.is_empty() or silence or session.lava_groups > 0 or not session.turnstiles.is_empty() or not session.switches.is_empty() or session.plates.has(Puzzle.LENS) or not session.portals.is_empty() or not session.currents.is_empty()):
 		var rules := PackedStringArray(["Choose a direction each beat. Tap Leave an Echo to record your route. Undo takes back a beat; Pause offers hints and Restart Room." if touch_controls else "Choose a direction each beat. Press Enter to leave an echo. Z undoes a beat. R restarts the room and clears all echoes."])
 		if not session.portals.is_empty() or not session.currents.is_empty():
 			rules.append("Matching portal rings connect distant tiles. Arrows carry you to an ordinary tile. A whole chain is one beat; if any part is blocked, the move is cancelled. Echoes remember the complete route.")
+		if not session.projections.is_empty():
+			rules.append("A projector makes its matching holographic tiles solid before your move. When its last occupant leaves, the light fades. You can step off a vanished tile; echoes finish their recorded routes.")
 		if session.lava_groups > 0:
 			rules.append("Lava advances one group per move. Match the dots on tiles to the cycle above the board. The triangle marks the group sinking next; choose a tile that is safe when you land. Invalid moves cost no beat.")
 		if silence:

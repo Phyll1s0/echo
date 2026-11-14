@@ -4,7 +4,7 @@ Every step you take moves your past selves, too.
 
 **[Play in your browser](https://phyll1s0.com/echo/)** — on desktop or phone.
 
-ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through thirty-six rooms across nine chapters, plus two optional Extra challenges, Switchyard and Paradox. There is no time pressure: the world advances only when you move.
+ECHO is a minimalist, turn-based puzzle game built with Godot 4.6.2. Record a route, leave an echo, and work alongside your previous selves to open a way through forty-four rooms across eleven chapters, plus two optional Extra challenges, Switchyard and Paradox. There is no time pressure: the world advances only when you move.
 
 Paper-white backgrounds, dark ink, and sparse dots frame the interface. The first four chapters explore pale green forests, blue seas, sandy hills, and a violet eclipse. Chapter V, **Nocturne**, shifts to black backgrounds and bright pieces. Chapter VI, **Wonderland**, adds coral-pink paper, a playable Ferris wheel with a switch at the axle, and a carousel controlled from another branch. Chapter VII, **Inferno**, pairs charcoal and ember orange with four groups of sinking lava tiles. The interface defaults to English, with Simplified Chinese available in Settings.
 
@@ -13,6 +13,12 @@ Chapter VIII, **Slipstream**, uses cool jade paper, broken orbits, and flowing l
 Each chapter has four rooms. [**05 Cloister**](https://phyll1s0.com/echo/?room=30) introduces the two-echo harmonies of Resonance. In Wonderland, [**21 Ferris Wheel**](https://phyll1s0.com/echo/?room=32) sends one rider through the axle and the other up the rim. **Chapter IX · Prism** opens with [**33 Kaleidoscope**](https://phyll1s0.com/echo/?room=31). In [**34 Rose Window**](https://phyll1s0.com/echo/?room=33), two echoes separate into the side petals, then meet at the central lens. **36 Triptych** closes the gallery.
 
 [**07 Cloudbreak**](https://phyll1s0.com/echo/?room=36) follows two cloud banks. [**18 Afterglow**](https://phyll1s0.com/echo/?room=35) draws a star around two doors that need opposite moments. [**22 Sugar Spiral**](https://phyll1s0.com/echo/?room=34) curls two candy ribbons around a shared centre.
+
+**Chapter X · Orbit** opens with [**37 Satellite**](https://phyll1s0.com/echo/?room=37). Two solar wings lead to a shared rendezvous, a crescent bends around an empty sky, and paired stars exchange routes through portals. **40 Periapsis** closes the chapter with two intersecting rings and a signal that must fade at the right moment.
+
+**Chapter XI · Nexus** opens with [**41 Aperture**](https://phyll1s0.com/echo/?room=41). In this dark laboratory, pale platforms surround cyan holographic bridges. An echo on the matching projector makes a bridge solid; as it leaves, the bridge dissolves. Follow a moving sequence of light in **42 Hologram**, power the two rings of **43 Reactor**, and cross between the portal docks of **44 Warp**. All eight new rooms are directly accessible; their opening rooms include animated guides.
+
+![Eight playable boards: the four orbital compositions above and four holographic puzzles below](docs/images/orbit-nexus.png)
 
 ![Cloudbreak, Afterglow and Sugar Spiral as played in their chapter colours](docs/images/cloud-star-candy.png)
 
@@ -80,7 +86,7 @@ A small, unframed **?** in each chapter’s opening room explains its mechanics 
 
 Each room opens with its chapter and title, fading into the board over 1.5 seconds by default. Moving dismisses the title and takes your first step immediately.
 
-Click a distant plate or hover over it to highlight its linked gates. Matching mechanisms receive local highlights, without wires crossing the board. Tap or click a door edge to read its complete conditions. A door's small labels show its required plates; a minus still means that plate must be empty. Equivalent entrances share one condition above their exit. On the smallest landscape layouts, compact pips replace tiny labels; the door remains inspectable. Hints progress from a nudge to a complete example route.
+Click a distant plate or hover over it to highlight its linked gates. Matching mechanisms receive local highlights, without wires crossing the board. Tap or click a door edge to read its complete conditions. In Nexus, inspect a distant holographic tile to reveal its projectors, or inspect a projector to highlight its matching spans. A door's small labels show its required plates; a minus still means that plate must be empty. Equivalent entrances share one condition above their exit. On the smallest landscape layouts, compact pips replace tiny gate and projection labels; their complete conditions remain inspectable. Hints progress from a nudge to a complete example route.
 
 ## Rules
 
@@ -96,6 +102,7 @@ Click a distant plate or hover over it to highlight its linked gates. Matching m
 - In Inferno, lava rotates through four groups, one per successful move. Dot counts identify each tile’s group, and the cycle above the board marks the current group and the next one to sink. A move must land on a tile that is safe **after** the rotation. A submerged tile can rise as you enter it. Invalid input costs no beat; undo, recordings, and saves restore the exact phase.
 - Round arrow switches reverse their linked one-way doors. These doors keep their direction when crossed; only a switch visit changes them. Echoes can operate a switch remotely, and simultaneous visits flip it once. Inspect a switch to see which doors it controls.
 - Stepping onto a diamond swaps the raised and folded bridge banks. You can enter a raised bridge and leave a folded bridge beneath you. Movement uses the bank state at the start of the beat. Multiple actors triggering the shared switch bank on one beat swap it only once.
+- In Nexus, cyan broken corners mark **holographic bridges**. Their labelled projectors must all be occupied before you enter. A lens projector requires two occupants. When power disappears beneath you, you may still step onto another passable tile. A row of connected tiles shares one label, and the light fades with the move.
 - Echoes follow their original recorded routes even after gates or bridges change, and still trigger devices. Each round starts with the initial device state. Undo restores the arrow directions and bridge banks for that beat.
 - Matching broken rings labelled **I** or **II** are paired portals. Enter one to appear at the other end on the same beat. Arriving at the exit does not bounce you back. Hover over or inspect a ring to highlight its partner. An overlaid lens or current sits inside the outer portal arcs.
 - **Arrow currents** carry you in their indicated directions until an ordinary tile. You cannot stop or steer halfway through. A portal exit can feed into a current and another portal; the whole chain is still one beat, and each echo advances only once. Hovering over an adjacent entry previews the path and final landing.
@@ -147,6 +154,14 @@ In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to brow
 |  | 34 Rose Window | Split the reflections between two petals, then reunite them on the central lens |
 |  | 35 Understudy | Let one echo fade while the other returns to a plate |
 |  | 36 Triptych | Coordinate three recordings across the upper gallery and a remote switch |
+| X · Orbit | 37 Satellite | Give two solar wings different routes that reach their posts together |
+|  | 38 Crescent | Follow the inner curve while an echo loops around the moon's outer edge |
+|  | 39 Binary | Exchange orbits through paired portals, then meet both echoes at the shared lens |
+|  | 40 Periapsis | Enter the rings with both signals present, then let one disappear |
+| XI · Nexus | 41 Aperture | Light a projected iris from another blade of the board |
+|  | 42 Hologram | Keep two journeys in step to cross three successive bands of light |
+|  | 43 Reactor | Enter the outer ring under one signal, then power the core with two |
+|  | 44 Warp | Fold opposite docks together and approach the projected centre from another side |
 
 ![Chapter V · Nocturne](docs/images/room-17.png)
 
@@ -166,6 +181,8 @@ A gate's `requires` array lists plates that must be active, while `vacant` lists
 
 In Slipstream maps, `^`, `v`, `<`, and `>` are currents. A `portals` entry has an `id`, `a`, and `b`; its endpoints can overlay a lens or current. Session format 2 stores the original direction inputs alongside each beat's landing coordinates so replay reconstructs chains without guessing. Format 1 saves from earlier versions still load.
 
+In Nexus maps, `projections` contains groups of `cells` and `requires`. Coordinates refer to existing floor tiles; requirements use the same plate IDs as gates. Each landing in a transport chain checks its projector occupancy before the move. Projection power is derived from actors, so it needs no separate save state.
+
 ## Validation
 
 ```sh
@@ -184,6 +201,8 @@ node tools/check_web.cjs
 BROWSER=webkit node tools/check_web.cjs
 node tools/check_transport_web.cjs
 ```
+
+Set `ECHO_ROOMS=37,38,39,40,41,42,43,44` to run the browser route check on both new chapters. Projection-specific tests cover extinguishing beneath a player, lens power, portal landings, blocked currents, restart, undo, and reload.
 
 Set `BROWSER_EXECUTABLE` if using a locally installed browser, and `ECHO_URL` to test a deployed build. `--touch` enables the pad in the native game for layout inspection.
 

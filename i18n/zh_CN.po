@@ -1168,3 +1168,177 @@ msgstr "借起点旁边的小圈绕一步，让两边同时抵达。"
 
 msgid "Record URURURRRRDR. Walk URDDRRRRURRRURUR."
 msgstr "先录制 URURURRRRDR，最后走 URDDRRRRURRRURUR。"
+
+msgid "Orbit"
+msgstr "轨道"
+
+msgid "Nexus"
+msgstr "枢纽"
+
+msgid "Satellite"
+msgstr "卫星"
+
+msgid "Crescent"
+msgstr "弦月"
+
+msgid "Binary"
+msgstr "双星"
+
+msgid "Periapsis"
+msgstr "近星点"
+
+msgid "Aperture"
+msgstr "光圈"
+
+msgid "Hologram"
+msgstr "全息"
+
+msgid "Reactor"
+msgstr "反应堆"
+
+msgid "Warp"
+msgstr "跃迁"
+
+msgid "Two solar wings, one rendezvous. Their shapes match; their routes need not."
+msgstr "两翼太阳帆，一次会合。形状相映，路线各有不同。"
+
+msgid "A is near the top of one wing. B sits halfway down the other. Match the arrival beats."
+msgstr "A 在一翼上端，B 在另一翼中部。让两条路线在同一拍抵达。"
+
+msgid "A small circuit inside a solar panel gives the shorter journey more time."
+msgstr "在太阳帆内部绕一小圈，就能延长较短的那段旅程。"
+
+msgid "Record UUULLUULDDLUU, then UUURRUURDDDRU. Walk UUULLULDRRRUUU."
+msgstr "先录制 UUULLUULDDLUU，再录制 UUURRUURDDDRU，最后走 UUULLULDRRRUUU。"
+
+msgid "Follow the silver crescent. One echo reaches its dark edge while you round the inner curve."
+msgstr "沿着银色弦月，让回声抵达暗面，你绕过内侧的弧线。"
+
+msgid "The plate is on the outer edge; the exit lies at the lower tip. The crescent offers two paths around its hollow."
+msgstr "踏板在外缘，出口在下端。弦月的空心旁有两条路线。"
+
+msgid "Use the wider upper crescent to delay the echo before it reaches A."
+msgstr "利用较宽的上端绕行一圈，让回声晚一点踩到 A。"
+
+msgid "Record LDLULDDLULLDLDD. Walk LDLLDLDDDDDDRRRR."
+msgstr "先录制 LDLULDDLULLDLDD，最后走 LDLLDLDDDDDDRRRR。"
+
+msgid "Two stars share one lens. Fold each orbit through the opposite star."
+msgstr "两颗恒星共享一枚透镜。让每条轨道折向另一颗星。"
+
+msgid "Both recorded routes must meet on L while you approach the upper exit."
+msgstr "两条录制路线需要在 L 上会合，此时你应接近上方出口。"
+
+msgid "Each portal switches stars. Follow the rings beyond the jump to return to the lens."
+msgstr "每次传送都会换到另一颗星。跳跃之后继续沿环绕行，回到透镜。"
+
+msgid "Record URRRRRDDDDLLLLDDL, then ULLLLLDDDDRRRRDDR. Walk UUUUULDDDDRUUULURU."
+msgstr "先录制 URRRRRDDDDLLLLDDL，再录制 ULLLLLDDDDRRRRDDR，最后走 UUUUULDDDDRUUULURU。"
+
+msgid "Meet at the near side of the rings. Then let one signal disappear."
+msgstr "在双环的近侧会合，再让其中一道信号消失。"
+
+msgid "The first door needs A and B. The last needs B with A empty."
+msgstr "第一道门需要 A 与 B 同时占用，最后一道门需要 B 占用、A 空出。"
+
+msgid "End the A route at its plate. Give B one later return so it can outlast A."
+msgstr "让 A 路线在踏板处结束，B 路线再多一次返回，撑过 A 消失的那一拍。"
+
+msgid "Record LLUULLLUUU, then RRUURRRUUUUD. Walk UULLDDRRUUUUU."
+msgstr "先录制 LLUULLLUUU，再录制 RRUURRRUUUUD，最后走 UULLDDRRUUUUU。"
+
+msgid "A remote projector makes the iris solid. Send your echo along one blade and take another."
+msgstr "远处的投影器会让光圈凝实。让回声沿一片扇叶走，你走另一片。"
+
+msgid "The broken cyan corners mark a projected tile. A must be occupied before you step onto it."
+msgstr "青色断角标出投影格。踏上之前，A 必须已经有人。"
+
+msgid "If the light goes out beneath you, step off onto a solid tile. You do not need to keep it lit after crossing."
+msgstr "脚下的光消失后，可以走到实心格上。跨过去之后就能让投影熄灭。"
+
+msgid "Record UULLUULLUU. Walk UURRRRUULLLL."
+msgstr "先录制 UULLUULLUU，最后走 UURRRRUULLLL。"
+
+msgid "Three projectors, three crossings. Walk in step across the empty corridor."
+msgstr "三个投影器，三段通路。跟着回声的脚步，跨过悬空走廊。"
+
+msgid "The left corridor carries A, B, and C. Their projections cross the right corridor."
+msgstr "左侧走廊依次经过 A、B、C，对应右侧的三条投影带。"
+
+msgid "Keep both journeys in step. A whole row needs the same projector, so changing columns will not skip it."
+msgstr "让两侧逐拍同步。一整排都需要同一个投影器，换列也要经过它。"
+
+msgid "Record LLUUUUUU. Walk RRUUUUUUUU."
+msgstr "先录制 LLUUUUUU，最后走 RRUUUUUUUU。"
+
+msgid "A powers the outer span. A and B together project the path into the core."
+msgstr "A 点亮外侧通路，A 与 B 一同投影通向核心的路。"
+
+msgid "Give each echo a path around the outside. Visit A again while you are already inside the first ring."
+msgstr "让两道回声沿外缘走。在你进入内环之后，再次踩到 A。"
+
+msgid "A short circuit around each upper corner can bring both echoes back for the inner span."
+msgstr "在两处上角各绕一圈，让回声再次返回，点亮内侧通路。"
+
+msgid "Record LLLLUUUUUUUURDLU, then RRRRUUUUUUUULDRU. Walk LLLLUUUUUUDDRRURDR."
+msgstr "先录制 LLLLUUUUUUUURDLU，再录制 RRRRUUUUUUUULDRU，最后走 LLLLUUUUUUDDRRURDR。"
+
+msgid "The portal docks fold opposite corners together. Rejoin through a bridge made of light."
+msgstr "传送坞连接彼此对角的浮台。借一道光桥，重新回到中央。"
+
+msgid "Either portal carries you to the opposite upper island. Both upper posts power the central spans."
+msgstr "任一传送环都会带你到对侧的上方浮台。两个上方踏板共同控制中央的光桥。"
+
+msgid "Record a visit to each upper post, then choose a dock and approach the core from another side."
+msgstr "分别录下抵达两处上方踏板的路线，再选择一个传送坞，从另一侧接近核心。"
+
+msgid "Record LLULLDLLLLLUL, then RRURRDRRRRRUR. Walk LLULUUUUURRRDDD."
+msgstr "先录制 LLULLDLLLLLUL，再录制 RRURRDRRRRRUR，最后走 LLULUUUUURRRDDD。"
+
+msgid "A projector makes its matching holographic tiles solid before your move. When its last occupant leaves, the light fades. You can step off a vanished tile; echoes finish their recorded routes."
+msgstr "投影器在你移动之前亮起，才能踏入对应的全息格。最后一个人离开，光就消失。你可以走出已经消失的格子，回声也会完成录下的路线。"
+
+msgid "This holographic bridge needs its projector."
+msgstr "这座全息桥需要对应的投影器亮起。"
+
+msgid "Orbital Rendezvous"
+msgstr "轨道会合"
+
+msgid "Two routes can have different shapes and still reach their posts on the same beat. Record each journey, then cross while both signals are present."
+msgstr "两条路线的形状可以不同，但需要在同一拍抵达。分别录下行程，再趁两道信号同时存在时穿过门。"
+
+msgid "Both wings have a recorded route."
+msgstr "两翼各有一条录制好的路线。"
+
+msgid "Take the short path toward the exit."
+msgstr "沿短路接近出口。"
+
+msgid "One extra loop changes your arrival beat."
+msgstr "多绕一下，就会改变抵达的拍数。"
+
+msgid "Both signals arrive together. Cross next."
+msgstr "两道信号同时抵达，下一步穿过门。"
+
+msgid "The rendezvous needs to last only for the crossing."
+msgstr "只需在跨过门的那一刻会合。"
+
+msgid "Holographic Bridges"
+msgstr "全息桥"
+
+msgid "The broken corners are a bridge waiting for light."
+msgstr "青色断角是一座等待点亮的桥。"
+
+msgid "Your echo approaches the projector."
+msgstr "回声正在接近投影器。"
+
+msgid "A is occupied. The bridge becomes solid."
+msgstr "A 已占用，桥变成了实心。"
+
+msgid "Cross now. The echo fades and the light switches off beneath you."
+msgstr "这一步跨过来。回声消散，脚下的光随之熄灭。"
+
+msgid "You can step off the vanished bridge onto solid ground."
+msgstr "你可以从消失的桥上走到实心地面。"
+
+msgid "Projection requires %s"
+msgstr "投影需要 %s"

@@ -2,6 +2,8 @@ extends Control
 
 # Quiet landscapes on paper, an ink-black chapter, and a coral-pink fairground.
 const WORLDS := {
+	"Orbit": {"dark": true, "sky": Color("091322"), "far": Color("14253c"), "near": Color("20364e"), "ink": Color("8faac6"), "tile": Color("19314b"), "grid": Color("819bb5"), "light": Color("d4e4ff")},
+	"Nexus": {"dark": true, "paper_tiles": true, "sky": Color("091218"), "far": Color("10232d"), "near": Color("183540"), "ink": Color("7aaab7"), "tile": Color("e3ecee"), "grid": Color("718f99"), "light": Color("83e7ed")},
 	"Afterimage": {"sky": Color("f2f6ef"), "far": Color("dce7d8"), "near": Color("c9dac6"), "ink": Color("617f63"), "tile": Color("e0eadb"), "grid": Color("6f866f"), "light": Color("335f40")},
 	"Resonance": {"sky": Color("f0f5f8"), "far": Color("d8e6ee"), "near": Color("c1d7e3"), "ink": Color("567d92"), "tile": Color("deebf2"), "grid": Color("6b8697"), "light": Color("2d607a")},
 	"Flux": {"sky": Color("faf5eb"), "far": Color("ecdfc5"), "near": Color("dfccaa"), "ink": Color("92764b"), "tile": Color("efe2c9"), "grid": Color("96805b"), "light": Color("7d572e")},
@@ -50,6 +52,8 @@ func _draw() -> void:
 			"Wonderland": _wonderland(colors)
 			"Inferno": _inferno(colors)
 			"Slipstream": _slipstream(colors)
+			"Orbit": _orbit(colors)
+			"Nexus": _nexus(colors)
 		return
 	draw_rect(Rect2(Vector2.ZERO, size), Color("fcfcfb"))
 	# Sparse dots suggest the echo rings, leaving a clean centre for the title.
@@ -61,6 +65,34 @@ func _draw() -> void:
 			var quiet := smoothstep(0.18, 0.48, point.distance_to(size * 0.5) / span)
 			var wave := 0.5 + 0.5 * sin(point.distance_to(size * Vector2(0.16, 0.86)) * 0.023 - clock * 0.05)
 			draw_circle(point, 0.8, Color(0.35, 0.42, 0.42, quiet * (0.025 + wave * 0.045)), true, -1, true)
+
+func _orbit(c: Dictionary) -> void:
+	# Fixed stars at the margins leave the board's negative spaces unobstructed.
+	for n in 46:
+		var point := Vector2(fmod(0.031 + n * 0.38197, 1.0), fmod(0.12 + n * 0.73205, 1.0))
+		if point.x > 0.22 and point.x < 0.78 and point.y < 0.86: continue
+		var brightness := 0.27 + 0.13 * sin(clock * 0.16 + n)
+		draw_circle(point * size, 0.9 if n % 7 else 1.6, Color(c.light,brightness), true, -1, true)
+	var planet := size * Vector2(0.87,0.22)
+	var radius := minf(size.x * 0.045,size.y * 0.055)
+	draw_circle(planet, radius, c.far, true, -1, true)
+	draw_arc(planet, radius, PI*1.04, TAU*0.94, 64, Color(c.light,0.48), 1.1, true)
+	var orbit := PackedVector2Array()
+	for i in 101:
+		var t := TAU*i/100.0
+		orbit.append(planet + Vector2(cos(t)*radius*1.8,sin(t)*radius*0.38).rotated(-0.3))
+	draw_polyline(orbit,Color(c.ink,0.35),1.1,true)
+
+func _nexus(c: Dictionary) -> void:
+	for side in [0,1]:
+		var x := size.x * (0.06 if side == 0 else 0.94)
+		var sign_ := 1 if side == 0 else -1
+		var corners := PackedVector2Array([Vector2(x,size.y*0.28),Vector2(x,size.y*0.14),Vector2(x+sign_*size.x*0.08,size.y*0.14)])
+		draw_polyline(corners,Color(c.light,0.20),1.2,true)
+	for n in 3:
+		var y := size.y*(0.9 + n*0.035)
+		var track := PackedVector2Array([Vector2(0,y),Vector2(size.x*0.23,y),Vector2(size.x*0.30,y+size.y*0.025),Vector2(size.x*0.70,y+size.y*0.025),Vector2(size.x*0.77,y),Vector2(size.x,y)])
+		draw_polyline(track,Color(c.ink,0.12+n*0.05),1.1,true)
 
 func _glass(c: Dictionary) -> void:
 	# Faint mirrored panes at the edges keep the centre of the paper clear.

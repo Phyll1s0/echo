@@ -54,6 +54,14 @@ class Room:
             if not disable_portals:
                 assert a not in self.portals and b not in self.portals
                 self.portals[a], self.portals[b] = b, a
+        self.projections = {}
+        for group in level.get("projections", []):
+            assert group["requires"]
+            for point in group["cells"]:
+                cell = tuple(point)
+                assert cell in self.floor and cell not in self.projections and cell not in marks.values()
+                assert cell not in {self.start, self.goal}
+                self.projections[cell] = {marks[key] for key in group["requires"]}
         self.gates = {}
         self.vacancies = {}
         for gate in level["gates"]:
@@ -133,6 +141,11 @@ class Room:
 
     def passable(self, check, occupied, state):
         dest, bank, bit, reverse, pads, vacant = check
+        projection = self.projections.get(dest, set())
+        if any(pos not in occupied for pos in projection):
+            return False
+        if self.pads.get('@') in projection and occupied.count(self.pads['@']) < 2:
+            return False
         next_phase = (0 if self.freeze_lava else ((state >> 6) + 1) % self.lava_groups) if self.lava_groups else -1
         if self.lava.get(dest, -2) == next_phase:
             return False
@@ -263,7 +276,7 @@ class Room:
         assert shortest is not None and shortest <= len(self.level["final"])
         if len(records) == 2:
             assert self.one_echo_solution() is None, "This room must require two recordings"
-        if len(records) == 2 and self.level["id"] not in ["X04", "21", "24", "30", "33"] and not (self.portals or self.currents):
+        if len(records) == 2 and self.level["id"] not in ["X04", "21", "24", "30", "33", "37", "39", "40", "43", "44"] and not (self.portals or self.currents):
             entrances = [n for n in self.floor if abs(n[0]-self.goal[0])+abs(n[1]-self.goal[1]) == 1]
             assert len(entrances) == 1
             pre = entrances[0]

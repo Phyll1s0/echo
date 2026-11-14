@@ -17,7 +17,7 @@ func _run() -> void:
 	root.add_child(ui)
 	await settle()
 	var entry_rooms: Array[int] = []
-	for id in ["01","30","05","07","11","15","32","21","22","26","27","29","31"]:
+	for id in ["01","30","05","07","11","15","32","21","22","26","27","29","31","37","41"]:
 		entry_rooms.append(ui.room_index(id))
 	for i in ui.levels.size():
 		ui.open_level(i, false, false)
