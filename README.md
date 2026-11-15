@@ -22,6 +22,10 @@ Orbit uses a violet night sky and ivory pieces; Nexus uses pale mint paper, porc
 
 Four earlier rooms have also been recomposed: **03 Refrain** grows into paired leaves, **04 Relay Line** branches into a flower, **06 Two Voices** curls into two waves, and **15 Confluence** surrounds an inner chamber with an eclipse ring. Their layouts keep the required return visits, signal handoffs, and two-echo meetings. The two opening lessons remain compact.
 
+Four more rooms now turn their chapter motifs into playable routes: [**08 Interlace**](https://phyll1s0.com/echo/?room=06) links two eddies through a shared channel; [**10 Tidal Shift**](https://phyll1s0.com/echo/?room=08) pours through an hourglass; [**14 Borrowed Light**](https://phyll1s0.com/echo/?room=12) meets at the top of a lantern; and [**19 Negative Space**](https://phyll1s0.com/echo/?room=16) spreads into a night moth. The lantern combines a lens, a reversing gate, and two bridge banks. The moth asks for both signals, then B alone, then A alone: each wing needs a different return route. Completed rooms stay completed; an incompatible unfinished route restarts with an explanation.
+
+![Four playable compositions: tidal eddies, a sandglass, a lantern, and a night moth](docs/images/themed-rooms.png)
+
 ![Contrasting Orbit and Nexus palettes, with four redesigned early rooms below](docs/images/renewal.png)
 
 ![Eight playable boards: the four orbital compositions above and four holographic puzzles below](docs/images/orbit-nexus.png)
@@ -131,18 +135,18 @@ In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to brow
 | II · Resonance | 05 Cloister | Give two echoes the outer posts and choose a path through four mirrored courtyards |
 |  | 06 Two Voices | Let A admit you to the crest, then return A while B arrives from the other wave |
 |  | 07 Cloudbreak | Synchronise the high crest and the low cloud shelf |
-|  | 08 Interlace | Let one recording make the next possible, then use both to reach the exit |
+|  | 08 Interlace | Open the far eddy with an earlier recording, then light both crests together |
 | III · Flux | 09 Turnabout | Cross a reversed arrow gate to activate two plates in order |
-|  | 10 Tidal Shift | Visit a switch twice to support two crossings |
+|  | 10 Tidal Shift | Circle the switch to open the hourglass waist, then restore its lower fan |
 |  | 11 Crosscurrent | Offset two routes by two beats and share a single device trigger |
 |  | 12 Counterpoint | Alternate bridge banks, then bring both echoes to the exit plates |
 | IV · Penumbra | 13 First Contact | Meet your past self at a lens from the opposite branch |
-|  | 14 Borrowed Light | Split after a meeting: one self takes the bridge while the other reaches the switch |
+|  | 14 Borrowed Light | Turn the lantern gate, meet at its lens, then send the echo back to switch the bridges |
 |  | 15 Confluence | Split around the eclipse, enter its inner chamber, then reunite both echoes on the upper lens |
 |  | 16 Totality | Record crossings on raised bridges, then replay them across folded bridges to reach separate plates |
 | V · Nocturne | 17 Hush | Open one gate with an echo, then let it fade before an empty-plate gate |
 |  | 18 Afterglow | Pass the first door by starlight and the last one after the echo fades |
-|  | 19 Negative Space | Activate two plates together, then end one recording while the other returns |
+|  | 19 Negative Space | Use the moth wings to supply A + B, then B without A, then A without B |
 |  | 20 Coda | Separate, meet, and disappear to satisfy three gates in sequence |
 | VI · Wonderland | 21 Ferris Wheel | Send one rider to the axle and opposite cabin while the other climbs the rim |
 |  | 22 Sugar Spiral | Take two curling ribbons from the stick to the candy centre |
@@ -209,6 +213,8 @@ node tools/check_transport_web.cjs
 ```
 
 Set `ECHO_ROOMS=37,38,39,40,41,42,43,44` to run the browser route check on both new chapters. Design checks also prevent the old central shortcut in Binary, require earlier recordings to reach B in Satellite and Aperture, and reject the straight projector route in Hologram. When a redesigned room cannot replay an older draft, it starts a new route with an explanation; completed progress is retained. Projection-specific tests cover extinguishing beneath a player, lens power, portal landings, blocked currents, restart, undo, and reload.
+
+Use `ECHO_ROOMS=06,08,12,16` for the four newest early-room redesigns (displayed rooms 08, 10, 14, and 19). The oracle verifies a second complete plan through Interlace's lower loops, rejects a single switch visit in Tidal Shift, and freezes each device family separately to prove that Borrowed Light needs both bridge switching and arrow reversal. Negative Space rejects an early-ending A and a late-ending B; removing its empty-B condition admits the latter, demonstrating that the final handoff matters.
 
 Set `BROWSER_EXECUTABLE` if using a locally installed browser, and `ECHO_URL` to test a deployed build. `--touch` enables the pad in the native game for layout inspection.
 

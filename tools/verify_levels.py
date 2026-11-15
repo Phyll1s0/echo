@@ -325,6 +325,26 @@ class Room:
         if self.level["id"] == "13":
             posts = [route[:route.index(self.pads[id])+1] for route, id in zip(records, ["A", "B"])]
             assert self.shortest_final(posts) is None, "The two routes must continue from their posts to the shared lens"
+        if self.level["id"] == "06":
+            assert self.pads["B"] not in self.recording_reach(), "The far tide must depend on the earlier A echo"
+            assert self.pads["B"] in self.recording_reach([self.pads["A"]]), "A must actually admit the second tide"
+            outer = []
+            for route in ["LLLUUURUULU", "RRRUUULUURU"]:
+                outer.append(self.replay(route, outer))
+            assert self.replay("UUUULLRRUUUU", outer)[-1] == self.goal, "The lower tide loops must offer a second complete plan"
+        if self.level["id"] == "08":
+            first = next(i for i, cell in enumerate(records[0]) if cell in self.switches)
+            assert self.shortest_final([self.replay(self.level["recordings"][0][:first], [])]) is None, "The second sandglass pulse must restore the lower fan"
+        if self.level["id"] == "12":
+            assert self.shortest_final([self.replay(self.level["recordings"][0][:-1], [])]) is None, "The echo must leave the lantern lens to switch the wick"
+        if self.level["id"] == "16":
+            first = records[0].index(self.pads["A"])
+            assert self.shortest_final([records[0][:first+1], records[1]]) is None, "A must return after its silent interval"
+            lingering_b = self.replay(self.level["recordings"][1] + "DU", [records[0]])
+            assert self.shortest_final([records[0], lingering_b]) is None, "B must finish before the last A pulse"
+            relaxed = json.loads(json.dumps(self.level))
+            relaxed["gates"][-1].pop("vacant")
+            assert Room(relaxed).shortest_final([records[0], lingering_b]) is not None, "The last empty-B condition must enforce the handoff"
         if self.level["id"] in ["37", "41"]:
             assert self.pads["B"] not in self.recording_reach(), "B must depend on an earlier A recording"
         if self.level["id"] == "37":

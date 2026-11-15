@@ -355,21 +355,24 @@
     "chapter": "Resonance",
     "max_echoes": 2,
     "rows": [
-      "###X###",
-      "#C#.#B#",
-      "#.#.#.#",
-      "#A#.#.#",
-      "#...#.#",
-      "#..S..#"
+      "#####X#####",
+      "#####.#####",
+      "##C##.##B##",
+      "#.A.#.#...#",
+      "..#.....#..",
+      "#...#.#...#",
+      "##.##.##.##",
+      "##.##.##.##",
+      "##...S...##"
     ],
     "gates": [
       {
         "a": [
-          5,
+          8,
           3
         ],
         "b": [
-          5,
+          8,
           2
         ],
         "requires": [
@@ -378,11 +381,11 @@
       },
       {
         "a": [
-          3,
+          5,
           1
         ],
         "b": [
-          3,
+          5,
           0
         ],
         "requires": [
@@ -391,18 +394,19 @@
         ]
       }
     ],
-    "intro": "Let the first echo open a path for the second. Then use both to reach the exit.",
+    "intro": "Two eddies share one channel. Let the first echo open the far crest before they light the exit together.",
     "hints": [
-      "A opens the passage to B. The exit gate needs both B and C.",
-      "Send the first echo through A to C. The second can then pass the gate and reach B.",
-      "Echo 1  ← ← ↑ ↑ ↑ ↑     Echo 2  → → ↑ ↑ ↑ ↑     Exit  ← ↑ → ↑ ↑ ↑ ↑"
+      "B sits beyond the A door. The last crossing needs B and C together.",
+      "Pass A on your way to C. Record the other tide with that echo present; either lower loop can adjust your approach to the central channel.",
+      "Record UUUULLULU, then UUUURRURU. Walk UUUULRUUUU."
     ],
     "recordings": [
-      "LLUUUU",
-      "RRUUUU"
+      "UUUULLULU",
+      "UUUURRURU"
     ],
-    "final": "LURUUUU",
-    "also_unlock_after": "05"
+    "final": "UUUULRUUUU",
+    "also_unlock_after": "05",
+    "art": "tidal_braid"
   },
   {
     "id": "07",
@@ -472,22 +476,28 @@
     "chapter": "Flux",
     "max_echoes": 1,
     "rows": [
-      "*######",
-      ".######",
-      "S..b.aX"
+      "S......",
+      "#..*..#",
+      "##...##",
+      "###b###",
+      "##...##",
+      "#aaaaa#",
+      ".......",
+      "...X..."
     ],
     "gates": [],
     "turnstiles": [],
     "recordings": [
-      "UUDU"
+      "RDRRRULD"
     ],
-    "final": "RRRRRR",
-    "intro": "Step on the diamond to swap the two bridges. The change lasts until the next visit.",
+    "final": "RDRDRDDLDDDR",
+    "intro": "The sandglass has two banks. Turn the switch as your other self passes the narrow waist, then restore the lower fan.",
     "hints": [
-      "Your first crossing needs the folded bridge. Your second crossing needs the other bank.",
-      "Return to the diamond as your other self reaches the stone between the bridges.",
-      "Echo  ↑ ↑ ↓ ↑     Exit  six steps right."
-    ]
+      "The narrow waist needs b. Every route into the lower bowl crosses a, so one switch visit is not enough.",
+      "Circle the small square beside the diamond. Its second pulse should arrive after the waist crossing and before the lower fan.",
+      "Record RDRRRULD. Walk RDRDRDDLDDDR."
+    ],
+    "art": "sandglass"
   },
   {
     "id": "09",
@@ -652,21 +662,25 @@
     "chapter": "Penumbra",
     "max_echoes": 1,
     "rows": [
-      "###X##",
-      "###b##",
-      "###a##",
-      "##*@.#",
-      "##.#.#",
-      "##.S.#"
+      "####X####",
+      "####a####",
+      "####b####",
+      "##.*@..##",
+      "#..###..#",
+      "#.#####.#",
+      "#.#####.#",
+      "#.#####.#",
+      "#..###..#",
+      "##..S..##"
     ],
     "gates": [
       {
         "a": [
-          3,
+          4,
           3
         ],
         "b": [
-          3,
+          4,
           2
         ],
         "requires": [
@@ -675,14 +689,27 @@
       }
     ],
     "recordings": [
-      "RUULL"
+      "LLULUUUURURRL"
     ],
-    "final": "RUULUUU",
-    "intro": "After you meet at L, the two bridges need opposite banks on consecutive beats.",
+    "final": "RRURUUUULULLUUU",
+    "intro": "Two sides of a lantern meet at L. Turn the arrow on the way in, then send the echo back to switch the wick.",
     "hints": [
-      "The bridge touching L must be raised as you leave the lens.",
-      "Let your echo take one more step after the meeting. While you step onto the first bridge, it can reach the switch.",
-      "Echo  → ↑ ↑ ← ←     Exit  → ↑ ↑ ← ↑ ↑ ↑"
+      "The left switch raises b. Crossing its arrow toward L opens the way back; the return visit raises a.",
+      "Record the left frame, ending one step beyond the lens on the switch. Approach from the right yourself: meet at L, then climb while the echo goes back.",
+      "Record LLULUUUURURRL. Walk RRURUUUULULLUUU."
+    ],
+    "art": "lantern",
+    "turnstiles": [
+      [
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          3
+        ]
+      ]
     ]
   },
   {
@@ -991,22 +1018,25 @@
     "chapter": "Nocturne",
     "max_echoes": 2,
     "rows": [
-      "###X###",
-      "###.###",
-      "###.###",
-      "#A...B#",
-      "#.#.#.#",
-      "#..S..#"
+      "####X####",
+      "#.##.##.#",
+      ".A.#.#.B.",
+      "...#.#...",
+      "...#.#...",
+      "#.##.##.#",
+      "#.......#",
+      "#.......#",
+      "##.#S#.##"
     ],
     "gates": [
       {
         "a": [
-          3,
-          3
+          4,
+          5
         ],
         "b": [
-          3,
-          2
+          4,
+          4
         ],
         "requires": [
           "A",
@@ -1015,12 +1045,12 @@
       },
       {
         "a": [
-          3,
-          1
+          4,
+          3
         ],
         "b": [
-          3,
-          0
+          4,
+          2
         ],
         "requires": [
           "B"
@@ -1028,20 +1058,37 @@
         "vacant": [
           "A"
         ]
+      },
+      {
+        "a": [
+          4,
+          1
+        ],
+        "b": [
+          4,
+          0
+        ],
+        "requires": [
+          "A"
+        ],
+        "vacant": [
+          "B"
+        ]
       }
     ],
-    "intro": "Together at first. Then only B. Give one echo a shorter ending.",
+    "intro": "A moth opens its wings in three movements: both lights, only B, then only A.",
     "hints": [
-      "The first gate needs both plates. The last needs B occupied and A empty.",
-      "Let the A recording end on beat four. Have the B recording leave its plate and return on beat six.",
-      "Echo 1  ← ← ↑ ↑     Echo 2  → → ↑ ↑ ↓ ↑     Exit  ← → ↑ ↑ ↑ ↑ ↑"
+      "The body asks for A + B, then B without A, then A without B. Ending A early will not open the last door.",
+      "Use a four-step circle in the left wing and a two-step return in the right. B should finish before A comes back.",
+      "Record UULLLUUUURDLU, then UURRRUUUUDU. Walk UULDLURRUUUUUU."
     ],
     "recordings": [
-      "LLUU",
-      "RRUUDU"
+      "UULLLUUUURDLU",
+      "UURRRUUUUDU"
     ],
-    "final": "LRUUUUU",
-    "also_unlock_after": "15"
+    "final": "UULDLURRUUUUUU",
+    "also_unlock_after": "15",
+    "art": "night_moth"
   },
   {
     "id": "17",

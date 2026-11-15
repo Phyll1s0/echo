@@ -303,6 +303,21 @@ func _draw_room_print(unit: float) -> void:
 	var centre := center_of(Vector2i(puzzle.columns >> 1, puzzle.rows >> 1))
 	var line := Color(active, 0.27)
 	match puzzle.level.get("art", ""):
+		"tidal_braid":
+			for x in [2,8]:
+				_draw_ellipse(center_of(Vector2i(x,4)),Vector2(2.1,2.1)*unit,Color(active,0.17))
+		"sandglass":
+			var waist := center_of(Vector2i(3,3))
+			for side in [-1,1]:
+				var outline := PackedVector2Array([waist+Vector2(side*3.3,-3.3)*unit,waist+Vector2(side*0.6,0)*unit,waist+Vector2(side*3.3,4.3)*unit])
+				draw_polyline(outline,Color(active,0.20),1.2,true)
+		"lantern":
+			_draw_ellipse(center_of(Vector2i(4,6)),Vector2(3.4,3.3)*unit,Color(active,0.19))
+			draw_arc(center_of(Vector2i(4,1)),unit*0.7,PI,TAU,40,Color(active,0.18),1.2,true)
+		"night_moth":
+			for side in [-1,1]:
+				_draw_ellipse(center_of(Vector2i(4+side*3,3)),Vector2(1.5,2.3)*unit,Color(active,0.17),side*0.2)
+				_draw_ellipse(center_of(Vector2i(4+side*2,7)),Vector2(1.2,1.4)*unit,Color(active,0.13),-side*0.3)
 		"refrain_leaves":
 			for x in [2,6]:
 				var leaf := center_of(Vector2i(x,2))

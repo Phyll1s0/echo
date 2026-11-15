@@ -1453,3 +1453,59 @@ msgstr "让回声沿圆环两侧走。它们向 L 会合时，你绕过日蚀内
 
 msgid "Record LLULUUUURURRU, then RRURUUUULULLU. Walk LDRRULUUULDRUU."
 msgstr "先录制 LLULUUUURURRU，再录制 RRURUUUULULLU，最后走 LDRRULUUULDRUU。"
+
+msgid "Two eddies share one channel. Let the first echo open the far crest before they light the exit together."
+msgstr "两道涡流共用一条水道。先让一道回声打开对岸浪尖，再一起点亮出口。"
+
+
+msgid "B sits beyond the A door. The last crossing needs B and C together."
+msgstr "B 位于 A 控制的门后，最后一步需要 B 与 C 同时亮起。"
+
+
+msgid "Pass A on your way to C. Record the other tide with that echo present; either lower loop can adjust your approach to the central channel."
+msgstr "前往 C 时先经过 A。保留这道回声，再录制另一道涡流；下方两条环路都可以调整你进入中央水道的时机。"
+
+
+msgid "Record UUUULLULU, then UUUURRURU. Walk UUUULRUUUU."
+msgstr "先录制 UUUULLULU，再录制 UUUURRURU，最后走 UUUULRUUUU。"
+
+
+msgid "The sandglass has two banks. Turn the switch as your other self passes the narrow waist, then restore the lower fan."
+msgstr "沙漏里有两组桥。让另一个自己穿过细腰，再切换回来，铺好下方展开的沙面。"
+
+msgid "The narrow waist needs b. Every route into the lower bowl crosses a, so one switch visit is not enough."
+msgstr "细腰需要 b，下方所有路径都要跨过 a，因此只踩一次开关还不够。"
+
+msgid "Circle the small square beside the diamond. Its second pulse should arrive after the waist crossing and before the lower fan."
+msgstr "绕过菱形旁的小方环。第二次切换要落在穿过细腰之后、进入下方沙面之前。"
+
+msgid "Record RDRRRULD. Walk RDRDRDDLDDDR."
+msgstr "先录制 RDRRRULD，最后走 RDRDRDDLDDDR。"
+
+msgid "Two sides of a lantern meet at L. Turn the arrow on the way in, then send the echo back to switch the wick."
+msgstr "灯笼两侧在 L 会合。进入时让单向门反向，再让回声返回开关，切换灯芯的桥。"
+
+
+msgid "The left switch raises b. Crossing its arrow toward L opens the way back; the return visit raises a."
+msgstr "左侧开关升起 b。朝 L 穿过单向门后，回头的路才会打开；返回开关可升起 a。"
+
+
+msgid "Record the left frame, ending one step beyond the lens on the switch. Approach from the right yourself: meet at L, then climb while the echo goes back."
+msgstr "沿左侧灯框录制，经过透镜后返回开关结束。你从右侧接近，在 L 会合后向上走，回声则往回走。"
+
+
+msgid "Record LLULUUUURURRL. Walk RRURUUUULULLUUU."
+msgstr "先录制 LLULUUUURURRL，最后走 RRURUUUULULLUUU。"
+
+
+msgid "A moth opens its wings in three movements: both lights, only B, then only A."
+msgstr "夜蛾分三次展开翅膀：两盏灯同时亮起，只留下 B，再只留下 A。"
+
+msgid "The body asks for A + B, then B without A, then A without B. Ending A early will not open the last door."
+msgstr "身体中央依次需要 A 与 B、B 亮且 A 空、A 亮且 B 空。过早结束 A 的录制无法打开最后的门。"
+
+msgid "Use a four-step circle in the left wing and a two-step return in the right. B should finish before A comes back."
+msgstr "左翅绕四步的小圈，右翅用两步返回。B 应在 A 再次回来之前结束。"
+
+msgid "Record UULLLUUUURDLU, then UURRRUUUUDU. Walk UULDLURRUUUUUU."
+msgstr "先录制 UULLLUUUURDLU，再录制 UURRRUUUUDU，最后走 UULDLURRUUUUUU。"
