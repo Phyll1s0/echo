@@ -16,9 +16,13 @@ Each chapter has four rooms. [**05 Cloister**](https://phyll1s0.com/echo/?room=3
 
 **Chapter X · Orbit** opens with [**37 Satellite**](https://phyll1s0.com/echo/?room=37). One solar wing opens the other before their signals reunite, a crescent bends around an empty sky, and paired stars exchange routes through portals. **40 Periapsis** closes the chapter with two intersecting rings and a signal that must fade at the right moment.
 
-**Chapter XI · Nexus** opens with [**41 Aperture**](https://phyll1s0.com/echo/?room=41). In this dark laboratory, slate platforms surround coloured holographic bridges. An echo on the matching projector makes a bridge solid; as it leaves, the bridge dissolves. Use one recording to reach the next projector, untangle a reversed supply order in **42 Hologram**, power the two rings of **43 Reactor**, and cross between the portal docks of **44 Warp**. All eight new rooms are directly accessible; their opening rooms include animated guides.
+**Chapter XI · Nexus** opens with [**41 Aperture**](https://phyll1s0.com/echo/?room=41). In this pale laboratory, porcelain platforms surround coloured holographic bridges. An echo on the matching projector makes a bridge solid; as it leaves, the bridge dissolves. Use one recording to reach the next projector, untangle a reversed supply order in **42 Hologram**, power the two rings of **43 Reactor**, and cross between the portal docks of **44 Warp**. All eight new rooms are directly accessible; their opening rooms include animated guides.
 
-Orbit uses muted indigo and silver; Nexus uses petrol-blue platforms and restrained light. A is amber, B is ice blue, and C is lavender. Plate letters and bridge labels remain visible, so colour is an additional cue. Powered spans brighten; ordinary floors stay quiet.
+Orbit uses a violet night sky and ivory pieces; Nexus uses pale mint paper, porcelain platforms, and dark graphite pieces. The light and dark palettes share the same signal meanings, with separate colours tuned for their backgrounds. A is amber, B is ice blue, and C is lavender. Plate letters and bridge labels remain visible, so colour is an additional cue. Powered spans brighten; ordinary floors stay quiet.
+
+Four earlier rooms have also been recomposed: **03 Refrain** grows into paired leaves, **04 Relay Line** branches into a flower, **06 Two Voices** curls into two waves, and **15 Confluence** surrounds an inner chamber with an eclipse ring. Their layouts keep the required return visits, signal handoffs, and two-echo meetings. The two opening lessons remain compact.
+
+![Contrasting Orbit and Nexus palettes, with four redesigned early rooms below](docs/images/renewal.png)
 
 ![Eight playable boards: the four orbital compositions above and four holographic puzzles below](docs/images/orbit-nexus.png)
 
@@ -122,10 +126,10 @@ In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to brow
 | --- | --- | --- |
 | I · Afterimage | 01 First Trace | Let your past self open a gate for you |
 |  | 02 Scenic Route | Take a two-step detour to arrive at the right beat |
-|  | 03 Refrain | Visit the same plate twice in one recording |
-|  | 04 Relay Line | Use one echo to open two gates in sequence |
+|  | 03 Refrain | Circle one leaf to send the second signal while your other self crosses the next |
+|  | 04 Relay Line | Open the flower stem with A, then circle its centre while the echo travels to B |
 | II · Resonance | 05 Cloister | Give two echoes the outer posts and choose a path through four mirrored courtyards |
-|  | 06 Two Voices | Meet two conditions on the same beat |
+|  | 06 Two Voices | Let A admit you to the crest, then return A while B arrives from the other wave |
 |  | 07 Cloudbreak | Synchronise the high crest and the low cloud shelf |
 |  | 08 Interlace | Let one recording make the next possible, then use both to reach the exit |
 | III · Flux | 09 Turnabout | Cross a reversed arrow gate to activate two plates in order |
@@ -134,7 +138,7 @@ In **Chapters**, swipe vertically, use the mouse wheel, or press ↑/↓ to brow
 |  | 12 Counterpoint | Alternate bridge banks, then bring both echoes to the exit plates |
 | IV · Penumbra | 13 First Contact | Meet your past self at a lens from the opposite branch |
 |  | 14 Borrowed Light | Split after a meeting: one self takes the bridge while the other reaches the switch |
-|  | 15 Confluence | Occupy separate plates, then converge to open a remote lens gate |
+|  | 15 Confluence | Split around the eclipse, enter its inner chamber, then reunite both echoes on the upper lens |
 |  | 16 Totality | Record crossings on raised bridges, then replay them across folded bridges to reach separate plates |
 | V · Nocturne | 17 Hush | Open one gate with an echo, then let it fade before an empty-plate gate |
 |  | 18 Afterglow | Pass the first door by starlight and the last one after the echo fades |

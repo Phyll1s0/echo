@@ -77,19 +77,77 @@
     "chapter": "Afterimage",
     "max_echoes": 1,
     "rows": [
-      "A#####",
-      ".#####",
-      "S....X"
+      "##.###.##",
+      "#.A.#...#",
+      "........X",
+      "#...#...#",
+      "##.###.##",
+      "##.######",
+      "##S######"
     ],
     "gates": [
       {
         "a": [
-          2,
+          3,
           2
         ],
         "b": [
-          3,
+          4,
           2
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          7,
+          2
+        ],
+        "b": [
+          8,
+          2
+        ],
+        "requires": [
+          "A"
+        ]
+      }
+    ],
+    "intro": "Two leaves repeat one signal. Let the echo circle its leaf while you cross the other.",
+    "hints": [
+      "Both doors need A. A recording that ends on its first visit leaves the far door closed.",
+      "The small square beside A returns to the plate four beats later. Match that return to the far leaf tip.",
+      "Record UUUUURDLU. Walk UUUURRRRRR."
+    ],
+    "recordings": [
+      "UUUUURDLU"
+    ],
+    "final": "UUUURRRRRR",
+    "art": "refrain_leaves"
+  },
+  {
+    "id": "04",
+    "title": "Relay Line",
+    "chapter": "Afterimage",
+    "max_echoes": 1,
+    "rows": [
+      "####X####",
+      "..#...#..",
+      "..#...#B.",
+      ".A##.##..",
+      ".........",
+      "####.####",
+      "####S####"
+    ],
+    "gates": [
+      {
+        "a": [
+          4,
+          4
+        ],
+        "b": [
+          4,
+          3
         ],
         "requires": [
           "A"
@@ -98,76 +156,28 @@
       {
         "a": [
           4,
-          2
+          1
         ],
         "b": [
-          5,
-          2
-        ],
-        "requires": [
-          "A"
-        ]
-      }
-    ],
-    "intro": "Both gates open when someone steps on A. Your echo can visit A twice.",
-    "hints": [
-      "The gates close as soon as A is empty.",
-      "After opening the first gate, have your echo step off A and back onto it.",
-      "Record ↑ ↑ ↓ ↑. Leave the echo, then take five steps right."
-    ],
-    "recordings": [
-      "UUDU"
-    ],
-    "final": "RRRRR"
-  },
-  {
-    "id": "04",
-    "title": "Relay Line",
-    "chapter": "Afterimage",
-    "max_echoes": 1,
-    "rows": [
-      "A...B###",
-      ".#######",
-      "S......X"
-    ],
-    "gates": [
-      {
-        "a": [
-          2,
-          2
-        ],
-        "b": [
-          3,
-          2
-        ],
-        "requires": [
-          "A"
-        ]
-      },
-      {
-        "a": [
-          6,
-          2
-        ],
-        "b": [
-          7,
-          2
+          4,
+          0
         ],
         "requires": [
           "B"
         ]
       }
     ],
-    "intro": "One echo can open both gates. Send it past A on the way to B.",
+    "intro": "Two side buds feed one flower. Open the stem with A, then time the upper loop for B.",
     "hints": [
-      "Select a distant plate to see its gate. A opens the first gate and B opens the second.",
-      "The upper passage connects A to B.",
-      "Record ↑ ↑ → → → →. Leave the echo, then take seven steps right."
+      "A opens the central stem. B opens the flower tip; the outer branches cannot bypass either door.",
+      "After the echo leaves A, it still has to cross the lower branch and reach B. Use a circuit inside the flower to meet it.",
+      "Record UULLLUDRRRRRRUU. Walk UULLRRUUULDRRULU."
     ],
     "recordings": [
-      "UURRRR"
+      "UULLLUDRRRRRRUU"
     ],
-    "final": "RRRRRRR"
+    "final": "UULLRRUUULDRRULU",
+    "art": "relay_bloom"
   },
   {
     "id": "30",
@@ -246,19 +256,35 @@
     "chapter": "Resonance",
     "max_echoes": 2,
     "rows": [
-      "###X###",
-      "#A...B#",
-      "#.....#",
-      "#..S..#"
+      "####X####",
+      "...#.#...",
+      "...#.#...",
+      "A..#.#..B",
+      ".#.#.#.#.",
+      ".........",
+      "....S...."
     ],
     "gates": [
       {
         "a": [
-          3,
+          4,
+          5
+        ],
+        "b": [
+          4,
+          4
+        ],
+        "requires": [
+          "A"
+        ]
+      },
+      {
+        "a": [
+          4,
           1
         ],
         "b": [
-          3,
+          4,
           0
         ],
         "requires": [
@@ -267,19 +293,20 @@
         ]
       }
     ],
-    "intro": "Use two echoes to reach A and B on the same beat.",
+    "intro": "Two curling waves share a narrow crest. One voice admits you; both voices lift the last door.",
     "hints": [
-      "One echo must be on A and one on B, with you at the gate.",
-      "Both echoes reach their plates on beat four. Find a four-step path to the gate.",
-      "Echo 1  ← ← ↑ ↑     Echo 2  → → ↑ ↑     Exit  ← ↑ ↑ → ↑"
+      "The lower door needs A. The upper door needs A and B, so A must be visited again.",
+      "Let the left echo loop through its curl and return to A while the right echo reaches B. The small lower bay gives you a route to the first door.",
+      "Record ULLUULLRULD, then ULDRURRUURR. Walk ULDLURRUUUUU."
     ],
     "recordings": [
-      "LLUU",
-      "RRUU"
+      "ULLUULLRULD",
+      "ULDRURRUURR"
     ],
-    "final": "LUURU",
+    "final": "ULDLURRUUUUU",
     "guide": true,
-    "also_unlock_after": "04"
+    "also_unlock_after": "04",
+    "art": "twin_waves"
   },
   {
     "id": "36",
@@ -664,23 +691,25 @@
     "chapter": "Penumbra",
     "max_echoes": 2,
     "rows": [
-      "#A.@.B#",
-      "#.###.#",
-      "#..S..#",
-      "###.###",
-      "###....",
-      "######.",
-      "######X"
+      "####@####",
+      "##.....##",
+      "#..###..#",
+      "#A##X##B#",
+      "#.#...#.#",
+      "#.#...#.#",
+      "#..#.#..#",
+      "##..S..##",
+      "###...###"
     ],
     "gates": [
       {
         "a": [
-          5,
-          4
+          4,
+          6
         ],
         "b": [
-          6,
-          4
+          4,
+          5
         ],
         "requires": [
           "A",
@@ -689,12 +718,12 @@
       },
       {
         "a": [
-          6,
-          5
+          4,
+          4
         ],
         "b": [
-          6,
-          6
+          4,
+          3
         ],
         "requires": [
           "@"
@@ -702,16 +731,17 @@
       }
     ],
     "recordings": [
-      "LLUURR",
-      "RRUULL"
+      "LLULUUUURURRU",
+      "RRURUUUULULLU"
     ],
-    "final": "DDRRRDD",
-    "intro": "The first gate needs two different places. The last needs the same place twice.",
+    "final": "LDRRULUUULDRUU",
+    "intro": "Two arcs approach an eclipse. Meet the separate posts first, then bring both reflections to the upper lens.",
     "hints": [
-      "At the elbow in the lower passage, look at where both echoes must be.",
-      "Send an echo to each plate. After that beat, have both paths turn inward to the lens.",
-      "Echo 1  ← ← ↑ ↑ → →     Echo 2  → → ↑ ↑ ← ←     Exit  ↓ ↓ → → → ↓ ↓"
-    ]
+      "A and B open the inner chamber together. Its exit needs two echoes on L; a single reflection is not enough.",
+      "Send the echoes around opposite sides of the ring. While they move inward toward L, take the small loop inside the eclipse.",
+      "Record LLULUUUURURRU, then RRURUUUULULLU. Walk LDRRULUUULDRUU."
+    ],
+    "art": "eclipse_ring"
   },
   {
     "id": "14",

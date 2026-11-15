@@ -1,10 +1,11 @@
 extends Control
 
 # Quiet landscapes on paper, an ink-black chapter, and a coral-pink fairground.
-const SIGNALS := {"A": Color("e9bc7b"), "B": Color("79cbd6"), "C": Color("b8a3e2"), "@": Color("c8b7e8")}
+const SIGNALS := {"A": Color("ffd38d"), "B": Color("9ce8ef"), "C": Color("d4baff"), "@": Color("d9c6ff")}
+const DAY_SIGNALS := {"A": Color("935a14"), "B": Color("125b76"), "C": Color("68479a"), "@": Color("654586")}
 const WORLDS := {
-	"Orbit": {"dark": true, "signals": SIGNALS, "sky": Color("111521"), "far": Color("20253a"), "near": Color("2c344b"), "ink": Color("8d96b3"), "tile": Color("262e44"), "grid": Color("697993"), "light": Color("c8cee6")},
-	"Nexus": {"dark": true, "signals": SIGNALS, "sky": Color("101b21"), "far": Color("162a32"), "near": Color("243d44"), "ink": Color("799b9f"), "tile": Color("253c44"), "grid": Color("718d94"), "light": Color("96d3cf")},
+	"Orbit": {"dark": true, "signals": SIGNALS, "sky": Color("170f25"), "far": Color("2a1c3e"), "near": Color("3d2c55"), "ink": Color("b6a1cf"), "tile": Color("332847"), "grid": Color("a094b9"), "light": Color("e6d6ff"), "piece": Color("fff5dc")},
+	"Nexus": {"signals": DAY_SIGNALS, "sky": Color("eaf3f1"), "far": Color("dceae7"), "near": Color("c9deda"), "ink": Color("537a77"), "tile": Color("f8fbfa"), "grid": Color("627e7b"), "light": Color("245e5b"), "piece": Color("10272c")},
 	"Afterimage": {"sky": Color("f2f6ef"), "far": Color("dce7d8"), "near": Color("c9dac6"), "ink": Color("617f63"), "tile": Color("e0eadb"), "grid": Color("6f866f"), "light": Color("335f40")},
 	"Resonance": {"sky": Color("f0f5f8"), "far": Color("d8e6ee"), "near": Color("c1d7e3"), "ink": Color("567d92"), "tile": Color("deebf2"), "grid": Color("6b8697"), "light": Color("2d607a")},
 	"Flux": {"sky": Color("faf5eb"), "far": Color("ecdfc5"), "near": Color("dfccaa"), "ink": Color("92764b"), "tile": Color("efe2c9"), "grid": Color("96805b"), "light": Color("7d572e")},

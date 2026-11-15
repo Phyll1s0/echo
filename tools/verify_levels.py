@@ -316,6 +316,15 @@ class Room:
                 assert Room(self.level, freeze_turns=True).one_echo_solution() is None, "Turn reversal can be skipped"
             if self.bridges:
                 assert Room(self.level, freeze_bridges=True).one_echo_solution() is None, "Bridge switching can be skipped"
+        if self.level["id"] in ["03", "05"]:
+            first = records[0].index(self.pads["A"])
+            assert self.shortest_final([records[0][:first+1], *records[1:]]) is None, "A second visit must be needed, not merely decorative"
+        if self.level["id"] == "04":
+            for id in ["A", "B"]:
+                assert self.goal not in self.recording_reach([self.pads[id]]), "Both relay signals must be necessary"
+        if self.level["id"] == "13":
+            posts = [route[:route.index(self.pads[id])+1] for route, id in zip(records, ["A", "B"])]
+            assert self.shortest_final(posts) is None, "The two routes must continue from their posts to the shared lens"
         if self.level["id"] in ["37", "41"]:
             assert self.pads["B"] not in self.recording_reach(), "B must depend on an earlier A recording"
         if self.level["id"] == "37":

@@ -14,6 +14,8 @@ var piece_edge := Color.WHITE
 var second_echo_edge := Color("d5efff")
 var piece_shadow := Color("0c1115")
 var signal_colors: Dictionary = {}
+var dark_board := true
+var piece_scale := 1.0
 const VOID_CELL := Vector2i(-999, -999)
 var puzzle
 var font: Font
@@ -37,10 +39,12 @@ func set_colors(colors: Dictionary) -> void:
 	grid_color = colors.grid
 	active = colors.light
 	var night: bool = colors.get("dark", false)
+	dark_board = night
 	signal_colors = colors.get("signals", {})
+	piece_scale = 1.18 if not signal_colors.is_empty() else 1.0
 	ink = Color("f2f4f3") if night else Color("242d30")
 	muted = Color("abb9c3") if night else Color("66777c")
-	player_fill = Color("e5f0f7") if night else Color("263135")
+	player_fill = colors.get("piece", Color("e5f0f7") if night else Color("263135"))
 	piece_edge = Color.WHITE if night else Color("17262a")
 	second_echo_edge = Color("d5efff") if night else Color("53696f")
 	piece_shadow = Color("0c1115") if night else Color("fffefa")
@@ -268,7 +272,7 @@ func _draw_projection(cell: Vector2i, rect: Rect2, unit: float) -> void:
 		for i in corners.size():
 			var corner: Vector2 = corners[i]
 			var tip: Vector2 = rect.get_center() + corner * rect.size * 0.5
-			var tint := Color(_signal_color(sources[i % sources.size()]), 0.68)
+			var tint := Color(_signal_color(sources[i % sources.size()]), 0.93)
 			draw_line(tip,tip-Vector2(corner.x*unit*0.19,0),tint,1.4,true)
 			draw_line(tip,tip-Vector2(0,corner.y*unit*0.19),tint,1.4,true)
 	var left := cell.x
@@ -280,13 +284,13 @@ func _draw_projection(cell: Vector2i, rect: Rect2, unit: float) -> void:
 	if unit < 27:
 		for i in label.length():
 			var dot := rect.get_center() + Vector2((i-(label.length()-1)*0.5)*4.0,-unit*0.22)
-			draw_circle(dot, 1.2, light if enabled else Color(light,0.83), true, -1, true)
+			draw_circle(dot, 1.2, light if enabled else Color(light,0.96), true, -1, true)
 		return
 	var px := maxi(10,roundi(unit*0.17))
 	var width := font.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,px).x
 	var point := rect.get_center()+Vector2(-width*0.5,px*0.34)
 	if enabled or cell in puzzle.occupied(): point = rect.position+Vector2(unit*0.08,px)
-	draw_string(font,point,label,HORIZONTAL_ALIGNMENT_LEFT,-1,px,light if enabled else Color(light,0.83))
+	draw_string(font,point,label,HORIZONTAL_ALIGNMENT_LEFT,-1,px,light if enabled else Color(light,0.96))
 
 func _draw_ellipse(centre: Vector2, radii: Vector2, color: Color, angle: float = 0.0) -> void:
 	var points := PackedVector2Array()
@@ -299,6 +303,19 @@ func _draw_room_print(unit: float) -> void:
 	var centre := center_of(Vector2i(puzzle.columns >> 1, puzzle.rows >> 1))
 	var line := Color(active, 0.27)
 	match puzzle.level.get("art", ""):
+		"refrain_leaves":
+			for x in [2,6]:
+				var leaf := center_of(Vector2i(x,2))
+				_draw_ellipse(leaf, Vector2(2.1,1.7)*unit, Color(active,0.16))
+		"relay_bloom":
+			for point in [Vector2i(0,2),Vector2i(4,1),Vector2i(8,2)]:
+				draw_arc(center_of(point),unit*1.15,PI*0.85,PI*2.15,64,Color(active,0.16),1.1,true)
+		"twin_waves":
+			for x in [1,7]:
+				_draw_ellipse(center_of(Vector2i(x,3)),Vector2(1.35,2.2)*unit,Color(active,0.16))
+		"eclipse_ring":
+			_draw_ellipse(center_of(Vector2i(4,4)),Vector2(3.3,3.5)*unit,Color(active,0.18))
+			draw_arc(center_of(Vector2i(4,3)),unit*1.35,PI*1.08,PI*1.92,48,Color(active,0.24),1.2,true)
 		"satellite":
 			var hub := center_of(Vector2i(5,3))
 			draw_line(hub+Vector2(0,-unit*2.6),hub+Vector2(0,unit*2.5),Color(active,0.25),unit*0.34,true)
@@ -421,7 +438,7 @@ func _draw() -> void:
 		match puzzle.level.get("art", ""):
 			"satellite":
 				if cell.x < 4 or cell.x > 6:
-					fill = Color("30334e") if cell.x < 4 else Color("293e49")
+					fill = Color("3c2b53") if cell.x < 4 else Color("303757")
 					if (cell.x+cell.y)%2 == 0: fill = fill.lightened(0.025)
 			"binary":
 				fill = floor_color.lerp(Color("ba945d") if cell.x < 5 else Color("72b1df"),0.08)
@@ -518,9 +535,9 @@ func _draw() -> void:
 			scale_ = pose.scale
 			visibility = pose.alpha
 		if n == 0:
-			var radius := unit * 0.125 * scale_
+			var radius := unit * 0.125 * scale_ * piece_scale
 			# Keep the live piece visible when a projection fades beneath it.
-			var over_dark_projection: bool = target in puzzle.projections and not puzzle.projection_active(target)
+			var over_dark_projection: bool = dark_board and target in puzzle.projections and not puzzle.projection_active(target)
 			var live_fill := Color("d6f8ff") if over_dark_projection else player_fill
 			var live_edge := Color.WHITE if over_dark_projection else piece_edge
 			draw_circle(center, radius, Color(live_fill, visibility), true, -1, true)

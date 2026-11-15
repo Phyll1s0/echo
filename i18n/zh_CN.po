@@ -1405,3 +1405,51 @@ msgstr "先录制 LLUUUUDDUUUU，最后走 RRUULRUUUULRUU。"
 
 msgid "This route no longer matches the room. Begin a new route."
 msgstr "原来的路线已不适用于这一关，请从起点重新规划。"
+
+msgid "Two leaves repeat one signal. Let the echo circle its leaf while you cross the other."
+msgstr "两片叶子回应同一道信号。让回声绕过自己的叶片，你穿过另一片。"
+
+msgid "Both doors need A. A recording that ends on its first visit leaves the far door closed."
+msgstr "两扇门都需要 A。录制在第一次抵达时结束，远处的门就无法打开。"
+
+msgid "The small square beside A returns to the plate four beats later. Match that return to the far leaf tip."
+msgstr "A 旁边的小圈会在四拍后回到踏板，让这次返回与你抵达远端叶尖的时机吻合。"
+
+msgid "Record UUUUURDLU. Walk UUUURRRRRR."
+msgstr "先录制 UUUUURDLU，最后走 UUUURRRRRR。"
+
+msgid "Two side buds feed one flower. Open the stem with A, then time the upper loop for B."
+msgstr "两侧花苞为一朵花传递信号。先借 A 进入花茎，再绕过上方花心等待 B。"
+
+msgid "A opens the central stem. B opens the flower tip; the outer branches cannot bypass either door."
+msgstr "A 打开中央花茎，B 打开花尖。外围枝条无法绕过这两扇门。"
+
+msgid "After the echo leaves A, it still has to cross the lower branch and reach B. Use a circuit inside the flower to meet it."
+msgstr "回声离开 A 后，还要经过下方枝条抵达 B。你可以在花心绕一圈，让两边的抵达时机吻合。"
+
+msgid "Record UULLLUDRRRRRRUU. Walk UULLRRUUULDRRULU."
+msgstr "先录制 UULLLUDRRRRRRUU，最后走 UULLRRUUULDRRULU。"
+
+msgid "Two curling waves share a narrow crest. One voice admits you; both voices lift the last door."
+msgstr "两道卷曲的海浪共用一处浪尖。先借一道声音进入，再让两道声音同时推开最后的门。"
+
+msgid "The lower door needs A. The upper door needs A and B, so A must be visited again."
+msgstr "下方的门需要 A，上方的门需要 A 与 B，因此必须再次踩到 A。"
+
+msgid "Let the left echo loop through its curl and return to A while the right echo reaches B. The small lower bay gives you a route to the first door."
+msgstr "让左侧回声绕过浪卷返回 A，右侧回声同时抵达 B。下方的小湾可用于调整你抵达第一扇门的时机。"
+
+msgid "Record ULLUULLRULD, then ULDRURRUURR. Walk ULDLURRUUUUU."
+msgstr "先录制 ULLUULLRULD，再录制 ULDRURRUURR，最后走 ULDLURRUUUUU。"
+
+msgid "Two arcs approach an eclipse. Meet the separate posts first, then bring both reflections to the upper lens."
+msgstr "两道弧线接近日蚀。先抵达分开的踏板，再让两道影子在上方透镜会合。"
+
+msgid "A and B open the inner chamber together. Its exit needs two echoes on L; a single reflection is not enough."
+msgstr "A 与 B 同时打开内部空间，出口则需要两道回声站在 L 上，一道影子不足以打开它。"
+
+msgid "Send the echoes around opposite sides of the ring. While they move inward toward L, take the small loop inside the eclipse."
+msgstr "让回声沿圆环两侧走。它们向 L 会合时，你绕过日蚀内部的小圈。"
+
+msgid "Record LLULUUUURURRU, then RRURUUUULULLU. Walk LDRRULUUULDRUU."
+msgstr "先录制 LLULUUUURURRU，再录制 RRURUUUULULLU，最后走 LDRRULUUULDRUU。"

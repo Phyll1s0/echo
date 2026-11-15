@@ -303,7 +303,7 @@ func _chapter_heading(chapter: String, alignment: HorizontalAlignment) -> VBoxCo
 	heading.add_theme_constant_override("separation", 0)
 	var chapter_color: Color = Atmosphere.WORLDS.get(chapter, {}).get("light", muted)
 	if chapter == "Nocturne" and not dark: chapter_color = muted
-	if chapter == "Orbit" and not dark: chapter_color = Color("48617e")
+	if chapter == "Orbit" and not dark: chapter_color = Color("77528c")
 	if chapter == "Nexus" and not dark: chapter_color = Color("276977")
 	if chapter == "Inferno" and not dark: chapter_color = Color("a34c35")
 	if chapter != EXTRA:
