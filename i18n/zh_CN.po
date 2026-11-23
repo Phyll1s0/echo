@@ -266,8 +266,8 @@ msgstr "回声走完路线后会消散。让它到达 A 的时刻，与你到达
 msgid "The short path reaches A in two moves. The gate is four moves from the start."
 msgstr "最短路线只需两步就能到 A，但你需要四步才能到门前。"
 
-msgid "Take the upper loop to reach A two beats later."
-msgstr "沿上方绕行一圈，让回声晚两拍到达 A。"
+msgid "Take the upper loop to reach A two beats later. A wider loop can match a detour below."
+msgstr "沿上方绕行，让回声晚两拍到达 A。你若走下方支路，回声也要绕得更远。"
 
 msgid "Record ↑ → ↑ ←. Leave the echo, then take five steps right."
 msgstr "录制 ↑ → ↑ ←，留下回声，再向右走五步。"
@@ -398,8 +398,8 @@ msgstr "初遇"
 msgid "Find L, the lens. Two selves on its tile open the marked gate."
 msgstr "找到透镜 L。两个自己同时站在上面，就能开启标有 L 的门。"
 
-msgid "The two arms take the same number of steps."
-msgstr "两侧的支路需要相同的步数。"
+msgid "Meet at L on the same beat. The inner paths match, and so do the two outer arcs."
+msgstr "在同一拍到达 L。两侧的内圈一样长，两侧的外圈也是。"
 
 msgid "End one recording on L. Come up the other arm and meet it there."
 msgstr "让一段录制停在 L，然后从另一侧走来，与它在此相遇。"

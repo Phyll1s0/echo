@@ -41,9 +41,10 @@
     "chapter": "Afterimage",
     "max_echoes": 1,
     "rows": [
-      "A.####",
-      "..####",
-      "S....X"
+      "A..###",
+      "...###",
+      "S....X",
+      "#...##"
     ],
     "gates": [
       {
@@ -63,7 +64,7 @@
     "intro": "Your echo fades after its last move. Time its arrival at A to match yours at the gate.",
     "hints": [
       "The short path reaches A in two moves. The gate is four moves from the start.",
-      "Take the upper loop to reach A two beats later.",
+      "Take the upper loop to reach A two beats later. A wider loop can match a detour below.",
       "Record ↑ → ↑ ←. Leave the echo, then take five steps right."
     ],
     "recordings": [
@@ -625,8 +626,8 @@
     "rows": [
       "##X##",
       "##.##",
-      "#.@.#",
-      "#.#.#",
+      "..@..",
+      "..#..",
       "#.S.#"
     ],
     "gates": [
@@ -650,7 +651,7 @@
     "final": "RUULUU",
     "intro": "Find L, the lens. Two selves on its tile open the marked gate.",
     "hints": [
-      "The two arms take the same number of steps.",
+      "Meet at L on the same beat. The inner paths match, and so do the two outer arcs.",
       "End one recording on L. Come up the other arm and meet it there.",
       "Echo  ← ↑ ↑ →     Exit  → ↑ ↑ ← ↑ ↑"
     ],
